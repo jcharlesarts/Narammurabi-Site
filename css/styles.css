@@ -1,0 +1,110 @@
+:root {
+  --bg:#f7f4ec;
+  --panel:#fffdfa;
+  --soft:#f1ebd9;
+  --ink:#1a1a1a;
+  --muted:#5a574d;
+  --brand:#b45309; /* warm Mesopotamian brown-gold */
+  --accent:#005f73; /* teal/blue accent */
+  --glow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+* { box-sizing:border-box; }
+html,body { height:100%; }
+body {
+  margin:0;
+  background: var(--bg);
+  color:var(--ink);
+  font: 15px/1.4 'Courier New', monospace;
+  background-image: url('/img/papyrus-bg.png');
+  background-repeat: repeat;
+}
+
+.container { max-width: 1100px; margin:0 auto; padding:0.5rem 0.75rem; }
+
+.site-header {
+  display:flex; justify-content:space-between; align-items:center; gap:1rem; padding-top:1rem;
+  background: var(--soft);
+  border: 3px ridge var(--brand);
+}
+.brand { display:flex; align-items:center; gap:.75rem; }
+.brand .logo { background:var(--soft); border-radius:12px; padding:.5rem; box-shadow: var(--glow); }
+.titles h1 { font-size:1.35rem; margin:.2rem 0; }
+.tagline { color:var(--muted); margin:0; font-size:.95rem; }
+
+.main-nav a {
+  color:var(--ink); text-decoration:none; margin:0 .5rem; padding:.4rem .7rem; border-radius:999px;
+}
+.main-nav a:hover { background:var(--soft); }
+.main-nav a.active { outline:1px solid #00000022; }
+
+.hero {
+  background: var(--panel);
+  border: 4px ridge var(--brand);
+  border-radius:12px;
+  padding:1rem;
+  margin:1rem 0;
+  box-shadow: var(--glow);
+}
+.hero h2 { font-size:1.6rem; margin-top:0; }
+
+.cards {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap:0.75rem;
+  margin:1.2rem 0;
+  border-top: 4px double var(--brand);
+  padding-top: 1rem;
+}
+.card {
+  background: var(--panel);
+  border: 2px groove var(--accent);
+  border-radius:12px; overflow:hidden; box-shadow: var(--glow);
+  padding:0.75rem;
+}
+.card h3 { margin:.2rem 0 .4rem; }
+.card p { color:var(--muted); margin:.2rem 0 .8rem; }
+
+.btn {
+  display:inline-block; text-decoration:none;
+  background:var(--accent); color:#fff; font-weight:700;
+  padding:.5rem .8rem; border-radius:8px;
+}
+.btn.small { padding:.4rem .6rem; font-size:.9rem; }
+
+.site-footer {
+  color:var(--muted); border-top:1px solid #00000014; margin-top:1rem; padding:0.5rem 0 1rem;
+  font-size:.85rem;
+  background: var(--soft);
+  border: 3px ridge var(--brand);
+}
+
+.about {
+  border: 4px groove var(--accent);
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--soft);
+  font-style: italic;
+}
+
+.decor-rule {
+  border-top: 8px double var(--brand);
+  margin: 2rem 0;
+  position: relative;
+  text-align: center;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  padding-top: 1.5rem;
+}
+.decor-rule::after {
+  content: "⚔";
+  font-family: 'Courier New', monospace;
+  font-size: 1.6rem;
+  color: var(--brand);
+  text-shadow: 1px 1px 0 var(--accent);
+  position: absolute;
+  top: -0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  padding: 0 .5rem;
+}
