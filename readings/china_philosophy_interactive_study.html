@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Early Chinese Philosophies: Confucianism, Daoism, and Legalism — Interactive Study</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --soft: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color: var(--ink); background: var(--bg); }
+    header { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--soft); padding: .8rem 1rem; display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+    header h1 { font-size: 1.1rem; margin: 0; flex: 1 1 auto; }
+    .toolbar button { padding: .5rem .7rem; border-radius: .5rem; border: 1px solid var(--soft); background: #fff; cursor: pointer; }
+    .toolbar button:hover { border-color: var(--accent); }
+    main { max-width: 950px; margin: 1rem auto; padding: 0 1rem 2rem; }
+    .card { background: var(--card); border: 1px solid var(--soft); border-radius: .8rem; padding: 1rem; margin-bottom: 1rem; }
+    .card h2 { font-size: 1.1rem; margin: 0 0 .5rem 0; }
+    .source { margin: .5rem 0; }
+    .controls { display: flex; gap: .5rem; flex-wrap: wrap; margin: .5rem 0; }
+    .controls button { padding: .35rem .6rem; border-radius: .4rem; border: 1px solid var(--soft); background: #fff; cursor: pointer; font-size: .9rem; }
+    .controls button:hover { border-color: var(--accent); }
+    .grid { display: grid; grid-template-columns: 1fr; gap: .75rem; }
+    @media (min-width: 820px) { .grid { grid-template-columns: 1fr 1fr; } }
+    label { font-weight: 600; font-size: .95rem; }
+    input[type="text"], textarea { width: 100%; border: 1px solid var(--soft); border-radius: .5rem; padding: .6rem .7rem; font: inherit; }
+    textarea { min-height: 110px; resize: vertical; }
+    .question-box { background: #f7fafc; border: 1px dashed var(--soft); border-radius: .6rem; padding: .75rem; }
+    .muted { color: var(--muted); font-size: .9rem; }
+    footer { max-width: 950px; margin: 2rem auto; padding: 0 1rem 2rem; color: var(--muted); }
+    .hidden-source .source { display: none; }
+    mark { padding: .05em .2em; border-radius: .25em; background: #fff3a3; box-shadow: inset 0 -0.2em 0 rgba(0,0,0,.06); }
+    :root.dark { --bg:#0b1220; --card:#111827; --ink:#e5e7eb; --muted:#9ca3af; --soft:#1f2937; --accent:#60a5fa; }
+    .anno-underline { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+    .howto { flex-basis: 100%; margin: .4rem 0 0; }
+    .vocab-bank { background: var(--card); border: 1px solid var(--soft); border-radius: .6rem; padding: .75rem; margin: .5rem 0 1rem; }
+    .vocab-title { font-weight: 700; margin: 0 0 .5rem; font-size: .95rem; }
+    .vocab-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .5rem; }
+    .vocab-chips .chip { border: 1px solid var(--soft); background: #f8fafc; border-radius: 999px; padding: .3rem .6rem; cursor: pointer; font-size: .9rem; }
+    .vocab-chips .chip:hover { border-color: var(--accent); }
+    .vocab-output { background: #f7fafc; border-left: 3px solid var(--accent); padding: .6rem .7rem; border-radius: .3rem; font-size: .95rem; }
+    /* Dark mode readability for vocab bank */
+    :root.dark .vocab-bank { background: var(--card); border-color: var(--soft); }
+    :root.dark .vocab-chips .chip { background: #1f2937; border-color: #374151; color: var(--ink); }
+    :root.dark .vocab-chips .chip:hover { border-color: var(--accent); }
+    :root.dark .vocab-output { background: #0f172a; border-left-color: var(--accent); color: var(--ink); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Early Chinese Philosophies: Confucianism, Daoism, and Legalism — Interactive</h1>
+    <div class="toolbar">
+      <button id="toggleStudy">Study Mode (hide text)</button>
+      <button id="exportNotes">Export Notes</button>
+      <button id="printPage">Print</button>
+      <button id="clearAll">Clear My Notes</button>
+    </div>
+    <p class="muted howto">To highlight, select the text and then click &ldquo;Highlight Selection.&rdquo; To underline, select the text and click &ldquo;Underline Selection.&rdquo;</p>
+  </header>
+  <main id="page">
+    <article class="card" id="warring-states-context">
+      <h2>China During the Warring States Period</h2>
+      <p class="source" data-key="warring-states-context-p1">From about 475–221&nbsp;BCE, many rival states in China fought in a long period called the Warring States. As armies battled and rulers competed for power, everyday people faced danger and uncertainty. Thinkers began asking a big question: How can we bring back order and peace? Several answers took shape. Three of the most influential were Confucianism, Daoism (Taoism), and Legalism.</p>
+      <div class="vocab-bank" data-section="warring-states-context">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="Warring States">Warring States</button>
+          <button class="chip" data-term="philosophy">philosophy</button>
+          <button class="chip" data-term="order">order</button>
+          <button class="chip" data-term="peace">peace</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="warring-states-context">Highlight Selection</button>
+        <button data-action="underline" data-target="warring-states-context">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="warring-states-context">Clear Highlights</button>
+        <button data-action="reset-text" data-target="warring-states-context">Reset Text</button>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="warring-states-context-mainidea">Main Idea (1 sentence)</label>
+          <input type="text" id="warring-states-context-mainidea" placeholder="Write the main idea in your own words...">
+        </div>
+        <div>
+          <label for="warring-states-context-terms">Key Terms / People</label>
+          <input type="text" id="warring-states-context-terms" placeholder="List key terms you want to remember...">
+        </div>
+        <div class="full">
+          <label for="warring-states-context-notes">My Notes / Annotations</label>
+          <textarea id="warring-states-context-notes" placeholder="Questions, connections, and evidence..."></textarea>
+        </div>
+        <div class="question-box"><strong>Check for Understanding:</strong> Why were Chinese people open to new ideas during the Warring States Period?<div class="muted">Answer:</div><textarea id="warring-states-context-q1" placeholder="Your response..."></textarea></div>
+      </div>
+      <p class="muted">Tip: select a phrase in the text above, then click <em>Highlight Selection</em>. Your highlights &amp; notes auto‑save on this device.</p>
+    </article>
+
+    <article class="card" id="confucianism">
+      <h2>Confucianism: Order Through Virtue and Duty</h2>
+      <p class="source" data-key="confucianism-p1">Confucius (551–479&nbsp;BCE) was a teacher who believed society works best when people practice good character and duty. His students wrote down his sayings in a book called the Analects. Key ideas included <strong>ren</strong> (kindness or humaneness), <strong>li</strong> (proper behavior), keeping promises, respecting elders, and <strong>filial piety</strong>—honoring one’s parents and family.</p>
+      <p class="source" data-key="confucianism-p2">Confucius taught a version of the “Golden Rule”: <i>do not do to others what you would not want done to you.</i> He also believed government should be led by wise and moral people and that education helps build good leaders. Over time, rulers used his ideas to shape exams that chose officials based on learning and talent.</p>
+      <div class="vocab-bank" data-section="confucianism">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="Confucius">Confucius</button>
+          <button class="chip" data-term="Analects">Analects</button>
+          <button class="chip" data-term="filial piety">filial piety</button>
+          <button class="chip" data-term="virtue">virtue</button>
+          <button class="chip" data-term="character">character</button>
+          <button class="chip" data-term="duty">duty</button>
+          <button class="chip" data-term="civil service">civil service</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="confucianism">Highlight Selection</button>
+        <button data-action="underline" data-target="confucianism">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="confucianism">Clear Highlights</button>
+        <button data-action="reset-text" data-target="confucianism">Reset Text</button>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="confucianism-mainidea">Main Idea (1 sentence)</label>
+          <input type="text" id="confucianism-mainidea" placeholder="Write the main idea in your own words...">
+        </div>
+        <div>
+          <label for="confucianism-terms">Key Terms / People</label>
+          <input type="text" id="confucianism-terms" placeholder="List key terms you want to remember...">
+        </div>
+        <div class="full">
+          <label for="confucianism-notes">My Notes / Annotations</label>
+          <textarea id="confucianism-notes" placeholder="Questions, connections, and evidence..."></textarea>
+        </div>
+        <div class="question-box"><strong>Check for Understanding:</strong> According to Confucius, what personal behaviors help create an orderly society?<div class="muted">Answer:</div><textarea id="confucianism-q1" placeholder="Your response..."></textarea></div>
+      </div>
+      <p class="muted">Tip: select a phrase in the text above, then click <em>Highlight Selection</em>. Your highlights &amp; notes auto‑save on this device.</p>
+    </article>
+
+    <article class="card" id="daoism">
+      <h2>Daoism (Taoism): Harmony with the Way</h2>
+      <p class="source" data-key="daoism-p1">Daoism teaches that people should live in harmony with the <strong>Dao</strong> (the Way), the natural path of the universe. Tradition connects Daoism with a figure called Laozi and a text known as the <em>Dao De Jing</em>. Daoists value <strong>wu wei</strong>—acting with little force, letting things flow, and not fighting nature.</p>
+      <p class="source" data-key="daoism-p2">In government, Daoism suggests that fewer, simpler rules are better. In daily life, it encourages calm, balance, and a simple lifestyle close to nature.</p>
+      <div class="vocab-bank" data-section="daoism">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="Dao">Dao</button>
+          <button class="chip" data-term="wu wei">wu wei</button>
+          <button class="chip" data-term="Laozi">Laozi</button>
+          <button class="chip" data-term="harmony">harmony</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="daoism">Highlight Selection</button>
+        <button data-action="underline" data-target="daoism">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="daoism">Clear Highlights</button>
+        <button data-action="reset-text" data-target="daoism">Reset Text</button>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="daoism-mainidea">Main Idea (1 sentence)</label>
+          <input type="text" id="daoism-mainidea" placeholder="Write the main idea in your own words...">
+        </div>
+        <div>
+          <label for="daoism-terms">Key Terms / People</label>
+          <input type="text" id="daoism-terms" placeholder="List key terms you want to remember...">
+        </div>
+        <div class="full">
+          <label for="daoism-notes">My Notes / Annotations</label>
+          <textarea id="daoism-notes" placeholder="Questions, connections, and evidence..."></textarea>
+        </div>
+        <div class="question-box"><strong>Check for Understanding:</strong> What does “wu wei” mean, and how might it change the way a leader rules?<div class="muted">Answer:</div><textarea id="daoism-q1" placeholder="Your response..."></textarea></div>
+      </div>
+      <p class="muted">Tip: select a phrase in the text above, then click <em>Highlight Selection</em>. Your highlights &amp; notes auto‑save on this device.</p>
+    </article>
+
+    <article class="card" id="legalism">
+      <h2>Legalism: Order Through Strong Laws</h2>
+      <p class="source" data-key="legalism-p1">Legalism taught that people are most likely to do the right thing when laws are clear and punishments are strict. Writers such as Hanfeizi argued that rulers must keep tight control to stop disorder. Legalist ideas helped the Qin rulers end the Warring States and unite China, but these methods were harsh.</p>
+      <div class="vocab-bank" data-section="legalism">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="Legalism">Legalism</button>
+          <button class="chip" data-term="Hanfeizi">Hanfeizi</button>
+          <button class="chip" data-term="strict laws">strict laws</button>
+          <button class="chip" data-term="Qin">Qin</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="legalism">Highlight Selection</button>
+        <button data-action="underline" data-target="legalism">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="legalism">Clear Highlights</button>
+        <button data-action="reset-text" data-target="legalism">Reset Text</button>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="legalism-mainidea">Main Idea (1 sentence)</label>
+          <input type="text" id="legalism-mainidea" placeholder="Write the main idea in your own words...">
+        </div>
+        <div>
+          <label for="legalism-terms">Key Terms / People</label>
+          <input type="text" id="legalism-terms" placeholder="List key terms you want to remember...">
+        </div>
+        <div class="full">
+          <label for="legalism-notes">My Notes / Annotations</label>
+          <textarea id="legalism-notes" placeholder="Questions, connections, and evidence..."></textarea>
+        </div>
+        <div class="question-box"><strong>Check for Understanding:</strong> How is Legalism’s view of human behavior different from Confucianism’s?<div class="muted">Answer:</div><textarea id="legalism-q1" placeholder="Your response..."></textarea></div>
+      </div>
+      <p class="muted">Tip: select a phrase in the text above, then click <em>Highlight Selection</em>. Your highlights &amp; notes auto‑save on this device.</p>
+    </article>
+
+    <article class="card" id="compare-three">
+      <h2>Comparing the Three Approaches</h2>
+      <p class="source" data-key="compare-three-p1">All three philosophies tried to solve the same problem—how to bring order and peace. Confucianism focuses on virtue and duty, Daoism on harmony with nature and simple rule, and Legalism on strict laws and strong government. Chinese leaders often mixed ideas from more than one approach to fit the moment.</p>
+      <div class="vocab-bank" data-section="compare-three">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="virtue">virtue</button>
+          <button class="chip" data-term="harmony">harmony</button>
+          <button class="chip" data-term="order">order</button>
+          <button class="chip" data-term="law">law</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="compare-three">Highlight Selection</button>
+        <button data-action="underline" data-target="compare-three">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="compare-three">Clear Highlights</button>
+        <button data-action="reset-text" data-target="compare-three">Reset Text</button>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="compare-three-mainidea">Main Idea (1 sentence)</label>
+          <input type="text" id="compare-three-mainidea" placeholder="Write the main idea in your own words...">
+        </div>
+        <div>
+          <label for="compare-three-terms">Key Terms / People</label>
+          <input type="text" id="compare-three-terms" placeholder="List key terms you want to remember...">
+        </div>
+        <div class="full">
+          <label for="compare-three-notes">My Notes / Annotations</label>
+          <textarea id="compare-three-notes" placeholder="Questions, connections, and evidence..."></textarea>
+        </div>
+        <div class="question-box"><strong>Check for Understanding:</strong> If your community needed more peace and fairness, which approach—or mix—would you choose, and why?<div class="muted">Answer:</div><textarea id="compare-three-q1" placeholder="Your response..."></textarea></div>
+      </div>
+      <p class="muted">Tip: select a phrase in the text above, then click <em>Highlight Selection</em>. Your highlights &amp; notes auto‑save on this device.</p>
+    </article>
+  </main>
+  <footer>
+    <p>Classroom reading — adapted from our classroom text Discovering Our Past: A History of the World and standard references for 6th-grade instruction.</p>
+  </footer>
+
+  <script>
+    const KEY = "china-philosophies-v1";
+// --- URL switches & Dark Mode ---
+// Query params: ?study=1 (hide text), ?clear=1 (wipe notes), ?dark=1 (start dark)
+const params = new URLSearchParams(location.search);
+if (params.get('study') === '1') document.body.classList.add('hidden-source');
+if (params.get('clear') === '1') localStorage.removeItem(KEY);
+
+// Persisted dark mode key
+const DARK_KEY = KEY + "-dark";
+// Restore previously chosen dark mode
+if (localStorage.getItem(DARK_KEY) === '1') document.documentElement.classList.add('dark');
+// URL can also force dark on
+if (params.get('dark') === '1') document.documentElement.classList.add('dark');
+
+// Add a Dark Mode toggle button to the toolbar
+(function addDarkToggle(){
+  const tb = document.querySelector('.toolbar');
+  if (!tb) return;
+  const darkBtn = document.createElement('button');
+  darkBtn.id = 'toggleDark';
+  darkBtn.textContent = 'Dark Mode';
+  tb.appendChild(darkBtn);
+  darkBtn.addEventListener('click', () => {
+    const root = document.documentElement;
+    root.classList.toggle('dark');
+    localStorage.setItem(DARK_KEY, root.classList.contains('dark') ? '1' : '0');
+  });
+})();
+
+    function underlineSelectionIn(sectionId) {
+      const card = document.getElementById(sectionId);
+      if (!card) return;
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return alert("Select a phrase inside the section's text first.");
+      const range = sel.getRangeAt(0);
+      const withinCard = card.contains(range.commonAncestorContainer);
+      if (!withinCard) return alert("Please select within this section's text.");
+      let node = range.commonAncestorContainer;
+      while (node && node.nodeType === 3) node = node.parentNode;
+      const para = node && node.closest ? node.closest('.source') : null;
+      if (!para || !card.contains(para)) return alert("Please select text within a single paragraph.");
+      const span = document.createElement('span');
+      span.className = 'anno-underline';
+      try {
+        range.surroundContents(span);
+        sel.removeAllRanges();
+        saveState();
+      } catch (e) {
+        alert("That selection crosses multiple elements. Try a smaller selection.");
+      }
+    }
+
+    // --- Vocabulary dictionary & setup ---
+    const VOCAB = {
+      "Warring States": "A time (about 475–221 BCE) when many Chinese states fought each other for power.",
+      "philosophy": "A system of ideas about how people should live and what is right and wrong.",
+      "order": "A safe and organized society where people follow rules and get along.",
+      "peace": "A time without fighting or war.",
+
+      "Confucius": "A Chinese teacher (551–479 BCE) whose ideas about virtue and duty shaped Chinese life.",
+      "Analects": "A book of sayings from Confucius, collected by his students.",
+      "filial piety": "Respect and care for one’s parents and family elders.",
+      "virtue": "Good character—doing what is right, kind, and honest.",
+      "character": "The qualities that show what kind of person you are, like being honest, kind, or responsible.",
+      "duty": "A responsibility or job you are expected to do.",
+      "civil service": "Government jobs; in China, later chosen by exams based on learning and talent.",
+
+      "Dao": "The Way—the natural path of the universe in Daoism.",
+      "wu wei": "Acting with little force; not fighting nature; letting actions flow at the right time.",
+      "Laozi": "A traditional figure linked to Daoism and the Dao De Jing.",
+      "harmony": "Balance and calm—people and nature working well together.",
+
+      "Legalism": "An approach that uses strict laws and punishments to keep order.",
+      "Hanfeizi": "A writer who explained Legalist ideas in the 200s BCE.",
+      "strict laws": "Clear rules with strong punishments for breaking them.",
+      "Qin": "The dynasty (221–206 BCE) that first united China using many Legalist ideas.",
+
+      "law": "Rules made by a government to guide people’s behavior."
+    };
+
+    function setupVocabBanks() {
+      document.querySelectorAll('.vocab-bank').forEach(bank => {
+        bank.addEventListener('click', (ev) => {
+          const chip = ev.target.closest('button.chip');
+          if (!chip) return;
+          const term = chip.dataset.term;
+          const out = bank.querySelector('.vocab-output');
+          const def = VOCAB[term] || 'Definition coming soon.';
+          if (out) out.textContent = term + ': ' + def;
+        });
+      });
+    }
+
+    // Capture originals then restore saved state
+    const originalHTML = {};
+
+    // Fill originals from DOM at first load
+    function captureOriginalHTML() {
+      document.querySelectorAll('article.card').forEach(card => {
+        const secId = card.id;
+        const html = Array.from(card.querySelectorAll('.source')).map(p => p.outerHTML).join('');
+        originalHTML[secId] = html;
+      });
+    }
+
+    function loadState() {
+      try {
+        const data = JSON.parse(localStorage.getItem(KEY) || "{}");
+        // Restore paragraph innerHTML (highlights)
+        for (const [secId, html] of Object.entries(data.paragraphs || {})) {
+          const card = document.getElementById(secId);
+          if (card && html) {
+            card.querySelectorAll('.source').forEach(el => el.remove());
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = html;
+            wrapper.querySelectorAll('.source').forEach(p => card.insertBefore(p, card.querySelector('.controls')));
+          }
+        }
+        // Restore inputs
+        for (const [elId, value] of Object.entries(data.inputs || {})) {
+          const el = document.getElementById(elId);
+          if (el) el.value = value;
+        }
+      } catch (e) {}
+    }
+
+    function saveState() {
+      const data = { paragraphs: {}, inputs: {} };
+      document.querySelectorAll('article.card').forEach(card => {
+        const secId = card.id;
+        const html = Array.from(card.querySelectorAll('.source')).map(p => p.outerHTML).join('');
+        data.paragraphs[secId] = html;
+      });
+      document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+        data.inputs[el.id] = el.value;
+      });
+      localStorage.setItem(KEY, JSON.stringify(data));
+    }
+
+    function highlightSelectionIn(sectionId) {
+      const card = document.getElementById(sectionId);
+      if (!card) return;
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return alert("Select a phrase inside the section's text first.");
+      const range = sel.getRangeAt(0);
+      const withinCard = card.contains(range.commonAncestorContainer);
+      if (!withinCard) return alert("Please select within this section's text.");
+      let node = range.commonAncestorContainer;
+      while (node && node.nodeType === 3) node = node.parentNode;
+      const para = node && node.closest ? node.closest('.source') : null;
+      if (!para || !card.contains(para)) return alert("Please select text within a single paragraph.");
+      const mark = document.createElement('mark');
+      try {
+        range.surroundContents(mark);
+        sel.removeAllRanges();
+        saveState();
+      } catch (e) {
+        alert("That selection crosses multiple elements. Try a smaller selection.");
+      }
+    }
+
+    function clearHighlights(sectionId) {
+      const card = document.getElementById(sectionId);
+      if (!card) return;
+      card.querySelectorAll('mark').forEach(m => {
+        const parent = m.parentNode;
+        while (m.firstChild) parent.insertBefore(m.firstChild, m);
+        parent.removeChild(m);
+      });
+      card.querySelectorAll('.anno-underline').forEach(u => {
+        const parent = u.parentNode;
+        while (u.firstChild) parent.insertBefore(u.firstChild, u);
+        parent.removeChild(u);
+      });
+      saveState();
+    }
+
+    function resetText(sectionId) {
+      const card = document.getElementById(sectionId);
+      if (!card) return;
+      card.querySelectorAll('.source').forEach(el => el.remove());
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = originalHTML[sectionId] || "";
+      wrapper.querySelectorAll('.source').forEach(p => card.insertBefore(p, card.querySelector('.controls')));
+      saveState();
+    }
+
+    document.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.getAttribute('data-action');
+      const target = btn.getAttribute('data-target');
+      if (action === 'highlight') highlightSelectionIn(target);
+      if (action === 'underline') underlineSelectionIn(target);
+      if (action === 'clear-highlights') clearHighlights(target);
+      if (action === 'reset-text') resetText(target);
+    });
+
+    document.addEventListener('input', (ev) => {
+      if (ev.target.matches('input[type="text"], textarea')) saveState();
+    });
+
+    document.getElementById('toggleStudy').addEventListener('click', () => {
+      document.body.classList.toggle('hidden-source');
+    });
+
+    document.getElementById('printPage').addEventListener('click', () => window.print());
+
+    document.getElementById('clearAll').addEventListener('click', () => {
+      if (!confirm("Clear all notes and highlights on this device?")) return;
+      localStorage.removeItem(KEY);
+      location.reload();
+    });
+
+    document.getElementById('exportNotes').addEventListener('click', () => {
+      const lines = [];
+      lines.push("Early Chinese Philosophies: Confucianism, Daoism, and Legalism — Notes\n");
+      document.querySelectorAll('article.card').forEach(card => {
+        const secId = card.id;
+        const heading = card.querySelector('h2')?.textContent.trim() || secId;
+        lines.push("## " + heading);
+        const main = document.getElementById(secId + "-mainidea")?.value || "";
+        const terms = document.getElementById(secId + "-terms")?.value || "";
+        const notes = document.getElementById(secId + "-notes")?.value || "";
+        lines.push("Main Idea: " + main);
+        lines.push("Key Terms: " + terms);
+        lines.push("Notes: " + notes);
+        let qIdx = 1;
+        while (true) {
+          const q = document.getElementById(secId + "-q" + qIdx);
+          if (!q) break;
+          lines.push("Q" + qIdx + ": " + q.value);
+          qIdx++;
+        }
+        lines.push("");
+      });
+      const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "china_philosophies_notes.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Capture originals then restore saved state
+    captureOriginalHTML();
+    loadState();
+    setupVocabBanks();
+  </script>
+</body>
+</html>
