@@ -58,6 +58,7 @@
     <div class="toolbar">
       <button id="toggleStudy">Study Mode (hide text)</button>
       <button id="exportNotes">Export Notes</button>
+      <button id="exportHTML">Export as HTML</button>
       <button id="printPage">Print</button>
       <button id="clearAll">Clear My Notes</button>
     </div>
@@ -473,6 +474,59 @@ if (params.get('dark') === '1') document.documentElement.classList.add('dark');
       location.reload();
     });
 
+    // Export a clean, styled HTML snapshot that preserves highlights & underlines
+    function exportAsHTML() {
+      const pageTitle = (document.querySelector('header h1')?.textContent || 'Notes').trim();
+      const styles = `body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;color:#0f172a;background:#fff}
+main{max-width:850px;margin:2rem auto;padding:0 1rem}
+h1{font-size:1.3rem;margin:0 0 .75rem}
+h2{font-size:1.1rem;margin:1.2rem 0 .4rem}
+.source{margin:.5rem 0}
+.box{background:#f7fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem;margin:.6rem 0}
+.meta{color:#475569;font-size:.9rem;margin:.25rem 0 1rem}
+mark{padding:.05em .2em;border-radius:.25em;background:#fff3a3;box-shadow:inset 0 -0.2em 0 rgba(0,0,0,.06)}
+.anno-underline{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:2px}`;
+      const esc = (s) => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      let html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${pageTitle} — Export</title><style>${styles}</style></head><body><main><h1>${pageTitle} — Export</h1>`;
+      html += `<p class="meta">Exported on ${new Date().toLocaleString()}</p>`;
+
+      document.querySelectorAll('article.card').forEach(card => {
+        const secId = card.id;
+        const heading = card.querySelector('h2')?.textContent.trim() || secId;
+        html += `<section><h2>${esc(heading)}</h2>`;
+        // Paragraphs with preserved highlights/underlines
+        html += Array.from(card.querySelectorAll('.source')).map(p => `<p class="source">${p.innerHTML}</p>`).join('');
+        // Student inputs
+        const mainIdea = document.getElementById(`${secId}-mainidea`)?.value || '';
+        const terms = document.getElementById(`${secId}-terms`)?.value || '';
+        const notes = document.getElementById(`${secId}-notes`)?.value || '';
+        if (mainIdea || terms || notes) {
+          html += `<div class="box"><strong>Main Idea:</strong> ${esc(mainIdea)}<br><strong>Key Terms:</strong> ${esc(terms)}<br><strong>My Notes:</strong><br>${esc(notes)}</div>`;
+        }
+        // Q&A
+        const qBoxes = card.querySelectorAll('.question-box');
+        if (qBoxes.length) {
+          html += `<div class="box"><strong>Check for Understanding</strong>`;
+          qBoxes.forEach((qb, idx) => {
+            const prompt = (qb.querySelector('strong')?.textContent || '').replace('Check for Understanding:','').trim() || `Question ${idx+1}`;
+            const ans = document.getElementById(`${secId}-q${idx+1}`)?.value || '';
+            html += `<p><em>${esc(prompt)}</em><br>${esc(ans)}</p>`;
+          });
+          html += `</div>`;
+        }
+        html += `</section>`;
+      });
+
+      html += `</main></body></html>`;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'china_philosophies_notes.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     document.getElementById('exportNotes').addEventListener('click', () => {
       const lines = [];
       lines.push("Early Chinese Philosophies: Confucianism, Daoism, and Legalism — Notes\n");
@@ -503,6 +557,8 @@ if (params.get('dark') === '1') document.documentElement.classList.add('dark');
       a.click();
       URL.revokeObjectURL(url);
     });
+
+    document.getElementById('exportHTML').addEventListener('click', exportAsHTML);
 
     // Capture originals then restore saved state
     captureOriginalHTML();
