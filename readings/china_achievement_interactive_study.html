@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Birth of Chinese Civilization — Interactive Study</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin:0; background: var(--bg,#fff); color: var(--ink,#111);} 
+    header {background:#334155;color:#fff;padding:1rem;}
+    header h1 {margin:0;font-size:1.3rem;}
+    .toolbar {margin-top:.5rem;}
+    .toolbar button {margin-right:.5rem;}
+    main {max-width:900px;margin:1rem auto;padding:0 1rem;}
+    .card {background:var(--card,#f9fafb);padding:1rem;border:1px solid #e2e8f0;border-radius:.5rem;margin-bottom:1rem;}
+    .controls button {margin-right:.5rem;margin-top:.3rem;}
+    .grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.5rem;margin-top:.5rem;}
+    textarea {width:100%;height:5rem;}
+    .question-box {margin-top:.5rem;background:#f1f5f9;padding:.5rem;border-radius:.4rem;}
+    .vocab-bank {margin:.5rem 0;padding:.5rem;border:1px solid #cbd5e1;border-radius:.5rem;background:#f8fafc;}
+    .vocab-title {font-weight:bold;margin-bottom:.3rem;}
+    .chip {padding:.2rem .5rem;border:1px solid #cbd5e1;border-radius:1rem;background:#e2e8f0;cursor:pointer;margin:.2rem;}
+    .vocab-output {margin-top:.5rem;font-size:.9rem;}
+    mark {background:#fff3a3;}
+    .anno-underline {text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:2px;}
+    .muted {opacity:.85;font-size:.9rem;margin:.3rem 0 0;}
+    /* Study mode hides source text for recall practice */
+    .study-hide .source { display:none; }
+    /* Print-friendly: hide buttons, keep content */
+    @media print {
+      header .toolbar, .controls, .vocab-chips, .howto { display:none !important; }
+      textarea { border:none; outline:none; }
+      .card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Birth of Chinese Civilization — Interactive</h1>
+    <div class="toolbar">
+      <button id="toggleStudy">Study Mode (hide text)</button>
+      <button id="exportNotes">Export Notes</button>
+      <button id="exportPDF">Save as PDF</button>
+      <button id="printPage">Print</button>
+      <button id="clearAll">Clear My Notes</button>
+    </div>
+    <p class="muted howto">Highlight by selecting text and clicking “Highlight Selection.” Underline with “Underline Selection.”</p>
+  </header>
+
+  <main id="page">
+    <!-- Rivers -->
+    <article class="card" id="rivers-settlement">
+      <h2>Rivers & Early Settlements</h2>
+      <p class="source">China’s first farming villages grew along the Huang He (Yellow River) and the Yangtze River. These rivers provided fertile soil but also brought destructive floods. Farmers built dikes and irrigation systems to control the waters. Villages expanded into larger communities where people raised millet and rice, and domesticated pigs, chickens, and cattle. Over time, these river valleys supported the growth of cities and dynasties. Geography both connected and isolated China, shaping a civilization that developed largely on its own while facing threats from flooding and invasions.</p>
+      <div class="vocab-bank" data-section="rivers-settlement">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="Huang He">Huang He</button>
+          <button class="chip" data-term="Yangtze">Yangtze</button>
+          <button class="chip" data-term="dynasty">dynasty</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="rivers-settlement">Highlight Selection</button>
+        <button data-action="underline" data-target="rivers-settlement">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="rivers-settlement">Clear Highlights</button>
+        <button data-action="reset-text" data-target="rivers-settlement">Reset Text</button>
+      </div>
+      <div class="grid">
+        <textarea id="rivers-settlement-mainidea" placeholder="Main Idea"></textarea>
+        <textarea id="rivers-settlement-terms" placeholder="Key Terms"></textarea>
+        <textarea id="rivers-settlement-notes" placeholder="My Notes"></textarea>
+      </div>
+      <div class="question-box">
+        <strong>Check for Understanding:</strong> Why were rivers important for early Chinese settlements?
+        <textarea id="rivers-settlement-q1"></textarea>
+      </div>
+    </article>
+
+    <!-- Shang -->
+    <article class="card" id="shang">
+      <h2>The Shang Dynasty</h2>
+      <p class="source">Most people in Shang China were farmers working land owned by aristocrats. They grew millet, wheat, and rice, and raised livestock. Merchants and artisans lived in cities, producing fine bronze works such as daggers, cups, and ritual urns. Bronze casting was a highly skilled craft using clay molds and molten metal. Religion played a central role: families honored their ancestors with offerings, believing they could influence fortune. Shang kings used oracle bones—animal bones or turtle shells inscribed with questions—to consult the gods and ancestors, giving us some of the earliest written records. Shang society was divided into classes, with the king and nobles at the top, artisans and traders in the middle, and farmers at the bottom.</p>
+      <div class="vocab-bank" data-section="shang">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="aristocracy">aristocracy</button>
+          <button class="chip" data-term="oracle bones">oracle bones</button>
+          <button class="chip" data-term="ancestor worship">ancestor worship</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="shang">Highlight Selection</button>
+        <button data-action="underline" data-target="shang">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="shang">Clear Highlights</button>
+        <button data-action="reset-text" data-target="shang">Reset Text</button>
+      </div>
+      <div class="grid">
+        <textarea id="shang-mainidea" placeholder="Main Idea"></textarea>
+        <textarea id="shang-terms" placeholder="Key Terms"></textarea>
+        <textarea id="shang-notes" placeholder="My Notes"></textarea>
+      </div>
+      <div class="question-box">
+        <strong>Check for Understanding:</strong> What role did ancestor worship play in Shang society?
+        <textarea id="shang-q1"></textarea>
+      </div>
+    </article>
+
+    <!-- Writing -->
+    <article class="card" id="writing">
+      <h2>Early Chinese Writing</h2>
+      <p class="source">The ancient Chinese developed a system of writing that began with pictographs—characters representing objects—and ideographs, which combined characters to express ideas. Unlike an alphabet, which uses letters to represent sounds, Chinese writing used thousands of characters, some for entire words. Writing was first carved on oracle bones for divination, and later inscribed on bronze vessels, bamboo strips, and silk. Only nobles and scribes were literate, but writing unified Chinese culture, preserved traditions, and allowed governments to keep records. The system laid the foundation for modern Chinese characters, which still retain similarities to these early forms.</p>
+      <div class="vocab-bank" data-section="writing">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="pictograph">pictograph</button>
+          <button class="chip" data-term="ideograph">ideograph</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="writing">Highlight Selection</button>
+        <button data-action="underline" data-target="writing">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="writing">Clear Highlights</button>
+        <button data-action="reset-text" data-target="writing">Reset Text</button>
+      </div>
+      <div class="grid">
+        <textarea id="writing-mainidea" placeholder="Main Idea"></textarea>
+        <textarea id="writing-terms" placeholder="Key Terms"></textarea>
+        <textarea id="writing-notes" placeholder="My Notes"></textarea>
+      </div>
+      <div class="question-box">
+        <strong>Check for Understanding:</strong> How did pictographs and ideographs form the basis of Chinese writing?
+        <textarea id="writing-q1"></textarea>
+      </div>
+    </article>
+
+    <!-- Zhou Mandate -->
+    <article class="card" id="zhou-mandate">
+      <h2>The Zhou Takeover and the Mandate of Heaven</h2>
+      <p class="source">In 1045 BCE, the Zhou dynasty overthrew the Shang. To justify their rule, Zhou leaders promoted the Mandate of Heaven—the belief that kings ruled with divine approval as long as they governed justly. A corrupt or tyrannical ruler could lose the mandate, and the people then had the right to rebel. This explained the rise and fall of dynasties as part of a natural cycle. The Mandate of Heaven became a central idea in Chinese political thought, used for centuries to explain changes in dynasties.</p>
+      <div class="vocab-bank" data-section="zhou-mandate">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="Mandate of Heaven">Mandate of Heaven</button>
+          <button class="chip" data-term="dynasty cycle">dynasty cycle</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="zhou-mandate">Highlight Selection</button>
+        <button data-action="underline" data-target="zhou-mandate">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="zhou-mandate">Clear Highlights</button>
+        <button data-action="reset-text" data-target="zhou-mandate">Reset Text</button>
+      </div>
+      <div class="grid">
+        <textarea id="zhou-mandate-mainidea" placeholder="Main Idea"></textarea>
+        <textarea id="zhou-mandate-terms" placeholder="Key Terms"></textarea>
+        <textarea id="zhou-mandate-notes" placeholder="My Notes"></textarea>
+      </div>
+      <div class="question-box">
+        <strong>Check for Understanding:</strong> How did the Mandate of Heaven justify Zhou rule?
+        <textarea id="zhou-mandate-q1"></textarea>
+      </div>
+    </article>
+
+    <!-- Zhou Government -->
+    <article class="card" id="zhou-government">
+      <h2>Governing the Zhou Dynasty</h2>
+      <p class="source">The Zhou ruled longer than any other dynasty in Chinese history. They divided their empire into regions governed by loyal aristocrats, creating a bureaucracy where officials carried out tasks for the king. Over time, local nobles gained power and independence, weakening central authority. Meanwhile, agriculture advanced with iron plows and tools, increasing food production and population. Warfare also evolved with new weapons like the crossbow and with innovations such as saddles and stirrups, which allowed cavalry to fight more effectively. These changes strengthened states but also set the stage for conflict as Zhou power declined.</p>
+      <div class="vocab-bank" data-section="zhou-government">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="bureaucracy">bureaucracy</button>
+          <button class="chip" data-term="iron tools">iron tools</button>
+          <button class="chip" data-term="crossbow">crossbow</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="zhou-government">Highlight Selection</button>
+        <button data-action="underline" data-target="zhou-government">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="zhou-government">Clear Highlights</button>
+        <button data-action="reset-text" data-target="zhou-government">Reset Text</button>
+      </div>
+      <div class="grid">
+        <textarea id="zhou-government-mainidea" placeholder="Main Idea"></textarea>
+        <textarea id="zhou-government-terms" placeholder="Key Terms"></textarea>
+        <textarea id="zhou-government-notes" placeholder="My Notes"></textarea>
+      </div>
+      <div class="question-box">
+        <strong>Check for Understanding:</strong> What were two ways the Zhou improved farming and warfare?
+        <textarea id="zhou-government-q1"></textarea>
+      </div>
+    </article>
+
+    <!-- Warring States -->
+    <article class="card" id="warring-states">
+      <h2>The Warring States Period</h2>
+      <p class="source">By 475 BCE, Zhou power collapsed, and China entered the Warring States Period. Rival states fought brutal wars with iron weapons, cavalry, and large armies. Constant warfare brought suffering but also inspired new philosophies. Confucianism emphasized duty, virtue, and respect in government and family. Daoism promoted harmony with nature and simplicity. Legalism argued that order required strict laws and harsh punishments. These ideas shaped Chinese culture and politics for centuries. The Warring States Period ended when the Qin dynasty united China under one rule in 221 BCE.</p>
+      <div class="vocab-bank" data-section="warring-states">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="Warring States">Warring States</button>
+          <button class="chip" data-term="chaos">chaos</button>
+          <button class="chip" data-term="philosophy">philosophy</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+      <div class="controls">
+        <button data-action="highlight" data-target="warring-states">Highlight Selection</button>
+        <button data-action="underline" data-target="warring-states">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="warring-states">Clear Highlights</button>
+        <button data-action="reset-text" data-target="warring-states">Reset Text</button>
+      </div>
+      <div class="grid">
+        <textarea id="warring-states-mainidea" placeholder="Main Idea"></textarea>
+        <textarea id="warring-states-terms" placeholder="Key Terms"></textarea>
+        <textarea id="warring-states-notes" placeholder="My Notes"></textarea>
+      </div>
+      <div class="question-box">
+        <strong>Check for Understanding:</strong> How did constant warfare inspire new philosophies?
+        <textarea id="warring-states-q1"></textarea>
+      </div>
+    </article>
+
+    <!-- Full Reading -->
+    <article class="card" id="full-reading">
+      <h2>The Birth of Chinese Civilization — Full Reading</h2>
+      <div class="source">
+        <h3>Early Chinese Writing</h3>
+        <p>The ancient Chinese developed a writing system that began with pictographs—characters that represent objects. For example, the characters for “sun” and “moon” are pictographs. They also used ideographs, which combine two or more characters to express an idea.</p>
+        <p>Unlike English, which uses an alphabet of letters that represent sounds, Chinese writing uses many characters. Some characters stand for whole words, and some are combined to show meaning.</p>
+
+        <h3>The Shang Dynasty: Society, Religion, and Technology</h3>
+        <p>Most people in Shang China were farmers who worked land owned by aristocrats. They raised cattle, sheep, and chickens, and grew millet, wheat, and rice. Merchants and artisans also lived in Shang cities. Artisans crafted fine bronze objects—sculptures, daggers, cups, vases, and ceremonial urns. To make bronze objects, artisans shaped clay molds, carved designs into the clay, joined the pieces together, poured in melted bronze, and removed the mold after the metal cooled.</p>
+        <p>Shang people honored their ancestors. Families made offerings of food and goods to departed relatives, believing that ancestors could help them in the afterlife and bring good fortune.</p>
+        <p>Shang kings also consulted the gods and ancestors using oracle bones. Priests scratched questions on animal bones or turtle shells—such as “Will we win the battle?” or “Will the harvest be good?”—and then heated them until they cracked. The pattern of cracks was interpreted as the answer.</p>
+
+        <h3>The Zhou Dynasty and the Mandate of Heaven</h3>
+        <p>According to tradition, the last Shang ruler was a tyrant. In 1045 B.C., an aristocrat named Wu Wang led a revolt that overthrew the Shang and founded the Zhou (JOH) dynasty, which ruled for more than 800 years.</p>
+        <p>Zhou kings said they ruled with the Mandate of Heaven—the belief that the right to rule came from the gods. A king chosen by Heaven was expected to govern honestly and well and to perform religious ceremonies to honor the gods. Natural disasters or a poor harvest could be seen as signs that the king had failed and lost the mandate; if that happened, the people might support a new ruler.</p>
+        <p>To govern effectively, Zhou kings divided their kingdom into territories and appointed loyal aristocrats to rule them. This created a bureaucracy—a system in which officials carry out government work. Over time, however, some aristocrats grew stronger, ignored the king’s orders, and fought each other for power.</p>
+        <p>Chinese soldiers used swords, spears, and crossbows. With the development of the saddle and stirrup, warriors could ride more securely and fight more effectively from horseback. As rival states battled, China entered the long Period of the Warring States, a time of constant warfare that weakened the Zhou.</p>
+
+        <h3>The Warring States Period</h3>
+        <p>Rival states fought for control. Armies used iron weapons, crossbows, and new tactics. Constant war weakened Zhou kings and pushed people to ask: “How can we bring back order and peace?” This question set the stage for the rise of Confucianism, Daoism, and Legalism in the late Zhou—ideas studied in the next section.</p>
+      </div>
+
+      <div class="vocab-bank" data-section="full-reading">
+        <div class="vocab-title">Vocabulary Bank</div>
+        <div class="vocab-chips">
+          <button class="chip" data-term="pictograph">Pictograph</button>
+          <button class="chip" data-term="ideograph">Ideograph</button>
+          <button class="chip" data-term="bronze">Bronze</button>
+          <button class="chip" data-term="ancestor worship">Ancestor Worship</button>
+          <button class="chip" data-term="oracle bones">Oracle Bones</button>
+          <button class="chip" data-term="Mandate of Heaven">Mandate of Heaven</button>
+          <button class="chip" data-term="bureaucracy">Bureaucracy</button>
+          <button class="chip" data-term="Warring States">Warring States</button>
+        </div>
+        <div class="vocab-output" aria-live="polite">Select a word to see a quick definition.</div>
+      </div>
+
+      <div class="controls">
+        <button data-action="highlight" data-target="full-reading">Highlight Selection</button>
+        <button data-action="underline" data-target="full-reading">Underline Selection</button>
+        <button data-action="clear-highlights" data-target="full-reading">Clear Highlights</button>
+        <button data-action="reset-text" data-target="full-reading">Reset Text</button>
+      </div>
+
+      <div class="grid">
+        <textarea id="full-reading-mainidea" placeholder="Main Idea"></textarea>
+        <textarea id="full-reading-terms" placeholder="Key Terms"></textarea>
+        <textarea id="full-reading-notes" placeholder="My Notes"></textarea>
+      </div>
+
+      <div class="question-box">
+        <strong>Check for Understanding:</strong> How did Chinese dynasties rise, fall, and justify their rule?
+        <textarea id="full-reading-q1"></textarea>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    // Storage key bumped to v2 to avoid restoring stale/truncated source text
+    const KEY = "china-civilization-v2";
+    const OLD_KEYS = ["china-civilization-v1"]; // migrate textareas only
+    const VOCAB = {
+      "Huang He":"The Yellow River in northern China, cradle of Chinese civilization.",
+      "Yangtze":"A major river in southern China, important for farming and trade.",
+      "dynasty":"A series of rulers from the same family.",
+      "aristocracy":"A class of nobles who owned land and had power.",
+      "oracle bones":"Animal bones used by Shang rulers to ask ancestors questions.",
+      "ancestor worship":"Honoring and giving offerings to deceased family members.",
+      "pictograph":"A simple picture that represents an object.",
+      "ideograph":"A symbol that represents an idea.",
+      "Mandate of Heaven":"The belief that a dynasty’s rule was approved by the gods.",
+      "dynasty cycle":"The rise, decline, and replacement of dynasties.",
+      "bureaucracy":"A system where officials run different parts of government.",
+      "iron tools":"Stronger farming and building tools made from iron.",
+      "crossbow":"A Zhou weapon that made armies more powerful.",
+      "Warring States":"A time (475–221 BCE) when Chinese states fought for power.",
+      "chaos":"Disorder and confusion.",
+      "philosophy":"A system of ideas about how people should live and be governed."
+    };
+    // Utility helpers
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    // Keep original source HTML per section for reset
+    const originalHTML = new Map();
+
+    function saveState() {
+      const data = { textareas: {}, sources: {}, studyHide: document.body.classList.contains('study-hide') };
+      $$('textarea').forEach(t => { data.textareas[t.id] = t.value; });
+      $$('.card').forEach(card => {
+        const id = card.id;
+        const src = $('.source', card);
+        if (src) data.sources[id] = src.innerHTML;
+      });
+      try { localStorage.setItem(KEY, JSON.stringify(data)); } catch {}
+    }
+
+    function loadState() {
+      try {
+        let raw = localStorage.getItem(KEY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (data.studyHide) document.body.classList.add('study-hide');
+          Object.entries(data.textareas || {}).forEach(([id, val]) => {
+            const t = document.getElementById(id);
+            if (t) t.value = val;
+          });
+          // Only v2 restores annotated source HTML
+          Object.entries(data.sources || {}).forEach(([sectionId, html]) => {
+            const card = document.getElementById(sectionId);
+            const src = card && $('.source', card);
+            if (src) src.innerHTML = html;
+          });
+          return;
+        }
+        // Try migrating from older keys (textareas only; ignore old sources to prevent truncation)
+        for (const k of OLD_KEYS) {
+          raw = localStorage.getItem(k);
+          if (!raw) continue;
+          const data = JSON.parse(raw);
+          if (data.studyHide) document.body.classList.add('study-hide');
+          Object.entries(data.textareas || {}).forEach(([id, val]) => {
+            const t = document.getElementById(id);
+            if (t) t.value = val;
+          });
+          break;
+        }
+      } catch {}
+    }
+
+    function selectionInside(element) {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+      const range = sel.getRangeAt(0);
+      const startOK = element.contains(range.startContainer);
+      const endOK = element.contains(range.endContainer);
+      if (!startOK || !endOK) return null;
+      return range;
+    }
+
+    function applyMark(sectionId, type) {
+      const card = document.getElementById(sectionId);
+      const src = card && $('.source', card);
+      if (!src) return;
+      const range = selectionInside(src);
+      if (!range) { alert('Select text within this section\'s paragraph first.'); return; }
+      const frag = range.extractContents();
+      const wrapper = document.createElement(type === 'highlight' ? 'mark' : 'span');
+      if (type === 'underline') wrapper.className = 'anno-underline';
+      wrapper.appendChild(frag);
+      range.insertNode(wrapper);
+      // Clean selection
+      const sel = window.getSelection(); sel.removeAllRanges();
+      saveState();
+    }
+
+    function unwrap(el) {
+      const parent = el.parentNode;
+      while (el.firstChild) parent.insertBefore(el.firstChild, el);
+      parent.removeChild(el);
+    }
+
+    function clearAnnotations(sectionId) {
+      const card = document.getElementById(sectionId);
+      const src = card && $('.source', card);
+      if (!src) return;
+      $$("mark, span.anno-underline", src).forEach(n => unwrap(n));
+      saveState();
+    }
+
+    function resetSectionText(sectionId) {
+      const card = document.getElementById(sectionId);
+      const src = card && $('.source', card);
+      if (!src) return;
+      const orig = originalHTML.get(sectionId);
+      if (typeof orig === 'string') src.innerHTML = orig;
+      saveState();
+    }
+
+    function setupVocab() {
+      $$('.vocab-bank').forEach(bank => {
+        const section = bank.dataset.section;
+        const output = $('.vocab-output', bank);
+        $$('.chip', bank).forEach(chip => {
+          chip.addEventListener('click', () => {
+            const term = chip.dataset.term;
+            const def = VOCAB[term] || 'Definition not found.';
+            if (output) output.textContent = term + ': ' + def;
+            // Optionally append term to that section's terms textarea
+            const termsBox = document.getElementById(section + '-terms');
+            if (termsBox) {
+              const sep = termsBox.value.trim() ? ', ' : '';
+              if (!termsBox.value.includes(term)) termsBox.value += sep + term;
+              saveState();
+            }
+          });
+        });
+      });
+    }
+
+    function exportNotes() {
+      const lines = [];
+      lines.push('The Birth of Chinese Civilization — Notes');
+      lines.push(new Date().toLocaleString());
+      lines.push('');
+      $$('.card').forEach(card => {
+        const title = $('h2', card)?.textContent?.trim() || card.id;
+        lines.push('== ' + title + ' ==');
+        $$('.grid textarea', card).forEach(t => {
+          const label = t.getAttribute('placeholder') || t.id;
+          lines.push(label + ':');
+          lines.push(t.value);
+          lines.push('');
+        });
+        $$('.question-box textarea', card).forEach(t => {
+          const prev = t.previousSibling && t.previousSibling.textContent ? t.previousSibling.textContent.trim() : 'Response';
+          lines.push(prev);
+          lines.push(t.value);
+          lines.push('');
+        });
+      });
+      const blob = new Blob([lines.join('\n')], {type:'text/plain'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'china_study_notes.txt';
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    }
+
+    function setupToolbar() {
+      const toggleStudy = document.getElementById('toggleStudy');
+      const exportBtn = document.getElementById('exportNotes');
+      const exportPDF = document.getElementById('exportPDF');
+      const printBtn = document.getElementById('printPage');
+      const clearAll = document.getElementById('clearAll');
+
+      function refreshToggleText() {
+        if (!toggleStudy) return;
+        const hidden = document.body.classList.contains('study-hide');
+        toggleStudy.textContent = hidden ? 'Study Mode (show text)' : 'Study Mode (hide text)';
+      }
+
+      toggleStudy?.addEventListener('click', () => { 
+        document.body.classList.toggle('study-hide');
+        refreshToggleText();
+        saveState();
+      });
+      refreshToggleText();
+
+      exportBtn?.addEventListener('click', exportNotes);
+      exportPDF?.addEventListener('click', () => window.print());
+      printBtn?.addEventListener('click', () => window.print());
+
+      clearAll?.addEventListener('click', () => {
+        if (!confirm('Clear all notes and highlights?')) return;
+        try { 
+          localStorage.removeItem(KEY); 
+          OLD_KEYS.forEach(k => localStorage.removeItem(k));
+        } catch {}
+        // Reset textareas
+        $$('textarea').forEach(t => t.value = '');
+        // Reset sources
+        $$('.card').forEach(card => {
+          const id = card.id;
+          const src = $('.source', card);
+          const orig = originalHTML.get(id);
+          if (src && typeof orig === 'string') src.innerHTML = orig;
+        });
+      });
+    }
+
+    function setupControls() {
+      $$('button[data-action]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const action = btn.dataset.action;
+          const target = btn.dataset.target;
+          if (!action || !target) return;
+          if (action === 'highlight') return applyMark(target, 'highlight');
+          if (action === 'underline') return applyMark(target, 'underline');
+          if (action === 'clear-highlights') return clearAnnotations(target);
+          if (action === 'reset-text') return resetSectionText(target);
+        });
+      });
+    }
+
+    function setupAutosave() {
+      $$('textarea').forEach(t => t.addEventListener('input', saveState));
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      // Record originals
+      $$('.card').forEach(card => {
+        const id = card.id;
+        const src = $('.source', card);
+        if (src) originalHTML.set(id, src.innerHTML);
+      });
+      loadState();
+      setupToolbar();
+      setupControls();
+      setupVocab();
+      setupAutosave();
+    });
+  </script>
+</body>
+</html>
