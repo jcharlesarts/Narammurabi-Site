@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>China Civilization — Riddle Rally</title>
+  <style>
+    :root { --ink:#111; --bg:#fff; --card:#f8fafc; --accent:#2563eb; --muted:#64748b; --win:#16a34a; --loss:#dc2626; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; background:var(--bg); color:var(--ink); }
+    header { background:#334155; color:#fff; padding:1rem; }
+    header h1 { margin:0; font-size:1.25rem; }
+    .howto { margin:.3rem 0 0; opacity:.9; font-size:.95rem; }
+    main { max-width:960px; margin:1rem auto; padding:0 1rem; }
+    .row { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+    .card { background:var(--card); border:1px solid #e2e8f0; border-radius:.75rem; padding:1rem; margin-bottom:1rem; }
+    .toolbar button, .toolbar .seg button { margin-right:.5rem; }
+    button { background:#e2e8f0; border:1px solid #cbd5e1; border-radius:.5rem; padding:.45rem .7rem; cursor:pointer; }
+    button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+    button.ghost { background:transparent; }
+    button.sel { outline:2px solid var(--accent); }
+    .score { font-weight:600; }
+    .badge { display:inline-block; padding:.1rem .5rem; border:1px solid #cbd5e1; border-radius:999px; background:#eef2ff; font-size:.85rem; }
+    .riddle { font-size:1.15rem; line-height:1.5; }
+    .hint { background:#fff; border:1px dashed #cbd5e1; border-radius:.5rem; padding:.5rem; margin:.25rem 0; display:none; }
+    .reveal { display:block; }
+    .guess-row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+    .guess-row input[type=text] { flex:1 1 260px; padding:.5rem .6rem; border:1px solid #cbd5e1; border-radius:.5rem; }
+    .choices { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.4rem; }
+    .chip { padding:.35rem .6rem; border:1px solid #cbd5e1; border-radius:999px; background:#e2e8f0; cursor:pointer; }
+    .chip.correct { background:#dcfce7; border-color:#86efac; }
+    .chip.wrong { background:#fee2e2; border-color:#fecaca; }
+    .feedback { min-height:1.2rem; font-weight:600; }
+    .feedback.win { color:var(--win); }
+    .feedback.lose { color:var(--loss); }
+    .small { color:var(--muted); font-size:.9rem; }
+    .grid { display:grid; grid-template-columns:1fr; gap:.75rem; }
+    @media (min-width: 880px) { .grid { grid-template-columns: 2fr 1fr; } }
+  </style>
+  <meta name="description" content="Riddle-based study game for early Chinese civilization vocabulary and concepts.">
+</head>
+<body>
+  <header>
+    <h1>🧠 China Civilization — Riddle Rally 🧩</h1>
+    <p class="howto">Solve the riddles to guess key terms. 💡 Use hints if stuck. Switch between ⌨️ typing or 🔘 multiple-choice.</p>
+  </header>
+
+  <main>
+    <section class="card toolbar">
+      <div class="row">
+        <button id="start" class="primary">🎮 Start / Restart</button>
+        <div class="seg" role="group" aria-label="Answer mode">
+          <button id="mode-type" class="sel">⌨️ Typing</button>
+          <button id="mode-mc">🔘 Multiple Choice</button>
+        </div>
+        <button id="hint1">💡 Hint 1</button>
+        <button id="hint2">💡 Hint 2</button>
+        <button id="skip" class="ghost">😅 Give Up</button>
+        <button id="theme" class="ghost" title="Cycle theme">🎨 Theme</button>
+        <span class="score">🏆 Score: <span id="score">0</span>/<span id="total">0</span></span>
+        <span class="badge" title="Best score on this device">⭐ Best: <span id="best">0</span>%</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card" aria-live="polite">
+        <div class="small">Riddle <span id="index">0</span> of <span id="count">0</span></div>
+        <div id="progress" class="small"></div>
+        <p id="riddle" class="riddle">Click Start to begin!</p>
+        <div id="h1" class="hint"></div>
+        <div id="h2" class="hint"></div>
+
+        <div id="typeWrap" class="guess-row">
+          <input id="guess" type="text" placeholder="Type your answer (e.g., Mandate of Heaven)" autocomplete="off" inputmode="latin-name" aria-label="Your answer">
+          <button id="submit">Submit</button>
+        </div>
+        <div id="choices" class="choices" hidden></div>
+
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+        <div class="row">
+          <button id="next" disabled>Next</button>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h3>📘 Vocab Quick Lookup</h3>
+        <p class="small">Tap to preview a definition.</p>
+        <div id="bank" class="choices"></div>
+        <p id="defn" class="small"></p>
+        <div class="row">
+          <button id="choose" disabled>⬇️ Choose</button>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card" id="finish" hidden>
+      <h3>🎉 Nice work!</h3>
+      <p>You solved <strong id="finalScore">0</strong> out of <strong id="finalTotal">0</strong>. <span id="finalMsg"></span></p>
+      <button id="playAgain" class="primary">Play Again</button>
+    </section>
+  </main>
+
+  <script>
+    // Persistent keys
+    const SAVE_KEY = 'china-riddle-v1';
+
+    // Vocab and friendly definitions (aligned with your study sheet)
+    const VOCAB = {
+      'Huang He': 'The Yellow River in northern China, cradle of Chinese civilization.',
+      'Yangtze': 'A major river in southern China, important for farming and trade.',
+      'dynasty': 'A series of rulers from the same family.',
+      'aristocracy': 'A class of nobles who owned land and had power.',
+      'oracle bones': 'Animal bones used by Shang rulers to ask ancestors questions.',
+      'ancestor worship': 'Honoring and giving offerings to deceased family members.',
+      'pictograph': 'A simple picture that represents an object.',
+      'ideograph': 'A symbol that represents an idea.',
+      'Mandate of Heaven': 'The belief that a dynasty’s rule was approved by the gods.',
+      'dynasty cycle': 'The rise, decline, and replacement of dynasties.',
+      'bureaucracy': 'A system where officials run different parts of government.',
+      'iron tools': 'Stronger farming and building tools made from iron.',
+      'crossbow': 'A Zhou weapon that made armies more powerful.',
+      'Warring States': 'A time (475–221 BCE) when Chinese states fought for power.',
+      'chaos': 'Disorder and confusion.',
+      'philosophy': 'Ideas about how people should live and be governed.',
+      'bronze': 'A metal alloy used for tools and ritual objects; famous in Shang art.'
+    };
+
+    // Riddle deck
+    const RIDDLES = [
+      { a:'oracle bones', r:'I crack under pressure to answer kings. What am I?', h:['Priests heated me until lines appeared.','I hold some of China’s earliest writing.'] },
+      { a:'Mandate of Heaven', r:'I give rightful power to rulers—until they fail. What am I?', h:['Disasters could mean I am lost.','Used to justify dynastic change.'] },
+      { a:'dynasty', r:'I am a family that keeps the crown for generations. What am I?', h:['Think of the Zhou or Shang.','I can rise and fall in a cycle.'] },
+      { a:'dynasty cycle', r:'Rise, flourish, decline, replace—this loop describes me. What am I?', h:['I explains how dynasties change.','Often tied to losing the mandate.'] },
+      { a:'Huang He', r:'I run yellow, feed fields, and sometimes flood. What am I?', h:['Another name for me is the Yellow River.','Early villages grew along my banks.'] },
+      { a:'Yangtze', r:'I am a great southern river, key to farming and trade. What am I?', h:['I flow through central China.','Also known as the Chang Jiang.'] },
+      { a:'bureaucracy', r:'Many hands do the work of one throne. What am I?', h:['Officials run different parts of government.','The Zhou used me to govern territories.'] },
+      { a:'crossbow', r:'I fire bolts with a trigger, not a bowstring pull. What am I?', h:['I changed ancient warfare.','Paired with saddles and stirrups.'] },
+      { a:'iron tools', r:'I bite the earth and grow the harvest. What am I?', h:['I made farming stronger.','I helped populations grow.'] },
+      { a:'pictograph', r:'I show a thing with a simple drawing. What am I?', h:['Early Chinese writing used me.','I represent an object, not a sound.'] },
+      { a:'ideograph', r:'Two or more symbols combine in me to show an idea. What am I?', h:['I do not show sounds.','I represent a concept like “east” or “rest.”'] },
+      { a:'ancestor worship', r:'Feed me with honor and offerings, and I grant favor. What am I?', h:['A key custom in Shang society.','Focuses on family members who died.'] },
+      { a:'aristocracy', r:'I own the land and command the farmers. What am I?', h:['I’m the noble class.','Powerful in the Shang and Zhou.'] },
+      { a:'Warring States', r:'I am centuries of battles among rival states. What am I?', h:['Confucianism, Daoism, and Legalism rose during me.','Ended when the Qin unified China.'] },
+      { a:'bronze', r:'I glow in ritual cups and sturdy blades. What am I?', h:['Artisans cast me in clay molds.','Famous in Shang art and weapons.'] },
+      { a:'philosophy', r:'I teach how to live and rule well. What am I?', h:['Includes ideas like duty, nature, and law.','Think Confucianism, Daoism, Legalism.'] },
+      { a:'chaos', r:'Disorder breaks out when rules fail—what am I?', h:['Opposite of order.','Common during constant warfare.'] },
+    ];
+
+    // Acceptable variants for matching (case/punctuation-insensitive)
+    const ACCEPT = {
+      'huang he': ['huang he','yellow river','the yellow river'],
+      'yangtze': ['yangtze','yangzi','chang jiang','yangtze river','yangzi river'],
+      'oracle bones': ['oracle bone','oracle bones'],
+      'ancestor worship': ['ancestor worship','ancestral worship','ancestor veneration'],
+      'mandate of heaven': ['mandate of heaven','heavens mandate','the mandate of heaven','mandate'],
+      'dynasty': ['dynasty','royal family'],
+      'dynasty cycle': ['dynasty cycle','dynastic cycle','cycle of dynasties'],
+      'bureaucracy': ['bureaucracy','bureaucrats','officials'],
+      'iron tools': ['iron tools','iron plow','iron plows','iron implements'],
+      'crossbow': ['crossbow','cross bow'],
+      'pictograph': ['pictograph','pictographs','picture writing','picture symbol'],
+      'ideograph': ['ideograph','ideographs','idea symbol','idea symbols'],
+      'warring states': ['warring states','warring states period'],
+      'bronze': ['bronze','bronze casting'],
+      'philosophy': ['philosophy','philosophies'],
+      'chaos': ['chaos','disorder'],
+      'aristocracy': ['aristocracy','nobles','nobility']
+    };
+
+    // Elements
+    const els = {
+      start: document.getElementById('start'),
+      modeType: document.getElementById('mode-type'),
+      modeMC: document.getElementById('mode-mc'),
+      hint1: document.getElementById('hint1'),
+      hint2: document.getElementById('hint2'),
+      skip: document.getElementById('skip'),
+      score: document.getElementById('score'),
+      total: document.getElementById('total'),
+      best: document.getElementById('best'),
+      theme: document.getElementById('theme'),
+      index: document.getElementById('index'),
+      count: document.getElementById('count'),
+      progress: document.getElementById('progress'),
+      riddle: document.getElementById('riddle'),
+      h1: document.getElementById('h1'),
+      h2: document.getElementById('h2'),
+      typeWrap: document.getElementById('typeWrap'),
+      guess: document.getElementById('guess'),
+      submit: document.getElementById('submit'),
+      choices: document.getElementById('choices'),
+      feedback: document.getElementById('feedback'),
+      next: document.getElementById('next'),
+      bank: document.getElementById('bank'),
+      defn: document.getElementById('defn'),
+      choose: document.getElementById('choose'),
+      finish: document.getElementById('finish'),
+      finalScore: document.getElementById('finalScore'),
+      finalTotal: document.getElementById('finalTotal'),
+      finalMsg: document.getElementById('finalMsg'),
+      playAgain: document.getElementById('playAgain')
+    };
+
+    // State
+    let deck = [];
+    let pos = 0;
+    let solved = 0;
+    let mode = 'type'; // 'type' | 'mc'
+    let revealedHints = 0;
+    let locked = false;
+    let selectedTerm = null;
+    let selectedBankBtn = null;
+    let themeIdx = 0;
+
+    // Utils
+    const saveBest = (n) => {
+      try {
+        const cur = Number(localStorage.getItem(SAVE_KEY) || '0');
+        if (n > cur) localStorage.setItem(SAVE_KEY, String(n));
+        els.best.textContent = String(Math.max(n, cur));
+      } catch {}
+    };
+    const loadBest = () => {
+      try { els.best.textContent = localStorage.getItem(SAVE_KEY) || '0'; } catch {}
+    };
+    const norm = s => (s||'').toLowerCase().replace(/[^a-z0-9 ]+/g,'').replace(/\s+/g,' ').trim();
+    const shuffle = arr => arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(p=>p[1]);
+    const pickWrong = (correct, k=3) => {
+      const pool = Object.keys(VOCAB).filter(t => norm(t) !== norm(correct));
+      return shuffle(pool).slice(0,k);
+    };
+
+    function setMode(newMode) {
+      mode = newMode;
+      els.modeType.classList.toggle('sel', mode==='type');
+      els.modeMC.classList.toggle('sel', mode==='mc');
+      els.typeWrap.style.display = mode==='type' ? '' : 'none';
+      els.choices.hidden = mode!=='mc';
+    }
+
+    // Themes: cycle colors by setting CSS variables (no extra CSS added)
+    const THEME_KEY = 'china-riddle-theme';
+    const THEMES = [
+      { bg:'#fffdf7', card:'#ffffff', ink:'#111827', accent:'#2563eb', win:'#16a34a', loss:'#dc2626', muted:'#64748b' },
+      { bg:'#0f172a', card:'#111827', ink:'#f8fafc', accent:'#22d3ee', win:'#4ade80', loss:'#f87171', muted:'#94a3b8' },
+      { bg:'#f0f9ff', card:'#ecfeff', ink:'#0f172a', accent:'#0ea5e9', win:'#16a34a', loss:'#dc2626', muted:'#475569' }
+    ];
+    function applyTheme(i) {
+      themeIdx = i % THEMES.length;
+      const t = THEMES[themeIdx];
+      const r = document.documentElement;
+      r.style.setProperty('--bg', t.bg);
+      r.style.setProperty('--card', t.card);
+      r.style.setProperty('--ink', t.ink);
+      r.style.setProperty('--accent', t.accent);
+      r.style.setProperty('--win', t.win);
+      r.style.setProperty('--loss', t.loss);
+      r.style.setProperty('--muted', t.muted);
+      try { localStorage.setItem(THEME_KEY, String(themeIdx)); } catch {}
+    }
+    function initTheme() {
+      try { themeIdx = Number(localStorage.getItem(THEME_KEY) || '0') % THEMES.length; } catch { themeIdx = 0; }
+      applyTheme(themeIdx);
+    }
+
+    function buildBank() {
+      els.bank.innerHTML = '';
+      Object.keys(VOCAB).forEach(term => {
+        const b = document.createElement('button');
+        b.className = 'chip';
+        b.textContent = term;
+        b.title = 'Show definition';
+        b.addEventListener('click', () => { 
+          els.defn.textContent = term+': '+VOCAB[term]; 
+          selectedTerm = term;
+          els.choose.disabled = false;
+          if (selectedBankBtn) selectedBankBtn.classList.remove('sel');
+          selectedBankBtn = b;
+          b.classList.add('sel');
+        });
+        els.bank.appendChild(b);
+      });
+    }
+
+    function startGame() {
+      deck = shuffle(RIDDLES.slice());
+      pos = 0; solved = 0; revealedHints = 0; locked = false;
+      els.score.textContent = '0';
+      els.total.textContent = String(deck.length);
+      els.index.textContent = '1';
+      els.count.textContent = String(deck.length);
+      els.finish.hidden = true;
+      els.next.disabled = true;
+      els.feedback.textContent = '';
+      els.h1.classList.remove('reveal');
+      els.h2.classList.remove('reveal');
+      renderCurrent();
+      els.guess.focus();
+    }
+
+    function renderCurrent() {
+      if (pos >= deck.length) return finish();
+      const card = deck[pos];
+      els.riddle.textContent = '🧩 ' + card.r;
+      els.h1.textContent = 'Hint: '+card.h[0];
+      els.h2.textContent = 'Hint: '+card.h[1];
+      els.h1.classList.remove('reveal');
+      els.h2.classList.remove('reveal');
+      revealedHints = 0; locked = false;
+      els.feedback.textContent = '';
+      els.feedback.className = 'feedback';
+      els.guess.value = '';
+      els.next.disabled = true;
+      els.index.textContent = String(pos+1);
+      updateProgress();
+      // Build MC choices
+      if (mode==='mc') {
+        const correct = card.a;
+        const wrongs = pickWrong(correct, 3);
+        const opts = shuffle([correct, ...wrongs]);
+        els.choices.innerHTML = '';
+        opts.forEach(opt => {
+          const c = document.createElement('button');
+          c.className = 'chip';
+          c.textContent = opt;
+          c.addEventListener('click', () => checkAnswer(opt, c));
+          els.choices.appendChild(c);
+        });
+      }
+    }
+
+    function acceptable(answer, guess) {
+      const a = norm(answer);
+      const g = norm(guess);
+      if (!g) return false;
+      if (g === a) return true;
+      const variants = ACCEPT[a] || [answer];
+      return variants.some(v => norm(v) === g);
+    }
+
+    function announceCorrect() {
+      els.feedback.textContent = '✅ Correct!';
+      els.feedback.classList.add('win');
+      els.next.disabled = false;
+    }
+
+    function announceWrong(correct) {
+      els.feedback.innerHTML = `❌ Not quite. Answer: <strong>${correct}</strong>`;
+      els.feedback.classList.add('lose');
+      els.next.disabled = false;
+    }
+
+    function checkAnswer(input, sourceBtn=null) {
+      if (locked) return;
+      const card = deck[pos];
+      const ok = acceptable(card.a, input);
+      locked = true;
+      if (ok) {
+        solved += 1;
+        els.score.textContent = String(solved);
+        if (sourceBtn) sourceBtn.classList.add('correct');
+        announceCorrect();
+      } else {
+        if (sourceBtn) sourceBtn.classList.add('wrong');
+        announceWrong(card.a);
+      }
+      updateProgress();
+    }
+
+    function nextCard() {
+      pos += 1;
+      if (pos >= deck.length) return finish();
+      renderCurrent();
+    }
+
+    function finish() {
+      els.finalScore.textContent = String(solved);
+      els.finalTotal.textContent = String(deck.length);
+      const pct = Math.round((solved / deck.length) * 100);
+      els.finalMsg.textContent = pct >= 90 ? '🏅 Excellent recall!' : pct >= 70 ? '👍 Nice job—review a few terms and try again.' : '💪 Keep practicing—you’ll nail it!';
+      saveBest(pct);
+      els.finish.hidden = false;
+      els.next.disabled = true;
+      els.feedback.textContent = '';
+    }
+
+    // Progress bar (text-only)
+    function bar(fraction, segments=10) {
+      const filled = Math.round(fraction * segments);
+      return '▮'.repeat(filled) + '▯'.repeat(Math.max(0, segments - filled));
+    }
+    function updateProgress() {
+      if (!deck.length) { els.progress.textContent = ''; return; }
+      const pct = Math.round((pos / deck.length) * 100);
+      els.progress.textContent = `Progress: [${bar(pos/deck.length)}] ${pos}/${deck.length} • Solved ⭐ ${solved}`;
+    }
+
+    // Hook up events
+    els.start.addEventListener('click', startGame);
+    els.playAgain.addEventListener('click', startGame);
+    els.modeType.addEventListener('click', () => { setMode('type'); renderCurrent(); });
+    els.modeMC.addEventListener('click', () => { setMode('mc'); renderCurrent(); });
+    els.submit.addEventListener('click', () => checkAnswer(els.guess.value));
+    els.guess.addEventListener('keydown', (e) => { if (e.key==='Enter') checkAnswer(els.guess.value); });
+    els.next.addEventListener('click', nextCard);
+    els.hint1.addEventListener('click', () => { els.h1.classList.add('reveal'); revealedHints = Math.max(revealedHints,1); });
+    els.hint2.addEventListener('click', () => { els.h2.classList.add('reveal'); revealedHints = Math.max(revealedHints,2); });
+    els.skip.addEventListener('click', () => { if (!locked) announceWrong(deck[pos].a); locked = true; });
+    els.choose.addEventListener('click', () => {
+      if (!selectedTerm) return;
+      // Ensure typing mode is visible
+      if (mode !== 'type') setMode('type');
+      els.guess.value = selectedTerm;
+      els.guess.focus();
+    });
+    els.theme.addEventListener('click', () => applyTheme(themeIdx + 1));
+
+    // Init
+    setMode('type');
+    buildBank();
+    loadBest();
+    initTheme();
+    // Seed counts
+    els.total.textContent = String(RIDDLES.length);
+    els.count.textContent = String(RIDDLES.length);
+    updateProgress();
+  </script>
+</body>
+</html>
