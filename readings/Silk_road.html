@@ -1,4 +1,4 @@
-a<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -628,6 +628,9 @@ let roundRuns = 0; // completed east→west runs
 let deliveryTarget = 6; // total deliveries
 let timeLimitMs = 10*60*1000; let endDeadlineAt = null;
 let turnCount = 0; let deliveryCount = 0;
+// Objective tracking: deliver all east goods west and all west goods east
+let deliveredEastTypes = new Set();
+let deliveredWestTypes = new Set();
 // Card-style hazards (per-player effects drawn on certain tiles)
 const HAZARD_CARDS = [
   {t:'Blocked Pass', d:'Detour planning delays you. Lose your next turn.', f:(p)=>{ p.skip = true; p.skipReason='Blocked Pass: you will miss your next turn.'; }},
@@ -1239,6 +1242,11 @@ function openGoodsModal(p, type, onDone){
   let source, remaining, opts;
   if(type==='west'){
     const pool = (nodeMarket[nodeName]||{}).westGoods || [];
+    // Ensure there is always enough supply to continue
+    while(pool.length < limit){
+      const g = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)];
+      pool.push({...g});
+    }
     source = pool; // actual supply at this hub
     remaining = null;
     opts = pool.map((g,i)=> ({...g, _poolIdx:i}));
@@ -1250,15 +1258,17 @@ function openGoodsModal(p, type, onDone){
   b.innerHTML = `<div class="tiny">Pick up to <b>${limit} goods</b> for your next delivery${(p.extraPick? ' <span class="badge">+1 slot</span>':'')}.</div><div class="sep"></div><div id="modalGoods" class="goods"></div>`;
   const list = document.getElementById('modalGoods');
   if(opts.length===0){
-    // Show out-of-supply warning and exit
-    const where = (type==='west') ? 'west' : 'east';
-    const inlineEl = document.getElementById(`p${p.id}goodsInline`);
-    const statEl = document.getElementById(`p${p.id}goodsStat`);
-    if(statEl){ statEl.classList.add('out-of-goods'); }
-    if(inlineEl){ inlineEl.textContent = `Out of goods resupply in the ${where}`; }
-    showOverlay('Out of Goods', {type:'event', player:p.id, desc:`Out of goods resupply in the ${where}.`});
-    modal.style.display='none';
-    return;
+    // Fallback: auto-fill at least 2 goods to avoid deadlock
+    if(type==='west'){
+      const pool = (nodeMarket[nodeName]||{}).westGoods || [];
+      while(pool.length < Math.max(2, limit)){
+        const g = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)];
+        pool.push({...g});
+      }
+      opts = pool.map((g,i)=> ({...g, _poolIdx:i}));
+    } else {
+      opts = GOODS.slice();
+    }
   }
   opts.forEach(g=>{
     const wrap = document.createElement('label');
@@ -1280,7 +1290,7 @@ function openGoodsModal(p, type, onDone){
     } else {
       const ids = picks.map(el=> el.dataset.id);
       p.carrying = ids.map(id=> ({...source.find(g=>g.id===id), origin: 'east'}));
-      p.remainingEast = (p.remainingEast||[]).filter(id=> !ids.includes(id));
+      // Do not remove from remainingEast here; we remove upon successful delivery
     }
     updatePanels();
     showOverlay(`Loaded ${type==='west'?'western':'eastern'} goods`, {type:'event', player:p.id, desc: p.carrying.map(g=>g.name).join(', ')});
@@ -1636,8 +1646,8 @@ function sellIfDestination(p){
         earned += val; details.push(`${g.name} × ${val}`);
         if(g.origin!=='west') eastSoldCount++;
         // Remove from remaining lists
-        if(g.origin==='west'){ p.remainingWest = (p.remainingWest||[]).filter(id=>id!==g.id); }
-        else { p.remainingEast = (p.remainingEast||[]).filter(id=>id!==g.id); }
+        if(g.origin==='west'){ deliveredWestTypes.add(g.id); }
+        else { deliveredEastTypes.add(g.id); p.remainingEast = (p.remainingEast||[]).filter(id=>id!==g.id); }
       }
     } else {
       for(const g of p.carrying){
@@ -1646,8 +1656,8 @@ function sellIfDestination(p){
         const val = Math.round((g.base||6)*mult);
         earned += val; details.push(`${g.name} × ${val}`);
         if(g.origin!=='west') eastSoldCount++;
-        if(g.origin==='west'){ p.remainingWest = (p.remainingWest||[]).filter(id=>id!==g.id); }
-        else { p.remainingEast = (p.remainingEast||[]).filter(id=>id!==g.id); }
+        if(g.origin==='west'){ deliveredWestTypes.add(g.id); }
+        else { deliveredEastTypes.add(g.id); p.remainingEast = (p.remainingEast||[]).filter(id=>id!==g.id); }
       }
     }
     earned += (p.deliverBonus||0); p.deliverBonus=0;
@@ -1699,6 +1709,11 @@ function sellIfDestination(p){
     }
     // record sale location
     p.soldAt = Array.from(new Set([...(p.soldAt||[]), nodeName]));
+    // Check delivery objective completion
+    if(deliveredEastTypes.size>=GOODS.length && deliveredWestTypes.size>=WEST_GOODS.length){
+      showOverlay('All goods delivered!', {type:'event', player:p.id, desc:'Objective complete: East→West and West→East.'});
+      declareWinner();
+    }
     return;
   }
   let earned=0; let details=[]; let eastSoldCount=0;
@@ -1779,6 +1794,14 @@ function sellIfDestination(p){
   p.goods = []; // emptied after selling
   // record sale location
   p.soldAt = Array.from(new Set([...(p.soldAt||[]), nodeName]));
+  // Track delivery objective
+  details.forEach(txt=>{
+    const name = txt.split(' × ')[0];
+    const g = GOODS.find(x=>x.name===name) || WEST_GOODS.find(x=>x.name===name);
+    if(!g) return;
+    if(nodeName==="Chang'an" && WEST_GOODS.find(x=>x.id===g.id)){ deliveredWestTypes.add(g.id); }
+    if(nodeName!=="Chang'an" && GOODS.find(x=>x.id===g.id)){ deliveredEastTypes.add(g.id); }
+  });
   // Selling east goods in western markets seeds local west goods
   const westernHubs = new Set(['Antioch','Rome','Alexandria','Ctesiphon']);
   if(westernHubs.has(nodeName) && eastSoldCount>0){
@@ -2142,6 +2165,11 @@ function declareWinner(){
 }
 
 function checkEndCondition(){
+  // Delivery objective takes precedence if completed
+  if(deliveredEastTypes.size>=GOODS.length && deliveredWestTypes.size>=WEST_GOODS.length){
+    declareWinner();
+    return;
+  }
   if(endMode==='coins'){
     for(const p of players){ if(p.coins>=coinTarget){ alert(`${p.name||('Player '+p.id)} wins with ${p.coins} coins!`); } }
   } else if(endMode==='rounds'){
