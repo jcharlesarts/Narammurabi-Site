@@ -1,0 +1,2233 @@
+a<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Silk Road Dice Game — Two Player</title>
+<style>
+  :root{
+    --bg:#0c1533;/* brighter deep blue */
+    --panel:#14254d;/* friendlier indigo */
+    --muted:#1a2f63;/* interactive surfaces */
+    --acc:#ffd166;/* warm amber */
+    --acc2:#7cc0ff;/* lighter blue */
+    --text:#f3f4f6;/* near-white */
+    --sub:#d1d5db;/* slate-200 */
+    --good1:#2fe2ff;/* cyan */
+    --good2:#ff8a3d;/* orange */
+    --sand1:#f7e6b5;/* wheat */
+    --sand2:#eccc88;/* desert */
+    --mount:#90a0bd;/* mountains */
+    --oasis:#4ade80;/* emerald */
+    --sea1:#06345a;/* deep sea */
+    --sea2:#0a6aa0;/* sea */
+    --route:#ffd166;/* route glow */
+  }
+  *{box-sizing:border-box}
+  @font-face{font-family:'Herculanum Local'; src: local('Herculanum'); font-display:swap}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#0e1b3d, var(--bg));color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;font-size:17px}
+  /* Game font */
+  :root{ --game-font: 'Herculanum Local','Herculanum','Papyrus','Copperplate',serif }
+  .app{display:grid;grid-template-columns: 260px 1fr 260px; grid-auto-rows:auto; gap:16px; padding:16px; max-width:1400px;margin:0 auto}
+  /* Top overlay for live updates */
+  .overlay{position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:1000; display:none; pointer-events:none;}
+  .overlay .card{
+    display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:12px;
+    /* Parchment-style scroll */
+    background:
+      radial-gradient(120% 140% at 10% 10%, rgba(255,255,255,.25), rgba(0,0,0,0) 60%),
+      linear-gradient(180deg,#f6e9c6,#eadbb5);
+    color:#2b1b0f;
+    box-shadow:0 12px 28px rgba(0,0,0,.28), inset 0 0 0 2px rgba(89,67,39,.08);
+    border:2px solid #d1b891;
+  }
+  .overlay .ov-icon{font-size:20px}
+  .overlay .ov-body{display:flex; flex-direction:column; gap:4px; max-width:70vw}
+  .overlay .ov-title{font-weight:800; font-family:var(--game-font); letter-spacing:.02em}
+  .overlay .ov-desc{font-size:14px; opacity:.95; color:#3a2a16; font-family:var(--game-font)}
+  .overlay.show{display:block; animation:fadeSlide .25s ease-out}
+  .overlay.p1 .card{border-color:rgba(47,226,255,.6)}
+  .overlay.p2 .card{border-color:rgba(255,138,61,.6)}
+  @keyframes fadeSlide{from{opacity:0; transform:translate(-50%,-8px)} to{opacity:1; transform:translate(-50%,0)}}
+  .board{background:radial-gradient(120% 80% at 50% 20%,#0f2150,#0c183a 60%, #0a122a);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);position:relative;overflow:hidden}
+  .sidebar{background:var(--panel);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px;display:flex;flex-direction:column;gap:12px}
+  h1{font-size:26px;margin:0 0 8px;font-family:var(--game-font);letter-spacing:.02em}
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  button{appearance:none;border:none;border-radius:12px;padding:10px 12px;background:var(--muted);color:#f9fafb;font-weight:700;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.2);font-family:var(--game-font);letter-spacing:.02em}
+  button.primary{background:var(--acc);color:#1f2937}
+  button.secondary{background:var(--acc2);color:#0b1020}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .pill{display:inline-block;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.08);font-size:13px;font-family:var(--game-font);letter-spacing:.02em}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .stat{background:rgba(255,255,255,.05);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;gap:8px;font-size:16px}
+  .stat b{color:#fff}
+  /* Panel accents by player */
+  #p1panel{border:2px solid rgba(47,226,255,.35)}
+  #p2panel{border:2px solid rgba(255,138,61,.35)}
+  #turnPill1{background:rgba(47,226,255,.18)}
+  #turnPill2{background:rgba(255,138,61,.18)}
+  #rollOut1{color:var(--good1)}
+  #rollOut{color:var(--good2)}
+  /* namebar removed; names set via modal */
+  .spinner{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;animation:spin 0.9s linear infinite}
+  .spinner::before{content:'🎲'; font-size:18px; line-height:1}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .roll-value.rolling{animation:roll-pulse .7s ease-in-out infinite}
+  @keyframes roll-pulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+  /* Game-piece styling for nodes */
+  .node{filter:drop-shadow(0 2px 0 rgba(0,0,0,.25)); transition:transform .15s ease}
+  .node.small{stroke-width:3}
+  .node:hover{transform:translateY(-1px)}
+  .log{background:#0d1a39;border-radius:12px;padding:12px;height:200px;overflow:auto;font-size:14px;border:1px solid #1f2b55}
+  .log p{margin:6px 0}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--game-font);letter-spacing:.02em}
+  .legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px}
+  .dot{width:10px;height:10px;border-radius:50%}
+  .p1{background:var(--good1)}
+  .p2{background:var(--good2)}
+  /* SVG map styling */
+  svg{width:100%;height:100%;display:block}
+  .city{fill:#f1f5f9}
+  .city-label{font-size:13px;fill:#e2e8f0;font-family:var(--game-font);letter-spacing:.01em}
+  .edge{stroke:var(--route);stroke-width:3;stroke-linecap:round;stroke-dasharray:10 6;opacity:.95;filter:drop-shadow(0 0 6px rgba(255,209,102,.6))}
+  .node{fill:#1a2a55;stroke:#a8c7ff;stroke-width:2.5;cursor:pointer}
+  .node.hub{fill:#1f3366;stroke:#93e0ff}
+  .node.small{fill:#142752;stroke:#bcd3ff}
+  .node.reachable{stroke:#fbbf24;stroke-width:3.5;filter:drop-shadow(0 0 8px rgba(251,191,36,.7))}
+  .node.blocked{stroke:#ef4444; fill:#3b0f0f}
+  .node.hazard{stroke:#f59e0b}
+  .token{stroke:#000;stroke-width:1}
+  .token.p1{fill:var(--good1)}
+  .token.p2{fill:var(--good2)}
+  /* Ensure tokens and labels never block node clicks */
+  #tokens{ pointer-events:none }
+  #nodes text{ pointer-events:none }
+  /* Turn emphasis and movement feel for tokens */
+  #tokens .token, #tokens .city-icon{ transition: transform .2s ease; transform-box: fill-box; transform-origin: center }
+  #tokens .active{ transform: scale(2) }
+  @keyframes hop-scale{ 0%{transform:scale(1)} 50%{transform:scale(1.18)} 100%{transform:scale(1)} }
+  #tokens .hopping{ animation: hop-scale .5s ease-in-out }
+  /* Avatar picker */
+  .avatars{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .avatar{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#111a2d;border:1px solid #24324d;cursor:pointer;font-size:22px}
+  .avatar.selected{outline:2px solid var(--acc); background:#1a2a4d}
+  .city-icon{font-size:14px}
+  .terrain{opacity:.9}
+  .desert{fill:url(#desertGrad)}
+  .sea{fill:url(#seaGrad)}
+  .mountains{fill:var(--mount);opacity:.35}
+  .market, .facts{background:#0d1a39;border-radius:12px;padding:10px;border:1px solid #1f2b55}
+  .market b{font-family:var(--game-font);letter-spacing:.02em}
+  .bottom{grid-column:1 / -1; display:grid; grid-template-columns: 1fr 260px; gap:16px}
+  .legend{background:#0d1a39;border-radius:12px;padding:10px;border:1px solid #1f2b55}
+  .toolbar{display:flex;gap:8px;align-items:center;background:#0d1a39;border-radius:12px;padding:8px;border:1px solid #1f2b55;margin-top:8px;font-family:var(--game-font);letter-spacing:.02em}
+  .goods{display:flex;flex-wrap:wrap;gap:6px}
+  .goods label{background:#111a2d;border:1px solid #24324d;border-radius:10px;padding:7px 10px;display:flex;gap:8px;align-items:center;font-size:15px}
+  .goods input{accent-color:var(--acc)}
+  .cap{font-size:13px;color:var(--sub)}
+  .cards{display:flex;flex-wrap:wrap;gap:8px}
+  .card{background:#0f1f44;border:1px solid #223055;border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:120px}
+  .card b{font-size:14px}
+  .badge{display:inline-block;font-size:11px;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.1)}
+  .flex{display:flex;gap:8px}
+  .tiny{font-size:13px;color:var(--sub)}
+  .sep{height:1px;background:#1f2a45;margin:6px 0}
+  /* Goods bar warning */
+  .stat.out-of-goods{background:#3b0f0f;border-color:#7f1d1d;color:#fecaca}
+  .stat.out-of-goods b{color:#fecaca}
+  .maplog{grid-column:2; grid-row:2}
+  /* Coin float animation */
+  .coin-float{position:absolute; z-index:2000; color:#ffd166; font-weight:800; text-shadow:0 1px 0 #000, 0 0 8px rgba(255,209,102,.6); pointer-events:none; animation:coin-burst 1s ease-out forwards}
+  @keyframes coin-burst{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-24px);opacity:0}}
+  /* Explicit grid placement to keep panels aligned */
+  #p1panel{grid-column:1; grid-row:1}
+  .board{grid-column:2; grid-row:1}
+  #p2panel{grid-column:3; grid-row:1}
+  .maplog{grid-column:2; grid-row:2}
+  @media (max-width: 900px){
+    #p1panel, #p2panel, .board, .maplog{grid-column:auto; grid-row:auto}
+  }
+  /* Pick-a-card modal styles */
+  .pick-cards{display:flex;gap:14px;justify-content:center;align-items:stretch;margin:6px 0 2px 0;width:100%}
+  .pick-card{flex:1 1 30%;max-width:170px;min-width:96px;aspect-ratio:2.25/3.5;height:auto;border-radius:12px;perspective:800px;cursor:pointer;user-select:none}
+  .pick-card .card-inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+  .pick-card .card-front,.pick-card .card-back{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden}
+  .pick-card .card-front{background:linear-gradient(160deg,#182a52,#0e1c3f);box-shadow:0 8px 20px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.08);color:#e5e7eb;font-size:28px;font-family:var(--game-font)}
+  .pick-card .card-back{transform:rotateY(180deg);background:linear-gradient(160deg,#ffe7a3,#ffd166);color:#1f2937;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+  .pick-card .card-back .body{display:flex;flex-direction:column;gap:8px;padding:12px;text-align:center}
+  .pick-card .card-back .title{font-weight:800;font-size:18px;font-family:var(--game-font)}
+  /* Ensure readable contrast on light card backs */
+  .pick-card .card-back .desc{color:#111827}
+  .pick-card.flipped .card-inner{transform:rotateY(180deg)}
+  /* Full-width revealed card fills modal container */
+  .pick-card.full{flex:1 1 100%;max-width:none;width:100%;aspect-ratio:auto;height:clamp(240px, 52vh, 460px)}
+  .pick-card.full .card-back .body{gap:10px;padding:16px}
+  .pick-card.full .card-back .title{font-size:22px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar" id="p1panel">
+    <h1><span id="p1Title">Player 1</span></h1>
+    <div class="row"><span class="pill" id="turnPill1">Your Turn</span><span class="pill tiny">pass‑and‑play</span></div>
+    <!-- Name handled via modal; sidebar input removed -->
+    <div class="stat"><span>Coins:</span><b id="p1coins">0</b></div>
+    <div class="stat" id="p1goodsStat">
+      <span>Goods:</span><b id="p1goodsInline">–</b>
+    </div>
+    <div id="p1lastSale" class="tiny" style="margin-top:-8px;margin-bottom:8px;">–</div>
+    <div class="market" id="p1contract"><b>Contract:</b> <span id="p1contractText">None</span></div>
+    <div class="tiny" id="p1remaining">Remaining: East 0 | West 0</div>
+    <div class="market" id="marketP1" style="display:none">
+      <b>Market at Chang'an</b>
+      <div class="tiny">Pick up to <b>2 goods</b> for Player 1.</div>
+      <div class="sep"></div>
+      <div class="goods" id="goodsListP1"></div>
+      <div class="controls" style="margin-top:8px">
+        <button class="secondary" id="p1done">P1: Done</button>
+      </div>
+    </div>
+    <div class="row"><div>Roll:</div><div id="rollOut1" class="roll-value">–</div><span id="spinner1" class="spinner" aria-hidden="true" style="display:none"></span></div>
+    <div class="controls">
+      <button id="p1resBtn" class="simple-hide">Hire Guide (‑1 coin)</button>
+      <button id="p1loadBtn" class="simple-hide" disabled>Load Western Goods</button>
+    </div>
+    <div class="controls">
+      <button id="p1rollBtn" class="primary" disabled>🎲 Roll</button>
+      <button id="p1endBtn" disabled>End Turn</button>
+    </div>
+    <div class="controls">
+      <label class="row" style="gap:6px; align-items:center; justify-content:flex-start">
+        <input type="checkbox" id="alignModeToggle" /> <span class="tiny">Align Mode</span>
+      </label>
+      <label class="row" style="gap:6px; align-items:center; justify-content:flex-start">
+        <input type="checkbox" id="dynEdgesToggle" checked /> <span class="tiny">Dynamic Edges</span>
+      </label>
+      <div class="tiny">Arc Curvature</div>
+      <input type="range" id="arcFactor" min="0" max="0.6" step="0.02" value="0.32" />
+      <button id="spaceNodesBtn" class="secondary">Space Nodes</button>
+      <div class="tiny">Tile Spacing (px)</div>
+      <input type="number" id="tileSpacing" min="80" max="240" step="10" value="120" />
+      <button id="boardLayoutBtn" class="secondary">Apply Board Layout</button>
+      <label class="row" style="gap:6px; align-items:center; justify-content:flex-start">
+        <input type="checkbox" id="simpleModeToggle" /> <span class="tiny">Simple Mode</span>
+      </label>
+      <label class="row" style="gap:6px; align-items:center; justify-content:flex-start">
+        <input type="checkbox" id="coopModeToggle" /> <span class="tiny">Co‑op Mode</span>
+      </label>
+    </div>
+  </div>
+  <!-- Fullscreen Modal for setup and selections -->
+  <div id="fullModal" style="position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:1500;align-items:center;justify-content:center">
+    <div style="background:#0d1a39;border:1px solid #1f2b55;border-radius:14px;min-width:320px;max-width:560px;padding:16px">
+      <div style="font-weight:800;margin-bottom:6px" id="modalTitle">Setup</div>
+      <div id="modalBody" class="tiny" style="margin-bottom:10px"></div>
+      <div class="controls" style="margin-top:8px">
+        <button class="secondary" id="modalPrimary">Continue</button>
+        <button id="modalCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Settings panel -->
+  <div class="market" id="settingsPanel" style="display:none; grid-column:2;">
+    <b>Game Settings</b>
+    <div class="tiny">End Condition</div>
+    <div class="goods" style="gap:10px; margin:6px 0 2px 0">
+      <label><input type="radio" name="endMode" id="endModeCoins"> Coins</label>
+      <label><input type="radio" name="endMode" id="endModeRounds" checked> Rounds</label>
+      <label><input type="radio" name="endMode" id="endModeTime"> Time</label>
+      <label><input type="radio" name="endMode" id="endModeDeliveries"> Deliveries</label>
+    </div>
+    <div class="tiny">Targets</div>
+    <div class="goods" style="gap:10px">
+      <label>Coins: <input type="number" id="coinTargetInput" value="50" min="10" max="200" style="width:80px"></label>
+      <label>Rounds: <input type="number" id="roundLimitInput" value="20" min="2" max="100" style="width:80px"></label>
+      <label>Time (min): <input type="number" id="timeMinutesInput" value="10" min="1" max="60" style="width:80px"></label>
+      <label>Deliveries: <input type="number" id="deliveryTargetInput" value="6" min="1" max="40" style="width:80px"></label>
+    </div>
+    <div class="controls" style="margin-top:8px">
+      <button class="secondary" id="settingsSave">Save</button>
+      <button id="settingsClose">Close</button>
+    </div>
+  </div>
+  <!-- Live top overlay for rolls, cards, and results -->
+  <div id="topOverlay" class="overlay" aria-live="polite" role="status">
+    <div class="card">
+      <span class="ov-icon">ℹ️</span>
+      <div class="ov-body">
+        <div id="topOverlayTitle" class="ov-title">Update</div>
+        <div id="topOverlayDesc" class="ov-desc"></div>
+      </div>
+    </div>
+  </div>
+  <div class="board">
+    <!-- Inline SVG Map (stylized Eurasia & Silk Road) -->
+    <svg id="mapSVG" viewBox="0 0 1600 700" aria-label="Silk Road Map">
+      <!-- Geographic layers: water, land, relief -->
+      <defs>
+        <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e9d9a6" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#d9c593" stop-opacity="0.9"/>
+        </linearGradient>
+        <radialGradient id="waterGrad" cx="35%" cy="65%" r="90%">
+          <stop offset="0%" stop-color="var(--sea2)" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="var(--sea1)" stop-opacity="0.9"/>
+        </radialGradient>
+      </defs>
+      <g id="geo" vector-effect="non-scaling-stroke">
+        <!-- Water background -->
+        <rect x="0" y="0" width="1600" height="700" fill="url(#waterGrad)" opacity="0.85"/>
+        <!-- Stylized Eurasia landmass silhouette -->
+        <path id="eurasia" fill="url(#landGrad)" stroke="#b89e66" stroke-opacity="0.45" stroke-width="2" opacity="0.9"
+          d="M120,140
+             L210,130 L290,150 L350,190 L410,220
+             Q460,250 510,260
+             T610,270 700,300 780,300 850,290
+             Q920,280 980,310
+             L1060,350 L1100,420 L1080,480 L980,530 L860,560
+             L720,550 L620,520 L560,520 L520,500 L470,500
+             L420,520 L360,510 L320,470 L300,430 L260,420
+             L220,440 L190,420 L180,380 L200,340
+             L230,320 L220,290 L190,260 L160,230
+             L130,210 Z"/>
+        <!-- Seas: Mediterranean, Caspian, Aral, Black Sea hints -->
+        <path d="M150,250 C200,230 260,240 300,270 320,290 315,320 280,335 240,350 170,350 150,320 135,300 135,265 150,250 Z"
+              fill="#76b4da" opacity="0.7"/>
+        <ellipse cx="520" cy="210" rx="42" ry="30" fill="#6faed4" opacity="0.75"/><!-- Caspian -->
+        <ellipse cx="600" cy="215" rx="20" ry="12" fill="#6faed4" opacity="0.7"/><!-- Aral -->
+        <path d="M260,200 C300,190 340,190 370,210 350,230 300,230 260,220 Z" fill="#6faed4" opacity="0.65"/><!-- Black Sea hint -->
+        <!-- Highlands/Himalaya ridge hint -->
+        <path d="M720,330 l-30,18 l-28,-14 l-26,16 l-24,-12 l-22,14 l-20,-10 l-18,12" stroke="#9fb0c7" stroke-width="3" opacity="0.45" fill="none"/>
+      </g>
+
+      <!-- Static edges for readability (dynamic edges can replace) -->
+      <g id="edges" stroke-linecap="round" style="pointer-events:none">
+        <!-- Main east-west chain: Chang'an → Dunhuang → Kashgar → Samarkand → Merv → Ctesiphon → Antioch → Rome -->
+        <line class="edge" x1="1480" y1="330" x2="1260" y2="270" />
+        <line class="edge" x1="1260" y1="270" x2="1000" y2="390" />
+        <line class="edge" x1="1000" y1="390" x2="780" y2="270" />
+        <line class="edge" x1="780" y1="270" x2="620" y2="380" />
+        <line class="edge" x1="620" y1="380" x2="480" y2="300" />
+        <line class="edge" x1="480" y1="300" x2="340" y2="360" />
+        <line class="edge" x1="340" y1="360" x2="140" y2="300" />
+        <!-- Southern branch: Ctesiphon → Palmyra → Alexandria -->
+        <line class="edge" x1="480" y1="300" x2="420" y2="460" />
+        <line class="edge" x1="420" y1="460" x2="320" y2="540" />
+        <!-- Regional hubs -->
+        <line class="edge" x1="780" y1="270" x2="680" y2="230" /> <!-- Bukhara north of Samarkand -->
+        <line class="edge" x1="620" y1="380" x2="560" y2="450" /> <!-- Herat south of Merv -->
+        <line class="edge" x1="340" y1="360" x2="300" y2="400" /> <!-- Tyre southwest of Antioch -->
+        <line class="edge" x1="420" y1="460" x2="460" y2="520" /> <!-- Petra southeast of Palmyra -->
+      </g>
+      <!-- Dynamic edges (optional) -->
+      <g id="dynEdges"></g>
+
+      <!-- Nodes and labels -->
+      <g id="nodes">
+        <!-- Eastern hubs -->
+        <circle class="node hub" data-id="0" cx="1480" cy="330" r="18" />
+        <text class="city-label" x="1480" y="356" text-anchor="middle">Chang'an</text>
+        <circle class="node hub" data-id="1" cx="1260" cy="270" r="18" />
+        <text class="city-label" x="1260" y="296" text-anchor="middle">Dunhuang</text>
+        <circle class="node hub" data-id="2" cx="1000" cy="390" r="18" />
+        <text class="city-label" x="1000" y="416" text-anchor="middle">Kashgar</text>
+        <circle class="node hub" data-id="3" cx="780" cy="270" r="18" />
+        <text class="city-label" x="780" y="296" text-anchor="middle">Samarkand</text>
+        <circle class="node hub" data-id="4" cx="620" cy="380" r="18" />
+        <text class="city-label" x="620" y="406" text-anchor="middle">Merv</text>
+        <circle class="node" data-id="5" cx="480" cy="300" r="18" />
+        <text class="city-label" x="480" y="326" text-anchor="middle">Ctesiphon</text>
+        <circle class="node" data-id="6" cx="340" cy="360" r="18" />
+        <text class="city-label" x="340" y="386" text-anchor="middle">Antioch</text>
+        <circle class="node hub" data-id="7" cx="140" cy="300" r="18" />
+        <text class="city-label" x="140" y="326" text-anchor="middle">Rome</text>
+        <circle class="node hub" data-id="8" cx="320" cy="540" r="18" />
+        <text class="city-label" x="320" y="566" text-anchor="middle">Alexandria</text>
+        <circle class="node hub" data-id="9" cx="420" cy="460" r="18" />
+        <text class="city-label" x="420" y="486" text-anchor="middle">Palmyra</text>
+        <!-- Regional named nodes (not outposts) -->
+        <circle class="node small" data-id="40" cx="680" cy="230" r="12" />
+        <text class="city-label" x="680" y="222" text-anchor="middle">Bukhara</text>
+        <circle class="node small" data-id="41" cx="560" cy="450" r="12" />
+        <text class="city-label" x="560" y="442" text-anchor="middle">Herat</text>
+        <circle class="node small" data-id="42" cx="300" cy="400" r="12" />
+        <text class="city-label" x="300" y="392" text-anchor="middle">Tyre</text>
+        <circle class="node small" data-id="43" cx="460" cy="520" r="12" />
+        <text class="city-label" x="460" y="512" text-anchor="middle">Petra</text>
+      </g>
+
+      <!-- Player tokens -->
+      <g id="tokens">
+        <circle id="p1token" class="token p1" cx="1480" cy="330" r="9" />
+        <text id="p1sym" class="city-label city-icon" x="1480" y="318" text-anchor="middle">🐪</text>
+        <circle id="p2token" class="token p2" cx="1480" cy="330" r="9" />
+        <text id="p2sym" class="city-label city-icon" x="1480" y="344" text-anchor="middle">📦</text>
+      </g>
+    </svg>
+  </div>
+  <div class="maplog">
+    <div class="log" id="log" aria-live="polite"></div>
+  </div>
+  <div class="sidebar" id="p2panel">
+    <h1><span id="p2Title">Player 2</span></h1>
+    <div class="row"><span class="pill" id="turnPill2">Waiting</span><span class="pill tiny">2 players • pass‑and‑play</span></div>
+    <!-- Name handled via modal; sidebar input removed -->
+
+    <div class="stat"><span>Player 2 coins:</span><b id="p2coins">0</b></div>
+    <div class="stat" id="p2goodsStat">
+      <span>Goods:</span><b id="p2goodsInline">–</b>
+    </div>
+    <div id="p2lastSale" class="tiny" style="margin-top:-8px;margin-bottom:8px;">–</div>
+    <div class="market" id="p2contract"><b>Contract:</b> <span id="p2contractText">None</span></div>
+    <div class="tiny" id="p2remaining">Remaining: East 0 | West 0</div>
+
+    <div class="market" id="marketP2" style="display:none">
+      <b>Market at Chang'an</b>
+      <div class="tiny">Pick up to <b>2 goods</b> for Player 2.</div>
+      <div class="sep"></div>
+      <div class="goods" id="goodsListP2"></div>
+      <div class="controls" style="margin-top:8px">
+        <button class="secondary" id="p2done" disabled>P2: Done</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="p2rollBtn" class="primary" disabled>🎲 Roll</button>
+      <button id="p2endBtn" disabled>End Turn</button>
+    </div>
+    <div class="row"><div>Roll:</div><div id="rollOut" class="roll-value">–</div><span id="spinner2" class="spinner" aria-hidden="true" style="display:none"></span></div>
+    <div class="controls">
+      <button id="p2resBtn" class="simple-hide">Hire Guide (‑1 coin)</button>
+      <button id="p2loadBtn" class="simple-hide" disabled>Load Western Goods</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom row: shared info -->
+<div class="bottom">
+  <div>
+    <div class="facts" id="factsBox"><b>Fact:</b> The Silk Road was a network of routes linking China with Central Asia, Persia, and the Mediterranean. Traders rarely traveled the whole route—goods moved in stages via many middlemen.</div>
+    <div class="toolbar" id="gameToolbar">
+      <button id="newGameBtn">New Game</button>
+      <button id="settingsBtn" class="secondary">Settings</button>
+    </div>
+    <div class="stat" id="teamBox" style="margin-top:12px; display:none"><span>Team Coins:</span><b id="teamCoins">0</b></div>
+  </div>
+  <div class="legend">
+    <b style="display:block;margin-bottom:6px">Legend</b>
+    <div class="legend-row">
+      <span><span class="dot p1"></span> Player 1</span>
+    </div>
+    <div class="legend-row">
+      <span><span class="dot p2"></span> Player 2</span>
+    </div>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#fbbf24"></span> Reachable</span>
+    </div>
+  </div>
+</div>
+
+<!-- West market load panel removed; selection now uses fullscreen modal -->
+
+<!-- Cycle goods selection modal -->
+<div class="bottom" style="grid-template-columns:1fr;">
+  <div id="cycleMarket" class="market" style="display:none">
+    <b id="cycleTitle">Choose Goods</b>
+    <div class="tiny" id="cycleSub">Pick up to 2 goods.</div>
+    <div class="sep"></div>
+    <div id="cycleGoodsList" class="goods"></div>
+    <div class="controls" style="margin-top:8px">
+      <button class="secondary" id="cycleConfirm">Confirm</button>
+      <button id="cycleCancel">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- Data ---
+const NODES = [
+  {id:0,name:"Chang'an", has:'Silk & Porcelain', wants:'Glass & Olive Oil'},
+  {id:1,name:"Dunhuang", has:'Guides & Water', wants:'Spices'},
+  {id:2,name:"Kashgar", has:'Jade', wants:'Glass'},
+  {id:3,name:"Samarkand", has:'Textiles', wants:'Porcelain'},
+  {id:4,name:"Merv", has:'Carpets', wants:'Tea'},
+  {id:5,name:"Ctesiphon", has:'Dates & Carpets', wants:'Paper'},
+  {id:6,name:"Antioch", has:'Wine & Olive Oil', wants:'Silk'},
+  {id:7,name:"Rome", has:'Coins & Glassware', wants:'Silk & Spices'},
+  {id:8,name:"Alexandria", has:'Glass & Scrolls', wants:'Tea & Porcelain'},
+  {id:9,name:"Palmyra", has:'Caravan Services', wants:'Any Luxury'},
+  {id:10,name:"Outpost"},
+  {id:11,name:"Outpost"},
+  {id:12,name:"Outpost"},
+  {id:13,name:"Outpost"},
+  {id:14,name:"Outpost"},
+  {id:15,name:"Outpost"},
+  {id:16,name:"Outpost"},
+  {id:17,name:"Outpost"},
+  {id:18,name:"Outpost"},
+  {id:19,name:"Outpost"},
+  {id:20,name:"Outpost"},
+  {id:21,name:"Outpost"},
+  {id:22,name:"Outpost"},
+  {id:23,name:"Outpost"},
+  {id:24,name:"Outpost"},
+  {id:25,name:"Outpost"},
+  {id:26,name:"Outpost"},
+  {id:27,name:"Outpost"},
+  {id:28,name:"Outpost"},
+  {id:29,name:"Outpost"},
+  {id:30,name:"Outpost"},
+  {id:31,name:"Outpost"},
+  {id:32,name:"Outpost"},
+  {id:33,name:"Outpost"},
+  {id:34,name:"Outpost"},
+  {id:35,name:"Outpost"},
+  {id:36,name:"Outpost"},
+  {id:37,name:"Outpost"},
+  {id:38,name:"Outpost"},
+  {id:39,name:"Outpost"},
+  {id:40,name:"Bukhara", has:'Textiles', wants:'Tea'},
+  {id:41,name:"Herat", has:'Horses', wants:'Porcelain'},
+  {id:42,name:"Tyre", has:'Purple Dye', wants:'Silk'},
+  {id:43,name:"Petra", has:'Incense', wants:'Spices'},
+];
+
+const EDGES = {
+  0:[10],
+  10:[0,11],
+  11:[10,12],
+  12:[11,13],
+  13:[12,1],
+  1:[13,14],
+  14:[1,15],
+  15:[14,16],
+  16:[15,17],
+  17:[16,18],
+  18:[17,2],
+  2:[18,19],
+  19:[2,20],
+  20:[19,21],
+  21:[20,22],
+  22:[21,3],
+  3:[22,23,40],
+  23:[3,24],
+  24:[23,4],
+  4:[24,25,41],
+  25:[4,26],
+  26:[25,27],
+  27:[26,5],
+  5:[27,28,36],
+  28:[5,29],
+  29:[28,6],
+  6:[29,30,42],
+  30:[6,31],
+  31:[30,32],
+  32:[31,33],
+  33:[32,34],
+  34:[33,35],
+  35:[34,7],
+  7:[35],
+  36:[5,37],
+  37:[36,9],
+  9:[37,38,43],
+  38:[9,39],
+  39:[38,8],
+  8:[39],
+  40:[3],
+  41:[4],
+  42:[6],
+  43:[9]
+};
+
+const GOODS = [
+  {id:'silk', name:'Silk', base:8, fact:'Luxury fabric prized in Rome; Chinese secret for centuries.', dest:{Rome:2.6, Alexandria:2.0, Antioch:2.2}},
+  {id:'paper', name:'Paper', base:7, fact:'Chinese invention; spread west slowly via trade and knowledge exchange.', dest:{Rome:2.2, Alexandria:2.1, Antioch:2.0}},
+  {id:'porcelain', name:'Porcelain', base:7, fact:'Fine ceramics highly valued as luxury goods.', dest:{Rome:2.1, Alexandria:2.0, Antioch:2.0}},
+  {id:'tea', name:'Tea', base:5, fact:'Became a staple drink; early trade moved small, expensive quantities.', dest:{Rome:1.8, Alexandria:1.8, Antioch:1.7}},
+  {id:'jade', name:'Jade', base:6, fact:'Symbol of status and virtue in China; sought after as art objects.', dest:{Rome:1.9, Alexandria:1.8, Antioch:1.8}},
+  {id:'spices', name:'Spices', base:6, fact:'Valued for flavor, medicine, and ritual; traveled great distances.', dest:{Rome:2.3, Alexandria:2.2, Antioch:2.1}},
+];
+// Western goods traveling east
+const WEST_GOODS = [
+  {id:'glass', name:'Glass', base:6, weight:1},
+  {id:'olive', name:'Olive Oil', base:5, weight:1},
+  {id:'bronze', name:'Bronze Tools', base:7, weight:2},
+  {id:'gems', name:'Gems', base:9, weight:1},
+  {id:'carpet', name:'Carpets', base:8, weight:2},
+];
+const MAX_SUP = 8;
+
+const FACTS = [
+  'Caravanserai (roadside inns) offered rest, water, and security for traders and animals.',
+  'The Taklamakan Desert was dangerous—guides and camels were essential for survival.',
+  'Sogdian merchants of Central Asia were key middlemen, linking China to Persia.',
+  'Ideas traveled too: Buddhism spread from India into Central and East Asia along trade routes.',
+  'Governments sometimes taxed caravans; in return they offered protection on parts of the route.',
+  'Most traders moved goods in stages—few went all the way from China to Rome.'
+];
+
+// Node market pools for localized goods
+const nodeMarket = {};
+NODES.forEach(n=>{ nodeMarket[n.name] = {westGoods:[], eastGoods:[]}; });
+// Seed initial western goods at major western hubs
+['Rome','Alexandria','Antioch','Ctesiphon'].forEach(city=>{
+  const pool = nodeMarket[city].westGoods;
+  for(let i=0;i<3;i++){
+    const g = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)];
+    pool.push({...g});
+  }
+});
+
+const EVENTS = [
+  {t:'Bandits', d:'Bandits raid your caravan. Lose 2 coins (or 1 good if broke).', f:(p)=>{
+    if(p.coins>=2){ p.coins-=2; updateCoins(); log(`Player ${p.id} paid 2 coins to bandits.`); }
+    else if(p.goods.length){ const lost=p.goods.pop(); log(`Player ${p.id} lost ${lost.name} to bandits.`); updatePanels(); }
+    else { log(`Player ${p.id} had nothing to lose.`); }
+  }},
+  {t:'Tribute', d:'Nomads demand tribute. Lose 1 coin if able.', f:(p)=>{ if(p.coins>0){ p.coins-=1; updateCoins(); log(`Player ${p.id} paid 1 coin tribute.`);} else { log(`Player ${p.id} had no coins for tribute.`);} }},
+  {t:'Sandstorm', d:'A sandstorm scatters your pack. Lose 1 good if you have any.', f:(p)=>{ if(p.goods.length){ const lost=p.goods.pop(); log(`Player ${p.id} lost ${lost.name} in a sandstorm.`); updatePanels(); } else { log(`Player ${p.id} secured their packs; nothing lost.`);} }},
+  {t:'Flooded Crossing', d:'Flooded river crossing! Miss your next turn.', f:(p)=>{ p.skip=true; }},
+  {t:'Camp', d:'You camp with fellow travelers. Nothing gained, nothing lost.', f:()=>{}},
+  {t:'Nomad Sharing', d:'Nomads share their water and stories. Gain 1 coin.', f:(p)=>{ p.coins+=1; updateCoins(); }},
+  {t:'Friendly Monks', d:'Blessings bring small donations. Gain 1 coin.', f:(p)=>{ p.coins+=1; updateCoins(); }},
+  {t:'Merchant Caravan', d:'A merchant shares surplus. Draw 1 extra good suited to this region.', f:(p)=>{
+      const nodeName = NODES[p.node].name;
+      const westSet = new Set(['Antioch','Rome','Alexandria','Ctesiphon','Palmyra']);
+      if(westSet.has(nodeName)){
+        const g = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)];
+        p.goods.push({...g, origin:'west'});
+        log(`Player ${p.id} received a western good: ${g.name}.`);
+      } else {
+        const g = GOODS[Math.floor(Math.random()*GOODS.length)];
+        p.goods.push({...g, origin:'east', weight:1});
+        log(`Player ${p.id} received an eastern good: ${g.name}.`);
+      }
+      updatePanels();
+    }}
+];
+
+// --- State ---
+const players = [
+  {id:1,name:'Player 1', node:0, coins:0, goods:[], skip:false, skipReason:'', bonus:0, contract:null, turnsTaken:0, capacity:6, direction:'west', deliverBonus:0, extraPick:0, avatar:'🐪', carrying:[], remainingEast:[], remainingWest:[], soldAt:[]},
+  {id:2,name:'Player 2', node:0, coins:0, goods:[], skip:false, skipReason:'', bonus:0, contract:null, turnsTaken:0, capacity:6, direction:'west', deliverBonus:0, extraPick:0, avatar:'📦', carrying:[], remainingEast:[], remainingWest:[], soldAt:[]}
+];
+let currentPlayer = 0; // index 0 or 1
+let rolled = 0;
+let reachable = new Set();
+let simpleMode = false;
+let coopMode = false;
+let teamContracts = [];
+let awaitingMove = false; // prevents multiple rolls in one turn
+// End condition variables
+let endMode = 'rounds';
+let coinTarget = 50;
+let roundLimit = 4; // number of east→west runs
+let roundRuns = 0; // completed east→west runs
+let deliveryTarget = 6; // total deliveries
+let timeLimitMs = 10*60*1000; let endDeadlineAt = null;
+let turnCount = 0; let deliveryCount = 0;
+// Card-style hazards (per-player effects drawn on certain tiles)
+const HAZARD_CARDS = [
+  {t:'Blocked Pass', d:'Detour planning delays you. Lose your next turn.', f:(p)=>{ p.skip = true; p.skipReason='Blocked Pass: you will miss your next turn.'; }},
+  {t:'Flooded River', d:'If you enter Antioch next, you will lose a turn.', f:(p)=>{ p.status.floodAntioch = 1; p.skipReason='Flooded Crossing at Antioch: you will miss your next turn.'; }},
+  {t:'Shifting Dunes', d:'Sand buries the trail. Lose your next turn.', f:(p)=>{ p.skip = true; p.skipReason='Shifting Dunes: you will miss your next turn.'; }},
+  {t:'Caravan Stampede', d:'If your next stop is an Outpost, you will lose a turn.', f:(p)=>{ p.status.outpostPenalty = 1; }}
+];
+// Choose specific tiles that trigger a hazard card on arrival
+const hazardNodes = new Set([12,16,19,23,26,30,33,36,38]);
+// Main city IDs where a special pick-a-card event triggers on arrival
+const MAIN_CITY_IDS = new Set([0,1,2,3,4,5,6,7,8,9]);
+// Offshoot named cities
+const OFFSHOOT_CITY_IDS = new Set([40,41,42,43]);
+// All named cities (exclude Outposts)
+const NAMED_CITY_IDS = new Set(NODES.filter(n=>n.name && n.name!== 'Outpost').map(n=>n.id));
+
+// --- Helpers ---
+function $(sel){return document.querySelector(sel)}
+function $all(sel){return Array.from(document.querySelectorAll(sel))}
+function applyNames(msg){
+  try{
+    const n1 = players[0]?.name || 'Player 1';
+    const n2 = players[1]?.name || 'Player 2';
+    msg = msg.replace(/\bPlayer\s+1\b/g, n1);
+    msg = msg.replace(/\bPlayer\s+2\b/g, n2);
+  }catch(e){}
+  return msg;
+}
+function log(msg){ const el=$('#log'); const p=document.createElement('p'); p.textContent=applyNames(msg); el.appendChild(p); el.scrollTop=el.scrollHeight; }
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function sample(arr){ return arr[randInt(0,arr.length-1)]; }
+function coinPop(player, amount){
+  if(!amount || amount<=0) return;
+  const el = document.createElement('div'); el.className='coin-float'; el.textContent = `+${amount}`;
+  const target = player.id===1 ? document.getElementById('p1coins') : document.getElementById('p2coins');
+  if(target){
+    const rect = target.getBoundingClientRect();
+    el.style.left = (rect.left + window.scrollX) + 'px';
+    el.style.top = (rect.top + window.scrollY) + 'px';
+    document.body.appendChild(el);
+    setTimeout(()=> el.remove(), 1000);
+  }
+}
+function updateCoins(){
+  $('#p1coins').textContent = players[0].coins; $('#p2coins').textContent = players[1].coins;
+  const teamVal = document.getElementById('teamCoins');
+  if(teamVal){ teamVal.textContent = (players[0].coins||0) + (players[1].coins||0); }
+}
+function updatePanels(){
+  const p1 = players[0], p2 = players[1];
+  const ICONS = { silk:'🧵', spices:'🧂', tea:'🍵', paper:'📜', porcelain:'🏺', jade:'💎', glass:'🧪', olive:'🫒', bronze:'🛠️', gems:'💎', carpet:'🧶' };
+  function goodsInline(arr){
+    if(!arr || !arr.length) return '–';
+    return arr.map(g=>`${ICONS[g.id]||'📦'} ${g.name}`).join(' | ');
+  }
+  const c1 = 'Cycle deliveries between East and West.';
+  const c2 = 'Cycle deliveries between East and West.';
+  const gi1 = document.getElementById('p1goodsInline'); if(gi1) gi1.textContent = goodsInline(p1.carrying);
+  const gi2 = document.getElementById('p2goodsInline'); if(gi2) gi2.textContent = goodsInline(p2.carrying);
+  // Goods bar resupply warnings
+  function setGoodsBarState(p, where){
+    const statEl = document.getElementById(`p${p.id}goodsStat`);
+    const inlineEl = document.getElementById(`p${p.id}goodsInline`);
+    if(!statEl || !inlineEl) return;
+    if(where){
+      statEl.classList.add('out-of-goods');
+      inlineEl.textContent = `Out of goods resupply in the ${where}`;
+    } else {
+      statEl.classList.remove('out-of-goods');
+      inlineEl.textContent = goodsInline(p.carrying);
+    }
+  }
+  // Check west-side pools at western hubs
+  const westSet = new Set(['Antioch','Rome','Alexandria','Ctesiphon','Palmyra']);
+  const n1 = NODES[p1.node].name; const n2 = NODES[p2.node].name;
+  if(westSet.has(n1)){
+    const pool = (nodeMarket[n1]||{}).westGoods || [];
+    setGoodsBarState(p1, pool.length===0 ? 'west' : null);
+  } else if(n1==="Chang'an"){
+    // For east, treat empty remainingEast as out (though it auto-resets elsewhere)
+    const rem = (p1.remainingEast||[]).length;
+    setGoodsBarState(p1, rem===0 ? 'east' : null);
+  } else {
+    setGoodsBarState(p1, null);
+  }
+  if(westSet.has(n2)){
+    const pool = (nodeMarket[n2]||{}).westGoods || [];
+    setGoodsBarState(p2, pool.length===0 ? 'west' : null);
+  } else if(n2==="Chang'an"){
+    const rem = (p2.remainingEast||[]).length;
+    setGoodsBarState(p2, rem===0 ? 'east' : null);
+  } else {
+    setGoodsBarState(p2, null);
+  }
+  const ct1 = document.getElementById('p1contractText'); if(ct1) ct1.textContent = c1;
+  const ct2 = document.getElementById('p2contractText'); if(ct2) ct2.textContent = c2;
+  const r1 = document.getElementById('p1remaining'); if(r1){ const e=(p1.remainingEast||[]).length, w=(p1.remainingWest||[]).length; r1.textContent = `Remaining: East ${e} | West ${w}`; }
+  const r2 = document.getElementById('p2remaining'); if(r2){ const e=(p2.remainingEast||[]).length, w=(p2.remainingWest||[]).length; r2.textContent = `Remaining: East ${e} | West ${w}`; }
+  // Simple mode visibility
+  const simpleEls = $all('.simple-hide');
+  simpleEls.forEach(el=>{
+    el.style.display = simpleMode ? 'none' : '';
+  });
+  // Enable load buttons if at western node and not simple mode
+  const b1 = document.getElementById('p1loadBtn'); if(b1){ b1.disabled = simpleMode || !westSet.has(n1); }
+  const b2 = document.getElementById('p2loadBtn'); if(b2){ b2.disabled = simpleMode || !westSet.has(n2); }
+  // Co-op team coins
+  const teamEl = document.getElementById('teamBox'); const teamVal = document.getElementById('teamCoins');
+  const sum = (players[0].coins||0) + (players[1].coins||0);
+  if(teamVal) teamVal.textContent = sum;
+  if(teamEl) teamEl.style.display = coopMode ? '' : 'none';
+}
+function genContract(p){
+  // 50/50 chance of east-bound or west-bound contract
+  if(Math.random()<0.5){
+    const good = GOODS[Math.floor(Math.random()*GOODS.length)];
+    const markets = Object.keys(good.dest);
+    // prefer far-west markets first
+    const pref = ['Rome','Alexandria','Antioch'];
+    let dest = markets.find(m=>pref.includes(m)) || markets[0];
+    const bonus = Math.max(6, Math.round(good.base * 1.5 + Math.random()*4));
+    p.contract = {type:'east', good, dest, bonus};
+  } else {
+    const good = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)];
+    const dest = "Chang'an";
+    const bonus = Math.max(8, Math.round(good.base * 2.0 + Math.random()*5));
+    p.contract = {type:'west', good, dest, bonus};
+  }
+}
+function setTurnLabel(){
+  const p1 = $('#turnPill1'), p2 = $('#turnPill2');
+  if(p1 && p2){
+    p1.textContent = currentPlayer===0 ? 'Your Turn' : 'Waiting';
+    p2.textContent = currentPlayer===1 ? 'Your Turn' : 'Waiting';
+  }
+}
+function applyActiveTokenClass(){
+  const aTok = document.getElementById('p1token');
+  const aSym = document.getElementById('p1sym');
+  const bTok = document.getElementById('p2token');
+  const bSym = document.getElementById('p2sym');
+  [aTok,aSym,bTok,bSym].forEach(el=>{ if(el){ el.classList.remove('active'); }});
+  const curId = players[currentPlayer].id;
+  if(curId===1){ if(aTok) aTok.classList.add('active'); if(aSym) aSym.classList.add('active'); }
+  else { if(bTok) bTok.classList.add('active'); if(bSym) bSym.classList.add('active'); }
+}
+function getNodePos(id){
+  const el = document.querySelector(`#nodes circle.node[data-id="${id}"]`);
+  if(!el){ return null; }
+  return [Number(el.getAttribute('cx')), Number(el.getAttribute('cy'))];
+}
+function updateTokens(){
+  const p1tok = $('#p1token'); const p2tok = $('#p2token');
+  let p1pos = getNodePos(players[0].node) || getNodePos(0);
+  let p2pos = getNodePos(players[1].node) || getNodePos(0);
+  if(!p1pos) p1pos = [0,0]; if(!p2pos) p2pos = [0,0];
+  const [x1,y1] = p1pos; const [x2,y2] = p2pos;
+  if(p1tok){ p1tok.setAttribute('cx',x1); p1tok.setAttribute('cy',y1); }
+  if(p2tok){ p2tok.setAttribute('cx',x2); p2tok.setAttribute('cy',y2); }
+  const s1 = $('#p1sym'); if(s1){ s1.setAttribute('x', x1); s1.setAttribute('y', y1-12); s1.textContent = players[0].avatar || '🐪'; }
+  const s2 = $('#p2sym'); if(s2){ s2.setAttribute('x', x2); s2.setAttribute('y', y2+12); s2.textContent = players[1].avatar || '📦'; }
+}
+function clearReachable(){ reachable.clear(); $all('.node').forEach(n=>n.classList.remove('reachable')); }
+
+function bfsReach(start, steps){
+  // return set of nodes within <= steps hops
+  const seen = new Set([start]);
+  let frontier = [start];
+  let dist = {[start]:0};
+  while(frontier.length){
+    const cur = frontier.shift();
+    for(const nxt of EDGES[cur]){
+      const nd = (dist[cur]||0)+1;
+      if(nd<=steps && !seen.has(nxt)){
+        seen.add(nxt); dist[nxt]=nd; frontier.push(nxt);
+      }
+    }
+  }
+  seen.delete(start);
+  return seen;
+}
+
+function highlightReachable(){
+  clearReachable();
+  reachable = bfsReach(players[currentPlayer].node, rolled + (players[currentPlayer].bonus||0));
+  $all('.node').forEach(n=>{ const id=+n.dataset.id; if(reachable.has(id)) n.classList.add('reachable'); });
+}
+
+function refreshHazardVisuals(){ /* no-op for card-style hazards */ }
+
+function showCityInfo(id){
+  const node = NODES[id]; if(!node) return;
+  const name = node.name;
+  const has = node.has || 'Water & Shelter';
+  const wants = node.wants || 'Any trade good';
+  showOverlay(`${name}`, {type:'city', desc:`Has: <b>${has}</b> • Wants: <b>${wants}</b>`, ms:2800});
+}
+
+// --- Token hop animation on movement ---
+function animateTokenMove(p, fromId, toId, done){
+  const startPos = getNodePos(fromId); const endPos = getNodePos(toId);
+  if(!startPos || !endPos){ if(typeof done==='function') done(); return; }
+  const [x0,y0] = startPos; const [x1,y1] = endPos;
+  const dx = x1-x0, dy = y1-y0; const dist = Math.hypot(dx,dy)||1;
+  const hop = Math.max(24, Math.min(90, dist*0.35));
+  const cx = (x0+x1)/2; const cy = (y0+y1)/2 - hop; // arc up for hop
+  const dur = 520; let t0 = null;
+  const tok = p.id===1 ? document.getElementById('p1token') : document.getElementById('p2token');
+  const sym = p.id===1 ? document.getElementById('p1sym') : document.getElementById('p2sym');
+  if(tok) tok.classList.add('hopping'); if(sym) sym.classList.add('hopping');
+  function at(t){ const u=1-t; return [u*u*x0 + 2*u*t*cx + t*t*x1, u*u*y0 + 2*u*t*cy + t*t*y1]; }
+  function frame(ts){ if(!t0) t0=ts; let t = (ts - t0)/dur; if(t>1) t=1;
+    const [x,y] = at(t);
+    if(tok){ tok.setAttribute('cx', String(x)); tok.setAttribute('cy', String(y)); }
+    if(sym){ sym.setAttribute('x', String(x)); sym.setAttribute('y', String(p.id===1 ? (y-12) : (y+12))); }
+    if(t<1) requestAnimationFrame(frame); else { if(tok) tok.classList.remove('hopping'); if(sym) sym.classList.remove('hopping'); if(typeof done==='function') done(); }
+  }
+  requestAnimationFrame(frame);
+}
+
+// Compute shortest path (by hops) between two nodes using BFS
+function shortestPathNodes(start, goal){
+  if(start===goal) return [start];
+  const q=[start]; const prev = {}; prev[start] = -1;
+  while(q.length){
+    const u = q.shift();
+    for(const v of (EDGES[u]||[])){
+      if(prev[v]===undefined){ prev[v]=u; q.push(v); if(v===goal){ q.length=0; break; } }
+    }
+  }
+  if(prev[goal]===undefined) return [start, goal];
+  const path=[]; let cur=goal; while(cur!==-1){ path.push(cur); cur=prev[cur]; }
+  path.reverse();
+  return path;
+}
+// Animate hop along each step of the path
+function animatePathHop(p, path, done){
+  if(!path || path.length<2){ if(typeof done==='function') done(); return; }
+  let i=0;
+  const step = ()=>{
+    if(i>=path.length-1){ if(typeof done==='function') done(); return; }
+    const a = path[i], b = path[i+1];
+    animateTokenMove(p, a, b, ()=>{ i++; step(); });
+  };
+  step();
+}
+
+// --- Align Mode + Dynamic Edges ---
+let alignMode = false; let dynEdges = false; let drag = null; let arcK = 0.32;
+const svgEl = document.getElementById('mapSVG');
+function svgPoint(evt){
+  const pt = svgEl.createSVGPoint();
+  pt.x = evt.clientX; pt.y = evt.clientY;
+  try{ return pt.matrixTransform(svgEl.getScreenCTM().inverse()); }catch(e){ return {x:0,y:0}; }
+}
+
+// --- Camera zoom/pan (viewBox) ---
+let SVG_W = 1600, SVG_H = 700;
+let FOCUS_W = 800, FOCUS_H = 350; // quadrant-ish focus (recomputed from actual viewBox)
+let currentView = {x:0,y:0,w:SVG_W,h:SVG_H};
+let viewAnimId = null;
+function initViewBoxBase(){
+  try{
+    const vb = (svgEl.getAttribute('viewBox')||'0 0 1600 700').trim().split(/\s+/).map(Number);
+    if(vb.length===4 && vb.every(n=>Number.isFinite(n))){ SVG_W = vb[2]; SVG_H = vb[3]; }
+  }catch(e){}
+  // Recompute focus window as half the map by default
+  FOCUS_W = Math.max(300, Math.round(SVG_W * 0.5));
+  FOCUS_H = Math.max(200, Math.round(SVG_H * 0.5));
+  currentView = {x:0,y:0,w:SVG_W,h:SVG_H};
+  try{ svgEl.setAttribute('preserveAspectRatio','xMidYMid meet'); }catch(e){}
+}
+function setViewBox(x,y,w,h){
+  function num(v,fb){ return (typeof v==='number' && isFinite(v)) ? v : fb; }
+  const nx = num(x, currentView.x||0);
+  const ny = num(y, currentView.y||0);
+  const nw = num(w, currentView.w||SVG_W||1600);
+  const nh = num(h, currentView.h||SVG_H||700);
+  currentView = {x:nx,y:ny,w:nw,h:nh};
+  svgEl.setAttribute('viewBox', `${nx} ${ny} ${nw} ${nh}`);
+}
+function clampView(x,y,w,h){
+  let vx = Math.max(0, Math.min(SVG_W - w, x));
+  let vy = Math.max(0, Math.min(SVG_H - h, y));
+  return {x:vx,y:vy,w,h};
+}
+function animViewTo(x,y,w,h, ms=500){
+  const to = clampView(Number(x)||0, Number(y)||0, Number(w)||SVG_W, Number(h)||SVG_H);
+  const from = {...currentView};
+  if(viewAnimId) cancelAnimationFrame(viewAnimId);
+  let t0=null;
+  const step=(ts)=>{
+    if(!t0) t0=ts;
+    let t = ms>0 ? ((ts - t0)/ms) : 1; if(t>1) t=1; if(t<0) t=0;
+    const lerp=(a,b)=> a + (b-a)*t;
+    setViewBox(lerp(from.x,to.x), lerp(from.y,to.y), lerp(from.w,to.w), lerp(from.h,to.h));
+    if(t<1) viewAnimId=requestAnimationFrame(step);
+  };
+  viewAnimId = requestAnimationFrame(step);
+}
+function zoomFull(ms=500){ animViewTo(0,0,SVG_W,SVG_H,ms); }
+function zoomFocusOnPoint(x,y, ms=500){
+  const cx = Number(x)||0; const cy = Number(y)||0;
+  const w = Number(FOCUS_W)||Math.max(300, Math.round(SVG_W*0.5));
+  const h = Number(FOCUS_H)||Math.max(200, Math.round(SVG_H*0.5));
+  const vx = cx - w/2, vy = cy - h/2;
+  const rect = clampView(vx,vy,w,h);
+  animViewTo(rect.x, rect.y, rect.w, rect.h, ms);
+}
+function getTokenPosForPlayer(p){
+  const tok = p.id===1 ? document.getElementById('p1token') : document.getElementById('p2token');
+  if(tok){
+    const x = parseFloat(tok.getAttribute('cx')||'NaN');
+    const y = parseFloat(tok.getAttribute('cy')||'NaN');
+    if(Number.isFinite(x) && Number.isFinite(y)) return [x,y];
+  }
+  return null;
+}
+function zoomFocusOnPlayer(p, ms=500){
+  const tpos = getTokenPosForPlayer(p);
+  const npos = getNodePos(p.node);
+  const pos = tpos || npos || [SVG_W/2, SVG_H/2];
+  zoomFocusOnPoint(pos[0], pos[1], ms);
+}
+function midPoint(p0,p1){ return [(p0[0]+p1[0])/2,(p0[1]+p1[1])/2]; }
+function controlPointFor(p0,p1,sign){
+  const dx = p1[0]-p0[0], dy = p1[1]-p0[1];
+  const dist = Math.hypot(dx,dy)||1;
+  const nx = -dy/dist, ny = dx/dist; // unit perpendicular
+  const m = midPoint(p0,p1);
+  const off = arcK*dist*sign;
+  return [m[0]+nx*off, m[1]+ny*off];
+}
+// Build alternating arc signs per segment so consecutive hub segments flip curvature (y+ / y-)
+function computeEdgeSigns(){
+  const signs = new Map();
+  const mainHubs = [0,1,2,3,4,5,6,7];
+  for(let i=0;i<mainHubs.length-1;i++){
+    const a = mainHubs[i], b = mainHubs[i+1];
+    const mids = getChainMidsBetween(a,b);
+    const seg = [a, ...mids, b];
+    const sgn = (i % 2 === 0) ? 1 : -1;
+    for(let j=0;j<seg.length-1;j++){
+      const u=seg[j], v=seg[j+1];
+      const key = u < v ? `${u}-${v}` : `${v}-${u}`;
+      signs.set(key, sgn);
+    }
+  }
+  // Southern branch: 5 → 9 → 8 (use up then down)
+  const b1 = [5, ...getChainMidsBetween(5,9), 9];
+  for(let j=0;j<b1.length-1;j++){
+    const u=b1[j], v=b1[j+1]; const key = u<v?`${u}-${v}`:`${v}-${u}`; signs.set(key, 1);
+  }
+  const b2 = [9, ...getChainMidsBetween(9,8), 8];
+  for(let j=0;j<b2.length-1;j++){
+    const u=b2[j], v=b2[j+1]; const key = u<v?`${u}-${v}`:`${v}-${u}`; signs.set(key, -1);
+  }
+  return signs;
+}
+function drawDynamicEdges(){
+  const g = document.getElementById('dynEdges'); if(!g) return;
+  g.innerHTML = '';
+  if(!dynEdges) return;
+  const edgeSigns = computeEdgeSigns();
+  const circles = Array.from(document.querySelectorAll('#nodes circle.node'));
+  const pos = {}; circles.forEach(c=>{ pos[+c.dataset.id] = {x:+c.getAttribute('cx'), y:+c.getAttribute('cy')}; });
+  for(const [a, list] of Object.entries(EDGES)){
+    const A = +a;
+    list.forEach(B=>{
+      if(A < B && pos[A] && pos[B]){
+        const p0=[pos[A].x,pos[A].y], p1=[pos[B].x,pos[B].y];
+        const key = A < B ? `${A}-${B}` : `${B}-${A}`;
+        const sign = edgeSigns.get(key) ?? (((A+B)%2===0)? 1 : -1);
+        const c = controlPointFor(p0,p1,sign);
+        const d = `M ${p0[0]},${p0[1]} Q ${c[0]},${c[1]} ${p1[0]},${p1[1]}`;
+        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        path.setAttribute('class','edge');
+        path.setAttribute('d', d);
+        g.appendChild(path);
+      }
+    });
+  }
+}
+
+// --- Node east→west gradient coloring ---
+function hexToRgb(hex){
+  const n = hex.replace('#','');
+  return { r: parseInt(n.slice(0,2),16), g: parseInt(n.slice(2,4),16), b: parseInt(n.slice(4,6),16) };
+}
+function rgbToHex(r,g,b){
+  const h = (v)=> v.toString(16).padStart(2,'0');
+  return `#${h(r)}${h(g)}${h(b)}`;
+}
+function mix(a,b,t){ return Math.round(a + (b-a)*t); }
+function lerpColor(c1,c2,t){
+  const A=hexToRgb(c1), B=hexToRgb(c2);
+  return rgbToHex(mix(A.r,B.r,t), mix(A.g,B.g,t), mix(A.b,B.b,t));
+}
+function palette(t){
+  // West (0) → East (1): red → yellow → green → blue
+  const stops = [
+    {p:0.00, c:'#ff3b30'}, // red west
+    {p:0.33, c:'#ffd166'}, // yellow
+    {p:0.66, c:'#4ade80'}, // green
+    {p:1.00, c:'#60a5fa'}  // blue east
+  ];
+  if(t<=0) return stops[0].c; if(t>=1) return stops[stops.length-1].c;
+  for(let i=0;i<stops.length-1;i++){
+    const a=stops[i], b=stops[i+1];
+    if(t>=a.p && t<=b.p){
+      const k=(t-a.p)/(b.p-a.p);
+      return lerpColor(a.c,b.c,k);
+    }
+  }
+  return stops[stops.length-1].c;
+}
+function updateNodeGradientColors(){
+  const circles = Array.from(document.querySelectorAll('#nodes circle.node'));
+  if(!circles.length) return;
+  let minX=Infinity, maxX=-Infinity;
+  circles.forEach(c=>{
+    const x = parseFloat(c.getAttribute('cx')||'0');
+    if(Number.isFinite(x)){ if(x<minX) minX=x; if(x>maxX) maxX=x; }
+  });
+  const span = Math.max(1, maxX-minX);
+  circles.forEach(c=>{
+    const x = parseFloat(c.getAttribute('cx')||'0');
+    const t = Math.min(1, Math.max(0, (x - minX)/span));
+    const col = palette(t);
+    c.style.fill = col;
+  });
+}
+function attachAlignHandlers(){
+  $all('#nodes circle.node').forEach(c=>{
+    c.style.cursor = alignMode ? 'move' : 'pointer';
+    c.onpointerdown = alignMode ? (e)=>{
+      drag = {el:c}; c.setPointerCapture(e.pointerId);
+    } : null;
+    c.onpointermove = alignMode ? (e)=>{
+      if(!drag||drag.el!==c) return; const p = svgPoint(e);
+      c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
+      drawDynamicEdges(); updateTokens(); updateNodeGradientColors();
+    } : null;
+    c.onpointerup = alignMode ? (e)=>{
+      if(!drag||drag.el!==c) return; const id = c.dataset.id; const x=c.getAttribute('cx'), y=c.getAttribute('cy');
+      log(`Aligned node ${id} → (${x}, ${y})`); drag=null; drawDynamicEdges(); updateTokens(); updateNodeGradientColors();
+    } : null;
+  });
+}
+// Create missing outpost circles based on neighbor positions
+function ensureOutpostCircles(){
+  const nodesGroup = document.querySelector('#nodes'); if(!nodesGroup) return;
+  for(const n of NODES){
+    if(n.name!=='Outpost') continue;
+    const id = n.id;
+    if(document.querySelector(`#nodes circle.node[data-id="${id}"]`)) continue;
+    const neigh = EDGES[id]||[];
+    let pts = neigh.map(nb=> getNodePos(nb)).filter(Boolean);
+    let x=500, y=300;
+    if(pts.length>=2){ x = (pts[0][0]+pts[1][0])/2; y = (pts[0][1]+pts[1][1])/2; }
+    else if(pts.length===1){ x = pts[0][0]+10; y = pts[0][1]+10; }
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('class','node small'); c.setAttribute('data-id', String(id)); c.setAttribute('cx', String(x)); c.setAttribute('cy', String(y)); c.setAttribute('r','9');
+    nodesGroup.appendChild(c);
+  }
+  drawDynamicEdges();
+  updateTokens();
+  registerNodeClicks();
+  attachAlignHandlers();
+  updateNodeGradientColors();
+}
+
+// --- Auto spacing along routes ---
+function isOutpostId(id){ const n=NODES[id]; return n && n.name==='Outpost'; }
+function getDegree(id){ const a=EDGES[id]||[]; return a.length; }
+function buildChains(){
+  const chains=[]; const visited=new Set();
+  // helper to traverse chain from first outpost neighbor
+  function traverseChain(startHub, firstOut){
+    const seq=[]; let prev=startHub; let cur=firstOut;
+    while(isOutpostId(cur) && getDegree(cur)===2 && !visited.has(cur)){
+      visited.add(cur); seq.push(cur);
+      const neigh=EDGES[cur]; const next = neigh[0]===prev ? neigh[1] : neigh[0];
+      prev=cur; cur=next;
+    }
+    const endHub = cur; // should be a hub or non-outpost
+    if(seq.length>0 && !isOutpostId(endHub)) chains.push({start:startHub, end:endHub, mids:seq});
+  }
+  // scan each hub and look for outpost degree-2 neighbors to start chains
+  for(const n of NODES){
+    const id=n.id; if(isOutpostId(id)) continue;
+    const neigh = EDGES[id]||[];
+    for(const nb of neigh){ if(isOutpostId(nb) && getDegree(nb)===2 && !visited.has(nb)) traverseChain(id, nb); }
+  }
+  return chains;
+}
+function evalQuad(p0,pc,p1,t){
+  const u=1-t; return [u*u*p0[0]+2*u*t*pc[0]+t*t*p1[0], u*u*p0[1]+2*u*t*pc[1]+t*t*p1[1]];
+}
+function autoSpaceNodes(){
+  const chains = buildChains();
+  chains.forEach(({start,end,mids})=>{
+    const p0 = getNodePos(start); const p1 = getNodePos(end); if(!p0||!p1) return;
+    const n = mids.length; if(n===0) return;
+    // match curvature used for drawing: alternate by segment
+    const key = start < end ? `${start}-${end}` : `${end}-${start}`;
+    const signsMap = (typeof computeEdgeSigns === 'function') ? computeEdgeSigns() : new Map();
+    const sign = signsMap.get(key) ?? (((start+end)%2===0)? 1 : -1);
+    const pc = controlPointFor(p0,p1,sign);
+    for(let i=0;i<n;i++){
+      const t = (i+1)/(n+1);
+      const [x,y] = evalQuad(p0,pc,p1,t);
+      const el = document.querySelector(`#nodes circle.node[data-id="${mids[i]}"]`);
+      if(el){ el.setAttribute('cx', String(x)); el.setAttribute('cy', String(y)); }
+    }
+  });
+  drawDynamicEdges(); updateTokens(); log(`Spaced ${chains.reduce((s,c)=>s+c.mids.length,0)} outpost nodes along routes.`);
+  updateNodeGradientColors();
+}
+
+// --- Board-game style layout ---
+function getChainMidsBetween(a,b){
+  const chains = buildChains();
+  for(const ch of chains){ if(ch.start===a && ch.end===b) return ch.mids; if(ch.start===b && ch.end===a) return [...ch.mids].reverse(); }
+  return [];
+}
+function setNodePos(id,x,y){
+  const el = document.querySelector(`#nodes circle.node[data-id="${id}"]`);
+  if(el){ el.setAttribute('cx', String(x)); el.setAttribute('cy', String(y)); }
+}
+function boardLayout(){
+  const spacing = parseInt((document.getElementById('tileSpacing')?.value)||'120',10);
+  const mainHubs = [0,1,2,3,4,5,6,7];
+  const startX = 1420; const yMain = 330;
+  // Build main sequence including outposts between hubs
+  let seq = [];
+  for(let i=0;i<mainHubs.length-1;i++){
+    const a = mainHubs[i], b = mainHubs[i+1];
+    const mids = getChainMidsBetween(a,b);
+    if(i===0) seq.push(a);
+    seq.push(...mids, b);
+  }
+  // Place main path horizontally, leftwards
+  for(let i=0;i<seq.length;i++){
+    const x = startX - i*spacing;
+    setNodePos(seq[i], x, yMain);
+  }
+  // Branch: Ctesiphon (5) -> Palmyra (9) -> Alexandria (8)
+  const branch = [5, ...getChainMidsBetween(5,9), 9, ...getChainMidsBetween(9,8), 8];
+  // Find x of hub 5 in main
+  const x5el = document.querySelector(`#nodes circle.node[data-id="5"]`);
+  let x5 = x5el ? parseFloat(x5el.getAttribute('cx')) : (startX - 5*spacing);
+  const yBranch = yMain + 110; // place branch below main line
+  for(let i=0;i<branch.length;i++){
+    const x = x5 - (i*spacing*0.9);
+    setNodePos(branch[i], x, yBranch);
+  }
+  // Update visuals
+  drawDynamicEdges(); updateTokens(); adjustNodeSizes(); updateNodeGradientColors(); log('Applied board layout with standard spacing.');
+}
+document.getElementById('alignModeToggle').addEventListener('change', (e)=>{
+  alignMode = e.target.checked; attachAlignHandlers();
+});
+document.getElementById('dynEdgesToggle').addEventListener('change', (e)=>{
+  dynEdges = e.target.checked; document.getElementById('edges').style.display = dynEdges ? 'none' : ''; drawDynamicEdges();
+});
+// Initialize dynamic edges state from toggle on load
+(() => {
+  const t = document.getElementById('dynEdgesToggle');
+  if (t) {
+    dynEdges = !!t.checked;
+    const edgesLayer = document.getElementById('edges');
+    if (edgesLayer) edgesLayer.style.display = dynEdges ? 'none' : '';
+    drawDynamicEdges();
+  }
+})();
+document.getElementById('arcFactor').addEventListener('input', (e)=>{
+  arcK = parseFloat(e.target.value)||0; drawDynamicEdges(); autoSpaceNodes();
+});
+document.getElementById('spaceNodesBtn').addEventListener('click', ()=>{ autoSpaceNodes(); });
+const blBtn = document.getElementById('boardLayoutBtn');
+if (blBtn) blBtn.addEventListener('click', ()=>{ boardLayout(); });
+drawDynamicEdges();
+attachAlignHandlers();
+ensureOutpostCircles();
+updateNodeGradientColors();
+// Enlarge node hit areas for easier clicking
+function adjustNodeSizes(){
+  $all('#nodes circle.node').forEach(c=>{
+    const isHub = c.classList.contains('hub');
+    const minR = isHub ? 20 : 14;
+    const r = parseFloat(c.getAttribute('r')||'0');
+    if(r < minR) c.setAttribute('r', String(minR));
+  });
+}
+adjustNodeSizes();
+// auto-space once on load to tidy scattered nodes
+autoSpaceNodes();
+
+// Fullscreen modal goods selection
+function openGoodsModal(p, type, onDone){
+  ensureRemainingInit(p);
+  const modal = document.getElementById('fullModal'); const t = document.getElementById('modalTitle'); const b = document.getElementById('modalBody'); const primary = document.getElementById('modalPrimary'); const cancel = document.getElementById('modalCancel');
+  if(!modal||!t||!b||!primary||!cancel) return;
+  modal.style.display='flex';
+  const limit = 2 + (p.extraPick||0);
+  t.textContent = type==='west' ? `Player ${p.id}: Choose Western Goods` : `Player ${p.id}: Choose Eastern Goods`;
+  const nodeName = NODES[p.node].name;
+  let source, remaining, opts;
+  if(type==='west'){
+    const pool = (nodeMarket[nodeName]||{}).westGoods || [];
+    source = pool; // actual supply at this hub
+    remaining = null;
+    opts = pool.map((g,i)=> ({...g, _poolIdx:i}));
+  } else {
+    source = GOODS;
+    remaining = p.remainingEast;
+    opts = source.filter(g=> (remaining||[]).includes(g.id));
+  }
+  b.innerHTML = `<div class="tiny">Pick up to <b>${limit} goods</b> for your next delivery${(p.extraPick? ' <span class="badge">+1 slot</span>':'')}.</div><div class="sep"></div><div id="modalGoods" class="goods"></div>`;
+  const list = document.getElementById('modalGoods');
+  if(opts.length===0){
+    // Show out-of-supply warning and exit
+    const where = (type==='west') ? 'west' : 'east';
+    const inlineEl = document.getElementById(`p${p.id}goodsInline`);
+    const statEl = document.getElementById(`p${p.id}goodsStat`);
+    if(statEl){ statEl.classList.add('out-of-goods'); }
+    if(inlineEl){ inlineEl.textContent = `Out of goods resupply in the ${where}`; }
+    showOverlay('Out of Goods', {type:'event', player:p.id, desc:`Out of goods resupply in the ${where}.`});
+    modal.style.display='none';
+    return;
+  }
+  opts.forEach(g=>{
+    const wrap = document.createElement('label');
+    const dataAttr = (type==='west') ? `data-idx="${g._poolIdx}"` : `data-id="${g.id}"`;
+    wrap.innerHTML = `<input type="checkbox" ${dataAttr}> <b>${g.name}</b> <span class="tiny">base ${g.base||g.value||0}</span>`;
+    list.appendChild(wrap);
+  });
+  const handler = ()=>{
+    const checked = Array.from(list.querySelectorAll('input:checked'));
+    if(checked.length===0){ alert(`Pick up to ${limit} goods.`); return; }
+    const picks = checked.slice(0,limit);
+    if(type==='west'){
+      // Pull from pool at this node
+      const pool = (nodeMarket[nodeName]||{}).westGoods || [];
+      const idxs = picks.map(el=> Number(el.dataset.idx)).filter(n=>Number.isFinite(n)).sort((a,b)=>b-a);
+      const chosen=[];
+      for(const i of idxs){ if(pool[i]){ chosen.push(pool[i]); pool.splice(i,1); } }
+      p.carrying = chosen.map(g=> ({...g, origin:'west'}));
+    } else {
+      const ids = picks.map(el=> el.dataset.id);
+      p.carrying = ids.map(id=> ({...source.find(g=>g.id===id), origin: 'east'}));
+      p.remainingEast = (p.remainingEast||[]).filter(id=> !ids.includes(id));
+    }
+    updatePanels();
+    showOverlay(`Loaded ${type==='west'?'western':'eastern'} goods`, {type:'event', player:p.id, desc: p.carrying.map(g=>g.name).join(', ')});
+    if(p.extraPick){ p.extraPick = 0; }
+    // After loading, set travel direction toward the opposite side
+    p.direction = (type==='west') ? 'east' : 'west';
+    modal.style.display='none';
+    primary.removeEventListener('click', handler);
+    if(typeof onDone==='function') onDone();
+  };
+  primary.textContent = 'Confirm';
+  primary.disabled = true;
+  primary.addEventListener('click', handler);
+  // Enable confirm only when at least one good selected
+  list.addEventListener('change', ()=>{
+    const any = list.querySelector('input:checked');
+    primary.disabled = !any;
+  });
+  // Also handle Enter key to confirm when enabled
+  modal.onkeydown = (e)=>{ if(e.key==='Enter' && !primary.disabled){ handler(); } };
+  cancel.onclick = ()=>{ modal.style.display='none'; primary.removeEventListener('click', handler); };
+}
+
+// Goods cycle selection modal
+function openCycleMarket(p, type){
+  // Redirect to fullscreen modal implementation
+  return openGoodsModal(p, type);
+}
+
+// Pick-a-card event when landing on main cities
+function openPickCardModal(p, onDone){
+  const modal = document.getElementById('fullModal');
+  const t = document.getElementById('modalTitle');
+  const b = document.getElementById('modalBody');
+  const primary = document.getElementById('modalPrimary');
+  const cancel = document.getElementById('modalCancel');
+  if(!modal||!t||!b||!primary||!cancel) { if(typeof onDone==='function') onDone(); return; }
+  modal.style.display='flex';
+  t.textContent = `Pick a Card — Player ${p.id}`;
+  primary.textContent = 'Okay';
+  primary.disabled = true;
+  const deck = CITY_CARD_EVENTS;
+  b.innerHTML = `
+    <div class="pick-cards">
+      ${[0,1,2].map(i=>`
+        <div class="pick-card" data-i="${i}">
+          <div class="card-inner">
+            <div class="card-front" aria-label="Face down card">🂠</div>
+            <div class="card-back" aria-live="polite">
+              <div class="body">
+                <div class="title"></div>
+                <div class="tiny desc"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="tiny" id="cardHint" style="text-align:center; opacity:.9">Pick one card to reveal an event.</div>
+  `;
+  const cards = Array.from(b.querySelectorAll('.pick-card'));
+  let revealed = false; let chosenEv = null; let chosenCard = null;
+  function finish(){
+    modal.style.display='none';
+    primary.disabled = true;
+    primary.onclick = null;
+    cancel.onclick = null;
+    if(typeof onDone==='function') onDone();
+  }
+  function reveal(card, ev){
+    revealed = true; chosenEv = ev; chosenCard = card;
+    // Fill back content
+    const title = card.querySelector('.card-back .title');
+    const desc = card.querySelector('.card-back .desc');
+    if(title) title.textContent = ev.t;
+    if(desc) desc.textContent = ev.d;
+    // Flip animation
+    card.classList.add('flipped','full');
+    // Hide the other cards and update hint
+    cards.forEach(c=>{ if(c!==card) c.style.display='none'; });
+    const hint = document.getElementById('cardHint'); if(hint) hint.textContent = 'Click Okay to continue';
+    primary.disabled = false;
+  }
+  cards.forEach(card => {
+    card.addEventListener('click', ()=>{
+      if(revealed) return;
+      const ev = sample(deck);
+      reveal(card, ev);
+    }, {once:true});
+  });
+  primary.onclick = ()=>{
+    if(chosenEv && typeof chosenEv.f === 'function'){
+      chosenEv.f(p);
+      showOverlay(`Card: <b>${chosenEv.t}</b>`, {type:'event', player:p.id, desc: chosenEv.d});
+    }
+    finish();
+  };
+  cancel.onclick = ()=>{ if(revealed) finish(); };
+}
+
+// Two-card city modal (offshoot specialties)
+function openTwoCardModal(p, onDone){
+  const modal = document.getElementById('fullModal');
+  const t = document.getElementById('modalTitle');
+  const b = document.getElementById('modalBody');
+  const primary = document.getElementById('modalPrimary');
+  const cancel = document.getElementById('modalCancel');
+  if(!modal||!t||!b||!primary||!cancel) { if(typeof onDone==='function') onDone(); return; }
+  modal.style.display='flex';
+  t.textContent = `City Specialty — Pick a Card`;
+  primary.textContent = 'Okay';
+  primary.disabled = true;
+  // Sample two events
+  const deck = CITY_CARD_EVENTS;
+  const evA = sample(deck); let evB = sample(deck); if(evB===evA && deck.length>1){ evB = sample(deck); }
+  b.innerHTML = `
+    <div class="pick-cards">
+      ${[0,1].map(i=>`
+        <div class="pick-card" data-i="${i}">
+          <div class="card-inner">
+            <div class="card-front" aria-label="Face down card">🂠</div>
+            <div class="card-back" aria-live="polite">
+              <div class="body">
+                <div class="title"></div>
+                <div class="tiny desc"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="tiny" id="cardHint2" style="text-align:center; opacity:.9">Pick 1 of 2 cards.</div>
+  `;
+  const cards = Array.from(b.querySelectorAll('.pick-card'));
+  let chosenEv = null;
+  function finish(){ modal.style.display='none'; primary.disabled = true; primary.onclick = null; cancel.onclick = null; if(typeof onDone==='function') onDone(); }
+  function reveal(card, ev){
+    chosenEv = ev;
+    const title = card.querySelector('.card-back .title');
+    const desc = card.querySelector('.card-back .desc');
+    if(title) title.textContent = ev.t;
+    if(desc) desc.textContent = ev.d;
+    card.classList.add('flipped','full');
+    cards.forEach(c=>{ if(c!==card) c.style.display='none'; });
+    const hint = document.getElementById('cardHint2'); if(hint) hint.textContent = 'Click Okay to continue';
+    primary.disabled = false;
+  }
+  cards.forEach((card, idx)=>{
+    card.addEventListener('click', ()=>{
+      if(chosenEv) return;
+      reveal(card, idx===0 ? evA : evB);
+    }, {once:true});
+  });
+  primary.onclick = ()=>{
+    if(chosenEv && typeof chosenEv.f === 'function'){
+      chosenEv.f(p);
+      showOverlay(`Card: <b>${chosenEv.t}</b>`, {type:'event', player:p.id, desc: chosenEv.d});
+    }
+    finish();
+  };
+  cancel.onclick = ()=>{ if(chosenEv) finish(); };
+}
+
+// Cycle goods delivery system
+function ensureRemainingInit(p){
+  if(!p.remainingEast || p.remainingEast.length===0){ p.remainingEast = GOODS.map(g=>g.id); }
+  if(!p.remainingWest || p.remainingWest.length===0){ p.remainingWest = WEST_GOODS.map(g=>g.id); }
+}
+
+function legacySellIfDestination_UNUSED(p){
+  const nodeName = NODES[p.node].name;
+  ensureRemainingInit(p);
+  // Deliver west goods at Chang'an
+  if(p.direction==='east' && nodeName==="Chang'an" && p.carrying && p.carrying.length){
+    let earned=0; let details=[];
+    for(const g of p.carrying){ const val = Math.round((g.base||6) * (3.0 + Math.random()*0.6)); earned += val; details.push(`${g.name} × ${val}`); p.remainingWest = p.remainingWest.filter(id=>id!==g.id); }
+    earned += (p.deliverBonus||0); p.deliverBonus=0;
+    p.coins += earned; updateCoins(); coinPop(p, earned);
+    const name = p.name || `Player ${p.id}`;
+    showOverlay(`${name} delivered to <b>Chang’an</b> (+${earned})`, {type:'sell', player:p.id, desc: (details.length? `Items: ${details.join(', ')}`: '') });
+    log(`Player ${p.id} delivered west goods in Chang'an: ${details.join(', ')} (+${earned}).`);
+    p.carrying = [];
+    // Prompt for new east goods to take west
+    openGoodsModal(p, 'east');
+    p.direction='west';
+    return;
+  }
+  // Deliver east goods at Rome/Alexandria
+  if(p.direction==='west' && (nodeName==='Rome' || nodeName==='Alexandria') && p.carrying && p.carrying.length){
+    let earned=0; let details=[];
+    for(const g of p.carrying){ const mult = (g.dest && g.dest[nodeName]) ? g.dest[nodeName] : 1.5; const val = Math.round((g.base||6)*(mult + Math.random()*0.5)); earned += val; details.push(`${g.name} × ${val}`); p.remainingEast = p.remainingEast.filter(id=>id!==g.id); }
+    earned += (p.deliverBonus||0); p.deliverBonus=0;
+    p.coins += earned; updateCoins(); coinPop(p, earned);
+    const name = p.name || `Player ${p.id}`;
+    showOverlay(`${name} delivered in <b>${nodeName}</b> (+${earned})`, {type:'sell', player:p.id, desc: (details.length? `Items: ${details.join(', ')}`: '') });
+    log(`Player ${p.id} sold east goods in ${nodeName}: ${details.join(', ')} (+${earned}).`);
+    p.carrying = [];
+    // Prompt for new west goods to take east
+    openGoodsModal(p, 'west');
+    p.direction='east';
+    return;
+  }
+  // If arrived at endpoints without cargo, prompt selection
+  if(p.direction==='west' && (nodeName==='Rome' || nodeName==='Alexandria') && (!p.carrying || p.carrying.length===0)){
+    openGoodsModal(p, 'west');
+    p.direction='east';
+    return;
+  }
+  if(p.direction==='east' && nodeName==="Chang'an" && (!p.carrying || p.carrying.length===0)){
+    openGoodsModal(p, 'east');
+    p.direction='west';
+    return;
+  }
+}
+
+// Event decks for explicit choice
+const HAZARD_EVENTS = [
+  {t:'Bandits!', d:'Lose 2 coins.', f:(p)=>{ p.coins=Math.max(0,p.coins-2); updateCoins(); }},
+  {t:'Sandstorm', d:'Lose a turn.', f:(p)=>{ p.skip=true; p.skipReason='Sandstorm: you will miss your next turn.'; }},
+  {t:'Lucky Find', d:'Gain 5 coins.', f:(p)=>{ p.coins+=5; updateCoins(); }},
+];
+const CULTURAL_EVENTS = [
+  {t:'Monks Blessing', d:'Gain +3 coins (+2 if Scrolls).', f:(p)=>{ let gain=3; if(p.caravan==='Scrolls') gain=5; p.coins+=gain; updateCoins(); }},
+  {t:'Envoy Favor', d:'Gain +3 coins (+2 if Silk).', f:(p)=>{ let gain=3; if(p.caravan==='Silk') gain=5; p.coins+=gain; updateCoins(); }},
+  {t:'Festival Market', d:'Next delivery +3 coins.', f:(p)=>{ p.deliverBonus = (p.deliverBonus||0) + 3; }},
+];
+
+// City deck: friendly, readable events for big hubs
+const CITY_CARD_EVENTS = [
+  {t:'Governor’s Gift', d:'City officials reward helpful traders. Gain 3 coins.', f:(p)=>{ p.coins+=3; updateCoins(); }},
+  {t:'Skilled Guide', d:'Hire a local guide. +1 to your next roll.', f:(p)=>{ p.bonus = (p.bonus||0) + 1; }},
+  {t:'Temple Blessing', d:'Blessings bring small donations. Gain 2 coins.', f:(p)=>{ p.coins+=2; updateCoins(); }},
+  {t:'Market Boom', d:'Crowds are buying! Next delivery +3 coins.', f:(p)=>{ p.deliverBonus = (p.deliverBonus||0) + 3; }},
+  {t:'Caravan Repairs', d:'Pay for quick repairs. Lose 1 coin.', f:(p)=>{ p.coins = Math.max(0,(p.coins||0)-1); updateCoins(); }},
+  {t:'Customs Tax', d:'Local tax collectors take a fee. Lose 2 coins.', f:(p)=>{ p.coins = Math.max(0,(p.coins||0)-2); updateCoins(); }},
+  {t:'Helpful Merchant', d:'A merchant shares tips. Draw 1 extra good suited to this side.', f:(p)=>{
+    const nodeName = NODES[p.node].name;
+    const westSet = new Set(['Antioch','Rome','Alexandria','Ctesiphon','Palmyra']);
+    if(westSet.has(nodeName)){
+      const g = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)];
+      p.goods.push({...g, origin:'west'});
+    } else {
+      const g = GOODS[Math.floor(Math.random()*GOODS.length)];
+      p.goods.push({...g, origin:'east', weight:1});
+    }
+    updatePanels();
+  }},
+  {t:'Pack Mule', d:'Carry one extra good on your next load (pick 3).', f:(p)=>{ p.extraPick = (p.extraPick||0) + 1; }},
+  {t:'Special Contract', d:'A city official offers a contract for bonus coins.', f:(p)=>{ genContract(p); updatePanels(); }}
+];
+
+// Override: drawEvent to choose deck
+function drawEvent(p){
+  $('#factsBox').innerHTML = `
+    <b>Choose an Event Deck:</b><br>
+    <button id="hazBtn">Red Deck (Hazards)</button>
+    <button id="cultBtn">Blue Deck (Cultural)</button>
+  `;
+  document.getElementById('hazBtn').onclick=()=>{
+    const ev=sample(HAZARD_EVENTS);
+    $('#factsBox').innerHTML = `<b>Event:</b> ${ev.t} — ${ev.d}`;
+    showOverlay(`Event: <b>${ev.t}</b>`, {type:'event', player:p.id, desc: ev.d});
+    ev.f(p);
+  };
+  document.getElementById('cultBtn').onclick=()=>{
+    const ev=sample(CULTURAL_EVENTS);
+    $('#factsBox').innerHTML = `<b>Event:</b> ${ev.t} — ${ev.d}`;
+    showOverlay(`Event: <b>${ev.t}</b>`, {type:'event', player:p.id, desc: ev.d});
+    ev.f(p);
+  };
+}
+
+// Legacy string-based event handler (disabled)
+function drawEvent_UNUSED(p){
+  // Use new EVENTS array of strings, just display and do simple effects for some events
+  if(Math.random()<0.65){
+    let ev = sample(EVENTS);
+    // Bandit protection for first 2 turns per player (skip bandits for first 2 turns)
+    let guard = 0;
+    while(ev.startsWith("Bandits") && (p.turnsTaken||0) < 2 && guard < 5){
+      ev = sample(EVENTS); guard++;
+    }
+    if(ev.startsWith("Bandits") && (p.turnsTaken||0) < 2){
+      $('#factsBox').innerHTML = `<b>Event:</b> Protected from bandits for first 2 turns.`;
+      return;
+    }
+    $('#factsBox').innerHTML = `<b>Event:</b> ${ev}`;
+    showOverlay(`Event`, {type:'event', player:p.id, ms:2600, desc: ev});
+    // Simple effect mapping for new event strings
+    if(ev.startsWith("Bandits raid")) {
+      if(p.coins>=2){p.coins-=2; log(`Player ${p.id} lost 2 coins to bandits.`);} else {p.coins=0;}
+      updateCoins();
+    } else if(ev.startsWith("Nomads demand tribute")) {
+      if(p.coins>=1){p.coins-=1; log(`Player ${p.id} lost 1 coin to nomads.`);} else {p.coins=0;}
+      updateCoins();
+    } else if(ev.startsWith("Sandstorm scatters")) {
+      if(p.goods && p.goods.length){ const lost = p.goods.pop(); log(`Player ${p.id} lost ${lost.name} to sandstorm.`);} else { log(`Player ${p.id} had no goods to lose.`);}
+      updatePanels();
+    } else if(ev.startsWith("Flooded river")) {
+      p.skip = true;
+    } else if(ev.startsWith("Nomads share their water")) {
+      p.coins += 1; updateCoins();
+    } else if(ev.startsWith("Friendly monks offer blessings")) {
+      p.bonus = (p.bonus||0) + 1;
+      // The effect will be to add +1 coin to next sale, handled in sellIfDestination if bonus is set
+    } else if(ev.startsWith("Merchant caravan joins")) {
+      // Draw 1 extra good if possible
+      // We'll add a random good to player's goods if space allows
+      if(p.goods.length < p.capacity){
+        const good = GOODS[Math.floor(Math.random()*GOODS.length)];
+        p.goods.push({...good, origin:'east', weight:1});
+        log(`Player ${p.id} gained 1 extra good: ${good.name}.`);
+        updatePanels();
+      }
+    }
+  } else {
+    $('#factsBox').innerHTML = `<b>Fact:</b> ${sample(FACTS)}`;
+  }
+}
+
+function moveBonusNow(p){
+  // move to a random adjacent node if possible
+  const opts = EDGES[p.node];
+  if(opts && opts.length){ const choice = sample(opts); p.node = choice; updateTokens(); log(`Player ${p.id} advances to ${NODES[choice].name}.`);} else { log('No path forward.'); }
+}
+
+function sellIfDestination(p){
+  const nodeName = NODES[p.node].name;
+  // selling allowed at Antioch, Rome, Alexandria, Ctesiphon, Samarkand, Chang'an
+  const marketNodes = new Set(['Antioch','Rome','Alexandria','Ctesiphon','Samarkand',"Chang'an", 'Bukhara','Herat','Tyre','Petra']);
+  // UI feedback: update last sale element (always, even if no sale)
+  let lastSaleId = p.id === 1 ? "p1lastSale" : "p2lastSale";
+  let lastSaleEl = document.getElementById(lastSaleId);
+  // If can't sell here or has no goods/carrying, clear last sale
+  if(!marketNodes.has(nodeName) || (p.goods.length===0 && (!p.carrying || p.carrying.length===0))) {
+    if (lastSaleEl) lastSaleEl.textContent = "–";
+    return;
+  }
+  // Prevent repeated selling at the same market per player
+  if((p.soldAt||[]).includes(nodeName)){
+    if(lastSaleEl) lastSaleEl.textContent = '–';
+    showOverlay('Returning to Market', {type:'event', player:p.id, desc:`No new sale in ${nodeName} (already sold here).`});
+    return;
+  }
+  // If no packed goods array but we are carrying items (cycle mode), sell those
+  if(p.goods.length===0 && p.carrying && p.carrying.length>0){
+    let earned=0; let details=[]; let eastSoldCount=0;
+    if(nodeName==="Chang'an"){
+      for(const g of p.carrying){
+        const isWest = g.origin==='west';
+        const mult = isWest ? 3.0 + Math.random()*0.6 : ((g.dest && g.dest[nodeName]) || 1.2);
+        const val = Math.round((g.base||6)*mult);
+        earned += val; details.push(`${g.name} × ${val}`);
+        if(g.origin!=='west') eastSoldCount++;
+        // Remove from remaining lists
+        if(g.origin==='west'){ p.remainingWest = (p.remainingWest||[]).filter(id=>id!==g.id); }
+        else { p.remainingEast = (p.remainingEast||[]).filter(id=>id!==g.id); }
+      }
+    } else {
+      for(const g of p.carrying){
+        const baseMult = (g.dest && g.dest[nodeName]) ? g.dest[nodeName] : 1.5;
+        const mult = baseMult + (Math.random()*0.5);
+        const val = Math.round((g.base||6)*mult);
+        earned += val; details.push(`${g.name} × ${val}`);
+        if(g.origin!=='west') eastSoldCount++;
+        if(g.origin==='west'){ p.remainingWest = (p.remainingWest||[]).filter(id=>id!==g.id); }
+        else { p.remainingEast = (p.remainingEast||[]).filter(id=>id!==g.id); }
+      }
+    }
+    earned += (p.deliverBonus||0); p.deliverBonus=0;
+    p.coins += earned; updateCoins(); if(earned>0) coinPop(p, earned);
+    const name = p.name || `Player ${p.id}`;
+    if(earned>0){
+      const breakdown = details.length ? `Items: ${details.join(', ')}` : '';
+      showOverlay(`${name} sold goods in <b>${nodeName}</b> for <b>+${earned}</b>`, {type:'sell', player:p.id, desc: breakdown, ms:3200});
+    }
+    log(`Player ${p.id} sold carried goods in ${nodeName}: ${details.join(', ')} (total +${earned}).`);
+    if(lastSaleEl) lastSaleEl.textContent = (earned>0 && details.length ? `Sold ${details.join(', ')} → +${earned} coins` : '–');
+    // Seed west markets when selling eastern goods in western hubs
+    const westernHubs = new Set(['Antioch','Rome','Alexandria','Ctesiphon']);
+  if(westernHubs.has(nodeName) && eastSoldCount>0){
+    const pool = nodeMarket[nodeName] && nodeMarket[nodeName].westGoods;
+    if(pool){
+      const add = Math.max(1, Math.min(2, eastSoldCount));
+      for(let i=0;i<add;i++){ const g = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)]; pool.push({...g}); }
+      $('#factsBox').innerHTML = `<b>Market:</b> Local merchants in ${nodeName} restock ${add} western good(s).`;
+    }
+    // Count a completed east→west run
+    roundRuns += 1;
+    showOverlay('Round Complete', {type:'event', player:p.id, desc:`Runs: ${roundRuns}/${roundLimit}`});
+    checkEndCondition();
+  }
+    p.carrying = [];
+    // Handle contracts for carried sale as well
+    if(p.contract){
+      const soldNames = details.join(' ');
+      const meetsNode = nodeName === p.contract.dest;
+      if(meetsNode && soldNames.includes(p.contract.good.name)){
+        p.coins += p.contract.bonus; updateCoins();
+        showOverlay(`Contract fulfilled! <b>+${p.contract.bonus}</b>`, {type:'contract', player:p.id, desc:`${p.contract.good.name} delivered to ${nodeName}.`, ms:3200});
+        log(`Contract fulfilled! Bonus +${p.contract.bonus} in ${nodeName}.`);
+        p.contract = null; updatePanels();
+      }
+    }
+    // Team contracts in co-op
+    if(coopMode && teamContracts && teamContracts.length){
+      for(let i=teamContracts.length-1;i>=0;i--){
+        const c = teamContracts[i];
+        if(nodeName === c.dest && (details.join(' ').includes(c.good.name))){
+          p.coins += c.bonus; updateCoins();
+          showOverlay(`Team contract complete! <b>+${c.bonus}</b>`, {type:'contract', player:p.id, desc:`${c.good.name} delivered to ${c.dest}.`, ms:3200});
+          log(`Team Contract fulfilled! ${c.good.name} delivered to ${c.dest} (+${c.bonus}).`);
+          teamContracts.splice(i,1);
+        }
+      }
+    }
+    // record sale location
+    p.soldAt = Array.from(new Set([...(p.soldAt||[]), nodeName]));
+    return;
+  }
+  let earned=0; let details=[]; let eastSoldCount=0;
+  for(const g of p.goods){
+    let val=0;
+    if(nodeName==="Chang'an"){ // special pricing for west goods delivered east
+      const isWest = g.origin==='west';
+      const mult = isWest ? 3.0 + Math.random()*0.6 : ((g.dest && g.dest[nodeName]) || 1.2);
+      val = Math.round((g.base||6)*mult);
+    } else {
+      const baseMult = (g.dest && g.dest[nodeName]) ? g.dest[nodeName] : 1.5;
+      const mult = baseMult + (Math.random()*0.5);
+      val = Math.round((g.base||6)*mult);
+    }
+    if(g.origin!=='west') eastSoldCount++;
+    earned += val; details.push(`${g.name} × ${val}`);
+  }
+  // Bonus coin for next sale if p.bonus was set by event
+  if(p.bonus && earned>0){
+    earned += p.bonus;
+    log(`Player ${p.id} earned +${p.bonus} bonus coin from blessing.`);
+    p.bonus = 0;
+  }
+  p.coins += earned; updateCoins();
+  // --- Coin float animation effect ---
+  if(earned > 0){
+    // Floating gold "+X" above coin counter
+    const coinEl = document.createElement('div');
+    coinEl.className = 'coin-float';
+    coinEl.textContent = `+${earned}`;
+    const target = p.id === 1 ? document.getElementById('p1coins') : document.getElementById('p2coins');
+    if(target){
+      const rect = target.getBoundingClientRect();
+      coinEl.style.left = rect.left + window.scrollX + 'px';
+      coinEl.style.top = rect.top + window.scrollY + 'px';
+      document.body.appendChild(coinEl);
+      setTimeout(()=>coinEl.remove(),1000);
+    }
+  }
+  if(earned>0){
+    const name = p.name || `Player ${p.id}`;
+    const breakdown = details.length ? `Items: ${details.join(', ')}` : '';
+    showOverlay(`${name} sold goods in <b>${nodeName}</b> for <b>+${earned}</b>`, {type:'sell', player:p.id, desc: breakdown, ms:3200});
+  }
+  log(`Player ${p.id} sold goods in ${nodeName}: ${details.join(', ')} (total +${earned}).`);
+  // UI feedback: update last sale breakdown
+  if(lastSaleEl) {
+    if (earned > 0 && details.length > 0) {
+      // Human readable: "Sold Silk × 20, Jade × 15 → +35 coins"
+      lastSaleEl.textContent = `Sold ${details.join(', ')} → +${earned} coins`;
+    } else {
+      lastSaleEl.textContent = "–";
+    }
+  }
+  if(p.contract){
+    const soldNames = details.join(' ');
+    const isWestType = p.contract.type==='west';
+    const meetsNode = nodeName === p.contract.dest;
+    if(meetsNode && soldNames.includes(p.contract.good.name)){
+      p.coins += p.contract.bonus; updateCoins();
+      showOverlay(`Contract fulfilled! <b>+${p.contract.bonus}</b>`, {type:'contract', player:p.id, desc:`${p.contract.good.name} delivered to ${nodeName}.`, ms:3200});
+      log(`Contract fulfilled! Bonus +${p.contract.bonus} in ${nodeName}.`);
+      p.contract = null; updatePanels();
+    }
+  }
+  // Team contracts in co-op
+  if(coopMode && teamContracts && teamContracts.length){
+    for(let i=teamContracts.length-1;i>=0;i--){
+      const c = teamContracts[i];
+      if(nodeName === c.dest && details.join(' ').includes(c.good.name)){
+        p.coins += c.bonus; updateCoins();
+        showOverlay(`Team contract complete! <b>+${c.bonus}</b>`, {type:'contract', player:p.id, desc:`${c.good.name} delivered to ${c.dest}.`, ms:3200});
+        log(`Team Contract fulfilled! ${c.good.name} delivered to ${c.dest} (+${c.bonus}).`);
+        teamContracts.splice(i,1);
+      }
+    }
+  }
+  p.goods = []; // emptied after selling
+  // record sale location
+  p.soldAt = Array.from(new Set([...(p.soldAt||[]), nodeName]));
+  // Selling east goods in western markets seeds local west goods
+  const westernHubs = new Set(['Antioch','Rome','Alexandria','Ctesiphon']);
+  if(westernHubs.has(nodeName) && eastSoldCount>0){
+    const pool = nodeMarket[nodeName] && nodeMarket[nodeName].westGoods;
+    if(pool){
+      const add = Math.max(1, Math.min(2, eastSoldCount));
+      for(let i=0;i<add;i++){ const g = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)]; pool.push({...g}); }
+      $('#factsBox').innerHTML = `<b>Market:</b> Local merchants in ${nodeName} restock ${add} western good(s).`;
+    }
+    // Count a completed east→west run
+    roundRuns += 1;
+    showOverlay('Round Complete', {type:'event', player:p.id, desc:`Runs: ${roundRuns}/${roundLimit}`});
+    checkEndCondition();
+  }
+}
+
+// --- Hazards as cards on tiles ---
+function drawHazardCard(p){
+  const card = sample(HAZARD_CARDS);
+  $('#factsBox').innerHTML = `<b>Hazard Card:</b> ${card.t} — ${card.d}`;
+  showOverlay(`Hazard: <b>${card.t}</b>`, {type:'card', player:p.id, desc: card.d});
+  log(`${card.t}: ${card.d}`);
+  // ensure status bag exists
+  p.status = p.status || {extraCostNext:0,floodAntioch:0,outpostPenalty:0};
+  card.f(p);
+}
+
+// --- Cycle goods init ---
+let p1Locked=false, p2Locked=false;
+
+// --- Turn controls ---
+$('#p1rollBtn').onclick = ()=>handleRoll(0);
+$('#p2rollBtn').onclick = ()=>handleRoll(1);
+$('#p1endBtn').onclick  = ()=>handleEnd(0);
+$('#p2endBtn').onclick  = ()=>handleEnd(1);
+
+// --- Hire Guide controls ---
+document.getElementById('p1resBtn').onclick = ()=>{
+  const p = players[0];
+  if (p.coins > 0) {
+    p.coins -= 1;
+    p.bonus = (p.bonus || 0) + 1;
+    updateCoins();
+    updatePanels();
+    log(`Player 1 hired a guide for their next roll (+1, ‑1 coin).`);
+    showOverlay(`Guide hired!`, {type:'event', player:1, desc:`You gain +1 to your next roll.`, ms:2200});
+  } else {
+    log(`Player 1 tried to hire a guide but has no coins.`);
+    showOverlay(`Not enough coins`, {type:'event', player:1, desc:`You need at least 1 coin to hire a guide.`, ms:1800});
+  }
+};
+(document.getElementById('p2resBtn')||{}).onclick = ()=>{
+  const p = players[1];
+  if (p.coins > 0) {
+    p.coins -= 1;
+    p.bonus = (p.bonus || 0) + 1;
+    updateCoins();
+    updatePanels();
+    log(`Player 2 hired a guide for their next roll (+1, ‑1 coin).`);
+    showOverlay(`Guide hired!`, {type:'event', player:2, desc:`You gain +1 to your next roll.`, ms:2200});
+  } else {
+    log(`Player 2 tried to hire a guide but has no coins.`);
+    showOverlay(`Not enough coins`, {type:'event', player:2, desc:`You need at least 1 coin to hire a guide.`, ms:1800});
+  }
+};
+// Load UI controls — open fullscreen picker for west goods
+const p1loadBtn = document.getElementById('p1loadBtn'); if(p1loadBtn){ p1loadBtn.addEventListener('click', ()=>openGoodsModal(players[0], 'west')); }
+const p2loadBtn = document.getElementById('p2loadBtn'); if(p2loadBtn){ p2loadBtn.addEventListener('click', ()=>openGoodsModal(players[1], 'west')); }
+
+// Capacity helpers and loading logic
+function currentLoad(p){ return p.goods.reduce((sum,g)=> sum + (g.weight||1), 0); }
+
+function handleRoll(idx){
+  if(idx!==currentPlayer) return;
+  const p = players[currentPlayer];
+  // prevent multiple rolls before moving
+  if(awaitingMove){ showOverlay('Choose a glowing city to move', {type:'event', player:p.id}); return; }
+  // Require goods selection at endpoints before rolling
+  const nodeName = NODES[p.node].name;
+  if((p.direction==='west' && (nodeName==='Rome' || nodeName==='Alexandria') && (!p.carrying || p.carrying.length===0))){
+    openGoodsModal(p,'west');
+    showOverlay('Choose western goods to carry east', {type:'event', player:p.id});
+    return;
+  }
+  if((p.direction==='east' && nodeName==="Chang'an" && (!p.carrying || p.carrying.length===0))){
+    openGoodsModal(p,'east');
+    showOverlay('Choose eastern goods to carry west', {type:'event', player:p.id});
+    return;
+  }
+  // Supplies do not block rolling; no message.
+  if(p.skip){
+    const reason = p.skipReason || 'You lose this turn.';
+    log(`Player ${p.id} loses this turn. ${reason}`);
+    showOverlay('Turn Skipped', {type:'event', player:p.id, desc: reason});
+    p.skip=false; p.skipReason=''; endTurn(); return;
+  }
+  // dramatic dice spin with spinner and pulse
+  const start = Date.now();
+  const spinMs = 1200;
+  const sp = currentPlayer===0 ? document.getElementById('spinner1') : document.getElementById('spinner2');
+  if(sp) sp.style.display = '';
+  // disable current player's roll while awaiting move
+  const rollBtn = document.getElementById(`p${p.id}rollBtn`);
+  if(rollBtn) rollBtn.disabled = true;
+  const rP1 = document.getElementById('rollOut1'); const rP2 = document.getElementById('rollOut');
+  if(rP1) rP1.classList.add('rolling'); if(rP2) rP2.classList.add('rolling');
+  const spinTimer = setInterval(()=>{
+    const t = Date.now()-start;
+    const temp = randInt(1,4);
+    if(rP1) rP1.textContent = temp;
+    if(rP2) rP2.textContent = temp;
+    if(t > spinMs){
+      clearInterval(spinTimer);
+      rolled = randInt(1,4); // slightly longer moves to reach hubs
+      if(p.bonus){
+        rolled += p.bonus;
+        log(`Player ${p.id} uses a +${p.bonus} guide bonus.`);
+        p.bonus = 0;
+      }
+      if(rP2) rP2.textContent = rolled;
+      if(rP1) rP1.textContent = rolled;
+      if(sp) sp.style.display = 'none';
+      if(rP1) rP1.classList.remove('rolling'); if(rP2) rP2.classList.remove('rolling');
+      const name = players[currentPlayer].name || `Player ${p.id}`;
+      showOverlay(`${name} rolled <b>${rolled}</b>`, {type:'roll', player:p.id, desc:'Choose a glowing city to move.'});
+      log(`Player ${p.id} rolled ${rolled}. Choose a destination.`);
+      // Focus camera on current player's area for their move
+      zoomFocusOnPlayer(p, 500);
+      highlightReachable();
+      awaitingMove = true;
+      // if no moves, auto-end turn
+      if(reachable.size===0){
+        log('No reachable cities. Turn ends.');
+        drawEvent(p);
+        awaitingMove = false;
+        endTurn();
+      }
+    }
+  }, 70);
+}
+
+function handleEnd(idx){
+  if(idx!==currentPlayer) return;
+  const p = players[currentPlayer];
+  sellIfDestination(p);
+  drawEvent(p);
+  endTurn();
+}
+
+function endTurn(){
+  clearReachable();
+  const prevId = players[currentPlayer].id;
+  document.getElementById(`p${prevId}endBtn`).disabled = true;
+  $('#rollOut').textContent = '–'; const r1 = document.getElementById('rollOut1'); if(r1) r1.textContent = '–';
+  const sp1 = document.getElementById('spinner1'); if(sp1) sp1.style.display='none';
+  const sp2 = document.getElementById('spinner2'); if(sp2) sp2.style.display='none';
+  awaitingMove = false;
+  // increment turns taken for the player who just finished
+  players[currentPlayer].turnsTaken = (players[currentPlayer].turnsTaken||0) + 1;
+  turnCount += 1; checkEndCondition();
+  currentPlayer = currentPlayer===0 ? 1 : 0;
+  setTurnLabel(); applyActiveTokenClass();
+  const nextId = players[currentPlayer].id;
+  // Zoom out after each turn; next player will zoom in after their roll
+  zoomFull(500);
+  // disable both roll buttons, then enable only the next player's
+  const r1b = document.getElementById('p1rollBtn'); if(r1b) r1b.disabled = true;
+  const r2b = document.getElementById('p2rollBtn'); if(r2b) r2b.disabled = true;
+  document.getElementById(`p${nextId}rollBtn`).disabled = false;
+  document.getElementById(`p${nextId}endBtn`).disabled = true;
+  // close any open panels
+  // no banner progression; map remains centered with modal overlays
+}
+
+// Node click handler for movement (attach once per node)
+function registerNodeClicks(){
+  $all('.node').forEach(n=>{
+    if(n.dataset.bound) return;
+    n.dataset.bound = '1';
+    n.addEventListener('click', ()=>{
+      const id = +n.dataset.id;
+      // Always show city info on click
+      showCityInfo(id);
+      if(!reachable.has(id)) return;
+      const p = players[currentPlayer];
+      p.status = p.status || {extraCostNext:0,floodAntioch:0,outpostPenalty:0};
+      const from = p.node;
+      // Animate hop along each node, then resolve arrival
+      const path = shortestPathNodes(from, id);
+      // Track camera as we hop along the path
+      let camStep = 0;
+      const followPath = (idx)=>{
+        if(idx>=path.length) return;
+        const nid = path[idx];
+        const pos = getNodePos(nid);
+        if(pos) zoomFocusOnPoint(pos[0], pos[1], 400);
+      };
+      followPath(0);
+      animatePathHop(p, path, ()=>{
+        p.node = id; updateTokens(); updatePanels();
+        log(`Player ${p.id} moved to ${NODES[id].name}.`);
+        // per-card hazard node penalties
+        if(id===6 && p.status.floodAntioch>0){
+          p.skip=true; p.status.floodAntioch=0;
+          log('Flooded River: you will lose your next turn due to Antioch conditions.');
+          showOverlay('Turn Lost: Flooded Crossing', {type:'event', player:p.id, desc:'You will miss your next turn.'});
+        }
+        if(NODES[id].name==='Outpost' && p.status.outpostPenalty>0){
+          p.skip=true; p.status.outpostPenalty=0;
+          log('Caravan Stampede: unsafe outpost — you will skip next turn.');
+          showOverlay('Turn Lost: Hazard', {type:'event', player:p.id, desc:'You will miss your next turn.'});
+        }
+      // landing on a hazard tile draws a card
+      if(hazardNodes.has(id)){
+        drawHazardCard(p);
+      }
+      // City specialties: any named city shows a card
+      if(NAMED_CITY_IDS.has(id)){
+        const afterCity=()=>{
+          sellIfDestination(p);
+          const pid = p.id;
+          document.getElementById(`p${pid}endBtn`).disabled=true;
+          document.getElementById(`p${pid}rollBtn`).disabled=true;
+          awaitingMove = false;
+          endTurn();
+        };
+        if(OFFSHOOT_CITY_IDS.has(id)) openTwoCardModal(p, afterCity);
+        else openPickCardModal(p, afterCity);
+        return;
+      }
+      // Otherwise: regular resolve with generic event
+      sellIfDestination(p);
+      drawEvent(p);
+        const pid = p.id;
+        document.getElementById(`p${pid}endBtn`).disabled=true;
+        document.getElementById(`p${pid}rollBtn`).disabled=true;
+        awaitingMove = false;
+        endTurn();
+      });
+      // Also nudge camera as each mini-hop begins
+      // Hook into per-hop by patching animatePathHop's internal callback via timeouts
+      // Simple approach: schedule camera updates in sequence roughly matching hop duration
+      const hopMs = 520; // duration in animateTokenMove
+      for(let i=1;i<path.length;i++){
+        setTimeout(()=>{
+          const pos = getNodePos(path[i]); if(pos) zoomFocusOnPoint(pos[0], pos[1], 380);
+        }, i*hopMs*0.9);
+      }
+    });
+  });
+}
+registerNodeClicks();
+
+// init + controls
+function updateTitles(){
+  const t1 = document.getElementById('p1Title'); if(t1) t1.textContent = players[0].name || 'Player 1';
+  const t2 = document.getElementById('p2Title'); if(t2) t2.textContent = players[1].name || 'Player 2';
+}
+// top overlay helper
+let overlayTimer=null;
+function showOverlay(title, opts={}){
+  const box = document.getElementById('topOverlay');
+  const titleEl = document.getElementById('topOverlayTitle');
+  const descEl = document.getElementById('topOverlayDesc');
+  if(!box||!titleEl||!descEl) return;
+  box.classList.remove('p1','p2');
+  if(opts.player===1) box.classList.add('p1');
+  if(opts.player===2) box.classList.add('p2');
+  let icon='ℹ️';
+  if(opts.type==='roll') icon='🎲';
+  else if(opts.type==='card') icon='🃏';
+  else if(opts.type==='event') icon='✨';
+  else if(opts.type==='sell') icon='💰';
+  else if(opts.type==='city') icon='📍';
+  else if(opts.type==='contract') icon='📜';
+  const iconEl = box.querySelector('.ov-icon'); if(iconEl) iconEl.textContent = icon;
+  titleEl.innerHTML = applyNames(title);
+  const desc = opts.desc ? applyNames(opts.desc) : '';
+  descEl.innerHTML = desc;
+  descEl.style.display = desc ? '' : 'none';
+  box.classList.add('show');
+  if(overlayTimer) clearTimeout(overlayTimer);
+  const dur = Math.round(((opts.ms||2600) * 1.5));
+  overlayTimer = setTimeout(()=>{ box.classList.remove('show'); }, dur);
+}
+// onboarding banner
+const BANNER_STEPS = [
+  "<strong>Welcome!</strong> Each player: pick up to 2 goods in Chang'an.",
+  "<strong>Roll & Move:</strong> Roll the dice, then tap a glowing city.",
+  "<strong>Sell West:</strong> Earn coins at Antioch, Rome, or Alexandria.",
+  "<strong>Return Runs:</strong> Load western goods at hubs and deliver to Chang'an.",
+  "<strong>Watch Tiles:</strong> Landing on special tiles may draw a hazard card."
+];
+let bannerStep = 0;
+initViewBoxBase();
+updateTokens(); updateCoins(); setTurnLabel(); applyActiveTokenClass(); updatePanels(); updateTitles();
+// Initialize remaining goods and start setup sequence
+  players.forEach(p=>{ p.carrying=[]; p.direction='west'; p.deliverBonus=0; p.skip=false; p.skipReason=''; p.remainingEast = GOODS.map(g=>g.id); p.remainingWest = WEST_GOODS.map(g=>g.id); p.soldAt=[]; });
+startSetupSequence();
+
+function startSetupSequence(){
+  const nextP2Name = ()=> openNameModal(1, nextP1Goods);
+  const nextP1Goods = ()=> openGoodsModal(players[0], 'east', nextP2Goods);
+  const nextP2Goods = ()=> openGoodsModal(players[1], 'east', finishSetup);
+  const finishSetup = ()=>{
+    updatePanels();
+    document.getElementById('p1rollBtn').disabled=false;
+    showOverlay('Setup complete', {type:'event', desc:'Player 1: roll to begin.'});
+    zoomFull(0);
+  };
+  openNameModal(0, nextP2Name);
+}
+
+function openNameModal(idx, onDone){
+  const modal = document.getElementById('fullModal'); const t = document.getElementById('modalTitle'); const b = document.getElementById('modalBody'); const primary = document.getElementById('modalPrimary'); const cancel = document.getElementById('modalCancel');
+  modal.style.display='flex';
+  t.textContent = `Player ${players[idx].id}: Enter Your Name`;
+  const avatars = ['🐪','🐫','🐘','🐎','🦙','🚚','📦','🐲','🦊','🐢'];
+  const cur = players[idx].avatar || avatars[0];
+  b.innerHTML = `
+    <div class="tiny">Enter your name and choose an avatar.</div>
+    <input id="nameInput" type="text" placeholder="Your name" style="width:100%;padding:8px;border-radius:8px;border:1px solid #223055;background:#0f1f44;color:#fff">
+    <div class="avatars" id="avatarGrid">${avatars.map(ch=>`<div class="avatar${ch===cur?' selected':''}" data-ch="${ch}">${ch}</div>`).join('')}</div>
+  `;
+  const grid = document.getElementById('avatarGrid');
+  Array.from(grid.querySelectorAll('.avatar')).forEach(el=>{
+    el.addEventListener('click', ()=>{
+      Array.from(grid.querySelectorAll('.avatar')).forEach(a=>a.classList.remove('selected'));
+      el.classList.add('selected');
+    });
+  });
+  const handler = ()=>{
+    const input = document.getElementById('nameInput'); const val = (input?.value||'').trim();
+    if(!val){ alert('Please enter a name.'); return; }
+    players[idx].name = val; updateTitles();
+    const pick = (grid.querySelector('.avatar.selected')?.getAttribute('data-ch')) || cur;
+    players[idx].avatar = pick; updateTokens();
+    log(`${val} is ready to trade as ${pick}!`);
+    modal.style.display='none'; primary.removeEventListener('click', handler);
+    if(typeof onDone==='function') onDone();
+  };
+  primary.textContent = 'Continue';
+  primary.addEventListener('click', handler);
+  cancel.onclick = ()=>{ modal.style.display='none'; primary.removeEventListener('click', handler); };
+}
+log('Welcome! Each player picks up to two goods in Chang\'an, then roll to travel city by city. Default mode: rounds (4 east→west runs). Highest coins at the end wins.');
+
+// Optional quick win check — teacher can ignore or modify
+const winCheck = setInterval(()=>{
+  // time-based checks only (other modes checked on events/turns)
+  if(endMode==='time' && endDeadlineAt && Date.now()>=endDeadlineAt){
+    declareWinner();
+    clearInterval(winCheck);
+  }
+}, 1500);
+
+function declareWinner(){
+  const [a,b]=players; if(a.coins>b.coins) alert(`${a.name||'Player 1'} wins with ${a.coins} coins!`);
+  else if(b.coins>a.coins) alert(`${b.name||'Player 2'} wins with ${b.coins} coins!`);
+  else alert(`It's a tie at ${a.coins} coins!`);
+}
+
+function checkEndCondition(){
+  if(endMode==='coins'){
+    for(const p of players){ if(p.coins>=coinTarget){ alert(`${p.name||('Player '+p.id)} wins with ${p.coins} coins!`); } }
+  } else if(endMode==='rounds'){
+    if(roundRuns>=roundLimit){ declareWinner(); }
+  } else if(endMode==='deliveries'){
+    if(deliveryCount>=deliveryTarget){ declareWinner(); }
+  }
+}
+
+// Simple Mode toggle handler
+const simpleToggle = document.getElementById('simpleModeToggle');
+if(simpleToggle){
+  simpleToggle.addEventListener('change', ()=>{
+    simpleMode = simpleToggle.checked;
+    updatePanels();
+  });
+}
+
+// Co-op toggle
+const coopToggle = document.getElementById('coopModeToggle');
+if(coopToggle){
+  coopToggle.addEventListener('change', ()=>{
+    coopMode = coopToggle.checked;
+    updatePanels();
+    if(coopMode){ log('Co‑op Mode: team coins enabled. Consider drawing joint contracts.'); }
+  });
+}
+
+// Banner interactions
+// No welcome banner; setup handled via modal overlays
+
+// Settings controls
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+if(settingsBtn && settingsPanel){ settingsBtn.addEventListener('click', ()=>{ settingsPanel.style.display = settingsPanel.style.display==='none' ? '' : 'none'; }); }
+const settingsClose = document.getElementById('settingsClose'); if(settingsClose){ settingsClose.addEventListener('click', ()=>{ if(settingsPanel) settingsPanel.style.display='none'; }); }
+const settingsSave = document.getElementById('settingsSave');
+if(settingsSave){ settingsSave.addEventListener('click', ()=>{
+  endMode = document.getElementById('endModeCoins').checked ? 'coins'
+          : document.getElementById('endModeRounds').checked ? 'rounds'
+          : document.getElementById('endModeTime').checked ? 'time'
+          : 'deliveries';
+  coinTarget = parseInt(document.getElementById('coinTargetInput').value||'50',10);
+  roundLimit = parseInt(document.getElementById('roundLimitInput').value||'20',10);
+  deliveryTarget = parseInt(document.getElementById('deliveryTargetInput').value||'6',10);
+  const mins = parseInt(document.getElementById('timeMinutesInput').value||'10',10);
+  timeLimitMs = mins*60*1000; endDeadlineAt = endMode==='time' ? Date.now()+timeLimitMs : null;
+  showOverlay('Settings saved', {type:'event', desc:`Mode: ${endMode}`});
+  if(settingsPanel) settingsPanel.style.display='none';
+}); }
+
+// New Game button handler
+document.getElementById('newGameBtn').addEventListener('click', ()=>{
+  // reset players
+  players.forEach(p=>{
+    p.node = 0; p.coins = 0; p.goods = []; p.skip=false; p.skipReason=''; p.bonus=0; p.contract=null; p.turnsTaken=0; p.status={extraCostNext:0,floodAntioch:0,outpostPenalty:0};
+    p.carrying = []; p.direction='west'; p.deliverBonus=0; p.extraPick=0; p.remainingEast = GOODS.map(g=>g.id); p.remainingWest = WEST_GOODS.map(g=>g.id); p.soldAt=[];
+  });
+  currentPlayer = 0; rolled = 0; reachable.clear();
+  refreshHazardVisuals();
+  teamContracts = [];
+  // reset node markets
+  Object.keys(nodeMarket).forEach(name=>{ nodeMarket[name].westGoods = []; nodeMarket[name].eastGoods = []; });
+  ['Rome','Alexandria','Antioch','Ctesiphon'].forEach(city=>{
+    const pool = nodeMarket[city].westGoods;
+    for(let i=0;i<3;i++){ const g = WEST_GOODS[Math.floor(Math.random()*WEST_GOODS.length)]; pool.push({...g}); }
+  });
+  // reset round runs and UI
+  roundRuns = 0;
+  updateTokens(); updateCoins(); setTurnLabel(); applyActiveTokenClass(); updatePanels();
+  updateTitles();
+  $('#rollOut').textContent = '–'; const r1 = document.getElementById('rollOut1'); if(r1) r1.textContent = '–';
+  $('#factsBox').innerHTML = `<b>Fact:</b> ${sample(FACTS)}`;
+  const logEl = document.getElementById('log'); if(logEl) logEl.innerHTML = '';
+  p1Locked=false; p2Locked=false;
+  // disable buttons until initial selection
+  document.getElementById('p1rollBtn').disabled = false;
+  document.getElementById('p1endBtn').disabled = true;
+  document.getElementById('p2rollBtn').disabled = true;
+  document.getElementById('p2endBtn').disabled = true;
+  log('New game started. Setup: names and first deliveries.');
+  startSetupSequence();
+});
+
+// Name entry handlers
+// Sidebar name inputs removed; names are set via modal in setup
+</script>
+</body>
+</html>
