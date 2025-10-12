@@ -1,1 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rome: Expanded Chaos Edition</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game-container">
+    
+    <div id="app">
+      <div id="opening-card" class="screen">
+        <div class="opening-card-inner">
+          <div class="opening-text">
+            A long time ago,<br>  
+            in a Republic far, far away...
+          </div>
+          <button id="opening-continue-btn">Continue</button>
+        </div>
+      </div>
+      <!-- INTRO SKIP OVERLAY: sits above opening-card, below intro-screen -->
+      <div id="intro-skip-overlay" class="screen">
+        <div class="skip-prompt">Click anywhere to skip intro</div>
+      </div>
+      <!-- INTRO SCREEN (Star Wars scroll) -->
+      <div id="intro-screen" class="screen">
+        <div id="scroll-text">
+          <h1>A TIME OF TURMOIL...</h1>
+          <h2>Rome: Expanded Chaos Edition</h2>
+          <p>
+              Year 509 BCE.<br/>
+              The Etruscan King's reign of terror <br/>
+              has ended, but the new Roman Republic<br/>
+              teeters on the brink.<br/> 
+              Every cause for celebration seems <br/>
+              to birth new threats from all<br/>
+              corners of the earth.<br/>
+            </p>
+            <p>
+              Senators bicker, the legions plot<br/>
+              mutiny and enemy armies gather on the frontiers.<br/>
+              But most dangerous of all: <br/>
+              Rome itself.<br/>
+             <p><h3><em>“The welfare of the people is the ultimate law.” — Cicero</em></h3>
 
+              The people grow restless,  <br/>
+              demanding bread and bloody spectacle.<br/>
+            </p>
+            <p>
+              YOU, a rising Senator, must use all  <br/>
+              your cunning ambition to lead the <br/>
+              city through crises large and small.<br/>
+            </p>
+              Will you fix the Republic?<br/>
+            <p>...or watch it crumble?<br/>
+            </p>
+              <h3><em>“He who controls the mob soon learns he cannot control himself.” Whispers Cato the Younger</em></h3>
+            <p>
+            <br/>
+             Meanwhile, Jupiter watches idly from atop Mount Olympus....<br/>
+            </p>
+         </div>
+      </div>
+      <div id="cutscene-screen" class="screen cutscene-bg">
+        <div id="cutscene-img-zoom-container">
+          <img id="cutscene-img-zoom" src="assets/cutscene/Cutscene_1.png" alt="Jupiter Reclining" />
+        </div>
+      </div>
+
+      <!-- START MENU -->
+      <div id="start-menu" class="screen panel">
+        <h2>Fix It? Or let it fall...</h2><h1>Rome: Expanded Chaos Edition</h1>
+        <p><em>The Senate awaits your leadership... or your downfall.</em></p>
+        <label for="name-input">Enter Your Name:</label><br/>
+        <input type="text" id="name-input" placeholder="e.g. Maria, John..." /><br/>
+
+        <div class="startmenu-config">
+          <div class="startmenu-col">
+            <h3>Choose Difficulty:</h3>
+            <div class="diff-options">
+              <button type="button" class="difficulty-btn" data-diff="easy">Easy</button>
+              <button type="button" class="difficulty-btn" data-diff="normal">Normal</button>
+              <button type="button" class="difficulty-btn" data-diff="hard">Hard</button>
+            </div>
+            <p id="chosen-diff"><em>No difficulty selected</em></p>
+          </div>
+          <div class="startmenu-col">
+            <h3>Mode</h3>
+            <div class="mode-options">
+              <label><input type="radio" name="mode" value="standard" checked> Standard Campaign</label>
+              <label><input type="radio" name="mode" value="eventTrees"> Event Stories (interrupts)</label>
+              <label><input type="radio" name="mode" value="spins"> Spin Trials</label>
+            </div>
+            <div class="begin-wrap">
+              <button type="button" id="btn-start" disabled>BEGIN</button>
+            </div>
+          </div>
+        </div>
+        <div class="startmenu-bottom-btns">
+          <button id="btn-howto" class="menu-small-btn">How to Play</button>
+          <button id="btn-credits" class="menu-small-btn">Credits / Citations</button>
+        </div>
+      </div>
+
+      <!-- GAME SCREEN (everything hidden until game starts) -->
+      <div id="game-screen" class="screen">
+        <div id="scoreboard">
+          <div id="scoreboard-topbar">
+            <button id="btn-return-menu" class="menu-btn">🏛️ Main Menu</button>
+            <div id="timeline-bar"><div id="timeline-fill"></div></div>
+            <div class="audio-controls-box">
+              <button id="audio-toggle" title="Toggle music" class="audio-btn">
+                <img src="assets/buttons/cornu.png" alt="Toggle Audio" class="audio-icon" id="audio-icon-img" />
+              </button>
+              <button id="audio-next-track" title="Change Music Track" class="audio-btn hidden">
+                <img src="assets/buttons/lute.png" alt="Next Track" class="audio-icon" />
+              </button>
+            </div>
+            <button id="btn-loot" class="loot-btn" title="View your collected items">🎒 Loot</button>
+          </div>
+          <div class="scoreboard-stats">
+            <div class="scoreboard-row">
+              <div class="score-item">Year: <span id="year-display"></span> BCE</div>
+              <div class="score-item">Senator: <span id="senator-name-display"></span></div>
+              <div class="score-item">Round: <span id="round-num">1</span>/12</div>
+              <div class="score-item">💰 Treasury: <span id="treasury-display"></span> denarii</div>            </div>
+            <div class="scoreboard-row">
+              <div class="score-item">🔥 Riot Tokens: <span id="riot-display"></span> <div class="score-bar" id="riot-bar"></div></div>
+              <div class="score-item">🔥 Unrest: <span id="unrest-display"></span> <div class="score-bar" id="unrest-bar"></div></div>
+              <div class="score-item">🏛️ Infrastructure: <span id="infra-display"></span> <div class="score-bar" id="infra-bar"></div></div>
+              <div class="score-item">🏛️ Politics: <span id="politics-display"></span> <div class="score-bar" id="politics-bar"></div></div>
+            </div>
+          </div>
+          <div class="scoreboard-images">
+              <div id="titles-left" class="titles-display"></div>
+            <img src="assets/columns/ionic_1.png" class="pixel-deco" alt="Left Column">
+            <img id="senator-avatar" src="assets/avatars/Senator_1_32x32.png" class="avatar-pixel" alt="Senator Avatar">
+            <img src="assets/columns/ionic_2.png" class="pixel-deco" alt="Right Column">
+              <div id="titles-right" class="titles-display"></div>
+          </div>
+        </div>
+        <div id="problem-area"></div>
+        <div id="message-log"></div>
+      </div>
+
+      <!-- ROUND SUMMARY -->
+      <div id="round-summary" class="screen panel">
+        <h2 id="round-summary-heading">End of Round <span id="summary-round"></span></h2>
+        <div class="round-summary-content"><p id="round-summary-text" aria-live="polite"></p></div>
+        <button id="btn-next-round" type="button">Continue</button>
+      </div>
+
+      <!-- GAME OVER (Victory or Defeat) -->
+      <div id="game-over-screen" class="screen panel">
+        <h2 id="game-over-heading"></h2>
+        <div id="game-over-quote"></div>
+        <div id="endgame-stats-panel"></div>
+        <button id="btn-restart" type="button">Restart</button>
+      </div>
+      <!-- Confetti container, hidden by default -->
+      <div id="victory-confetti"></div>
+    </div>
+  </div>
+      <!-- AUDIO (Epic Theme, hidden) -->
+    <audio id="MarsTheAvenger" src="assets/audio/MarsTheAvenger.mp3" preload="auto"></audio>
+    <audio id="JupiterTheme" src="assets/audio/Jupiter.mp3" preload="auto"></audio>
+    <audio id="epicTheme" src="assets/audio/now_we_are_free_midi.mp3" preload="auto"></audio>
+  <!-- RANDOM EVENT MODAL -->
+  <div id="random-event-modal" class="modal hidden">
+    <div class="random-event-content">
+      <div id="random-event-desc" class="random-event-desc"></div>
+      <div id="random-event-cameo" class="random-event-cameo"></div>
+      <button id="random-event-close-btn">Continue</button>
+    </div>
+  </div>
+  <!-- EVENT TREE MODAL (separate layer, supports future scene images) -->
+  <div id="event-tree-modal" class="modal hidden">
+    <div class="event-tree-content">
+      <div class="event-tree-image-wrap">
+        <img id="event-tree-image" alt="Event scene" class="hidden" />
+      </div>
+      <div id="event-tree-desc" class="event-tree-desc"></div>
+      <div id="event-tree-cameo" class="event-tree-cameo"></div>
+      <button id="event-tree-close-btn">Continue</button>
+    </div>
+  </div>
+  <!-- LOOT / INVENTORY MODAL -->
+  <div id="loot-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Your Cache</h2>
+      <p id="loot-empty-msg" style="display:none;">You haven't collected any items yet.</p>
+      <ul id="loot-list"></ul>
+    </div>
+    <button class="modal-close-btn outside" onclick="document.getElementById('loot-modal').classList.add('hidden')">Close</button>
+  </div>
+  <!-- HOW TO PLAY MODAL -->
+  <div id="howto-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>How to Play</h2>
+      <div id="howto-body">
+        <h3>Goal</h3>
+        <p>The Year is 509 BCE: the birth of the Roman Republic.</p>
+        <p>Survive 12 rounds and 480 years as a Roman Senator. </p>
+          <p>You must balance the chaos of the Republic: politics, treasury, infrastructure, and the restless mob. </p>
+          <p>Will you fix it?</p>
+            <p>...or let it fall?</p>
+        <h3>How It Works</h3>
+        <ol>
+          <li><strong>Start the Game:</strong> Enter your Senator name. Select a difficulty. Click BEGIN.</li>
+          <li><strong>Each Year/Round:</strong>  Confront three random crises or decisions each round. Read the scenario and pick your response. Each choice impacts your treasury, unrest, infrastructure, politics, and sometimes grants unique badges or inventory!</li>
+          <li><strong>Scoreboard:</strong> Tracks Year, Senator, Treasury, Unrest/Riot Tokens, Infrastructure, and Politics. High scores can unlock honorary titles and unique outcomes.</li>
+          <li><strong>Badges & Inventory:</strong> Earn badges for clever (or foolish!) decisions. Collect items that may affect future events.</li>
+          <li><strong>Game Over / Victory:</strong> Don't let the republic fail! Survive all 12 rounds for a heroic victory. If the treasury is empty, unrest is too high, or Rome falls to chaos: GAME OVER!</li>
+        </ol>
+        <h3>Tips</h3>
+        <ul>
+          <li>Not every crisis has a perfect answer. Sometimes you must choose the least bad outcome.</li>
+          <li>Pay attention to hints in event text and from Roman history.</li>
+          <li>The mob is powerful—ignore them at your peril.</li>
+          <li>Use your treasury wisely. Sometimes spending now prevents bigger problems later.</li>
+          <li>Infrastructure and politics are key to long-term survival.</li>
+          <li>Replayability: Each playthrough is different. Random events and choices change each time.</li>
+          <li>Explore all options! Some events have multiple outcomes based on your choices.</li>
+          <li>Use the audio toggle to change music tracks for different vibes.</li>
+          <li>Check the credits for more about the game and its development.</li>
+          <li>Have fun! This game is meant to be a lighthearted take on Roman history.</li>
+
+          <li>Try new strategies and unlock different endings.</li>
+        </ul>
+        <h3>Controls</h3>
+        <ul>
+          <li>Mouse/tap to select options and advance text.</li>
+          <li>Audio controls in the upper right; music can be toggled anytime.</li>
+        </ul>
+        <h3>Accessibility</h3>
+        <ul>
+          <li>Game text is readable and all events can be replayed at your pace.</li>
+          <li>For best experience, use on desktop or tablet in landscape mode.</li>
+        </ul>
+      </div>
+    </div>
+    <button class="modal-close-btn outside" onclick="document.getElementById('howto-modal').classList.add('hidden')">Close</button>
+  </div>
+  <!-- CREDITS / CITATIONS MODAL -->
+  <div id="credits-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Credits / Citations</h2>
+      <div id="credits-body">
+        <h3>Game Design & Development</h3>
+        <ul>
+          <li><strong>Designer & Developed by:</strong> J. C. Naramore</li>
+          <li><strong>Collaborative Design & Brainstorming:</strong> ChatGPT-4.1 (OpenAI)</li>
+        </ul>
+        <h3>Story, Writing, & Dialogue</h3>
+        <ul>
+          <li>J. C. Naramore</li>
+          <li>ChatGPT-4.1 (for narrative prototyping and NPC dialogue inspiration)</li>
+        </ul>
+        <h3>Programming</h3>
+        <ul>
+          <li>J. C. Naramore</li>
+          <li>Code review, refactoring, and random event system logic: ChatGPT-4.1</li>
+        </ul>
+        <h3>Art & Visuals</h3>
+        <ul>
+          <li><strong>Pixel Art & UI Graphics:</strong> J. C. Naramore<br>References: public domain Roman mosaics, Creative Commons icon sets</li>
+          <li><strong>Cutscene Art:</strong> J. C. Naramore</li>
+        </ul>
+        <h3>Music & Audio</h3>
+        <ul>
+          <li>
+            <strong>Mars the Avenger</strong> – <em>“Mars, the Bringer of War”</em> by Gustav Holst.<br>
+            MIDI adaptation by J. C. Naramore, based on sequence by Swiwious
+            (<a href="https://onlinesequencer.net/251543" target="_blank">Online Sequencer #251543</a>).
+            Final edit by J. C. Naramore (<a href="https://onlinesequencer.net/4735117" target="_blank">Online Sequencer #4735117</a>).
+          </li>
+          <li>
+            <strong>Jupiter Theme</strong> – <em>“Jupiter, the Bringer of Jollity”</em> by Gustav Holst.<br>
+            MIDI arrangement by 12QWICK (<a href="https://onlinesequencer.net/2872915" target="_blank">Online Sequencer #2872915</a>).
+          </li>
+          <li>
+            <strong>Now We Are Free</strong> – Composed by Hans Zimmer & Lisa Gerrard (from Gladiator soundtrack).<br>
+            MIDI adaptation by UGW_GaMeuR (<a href="https://onlinesequencer.net/4173091" target="_blank">Online Sequencer #4173091</a>).
+          </li>
+        </ul>
+        <h3>Fonts</h3>
+        <ul>
+          <li>Romanesco and Montserrat (Google Fonts)</li>
+        </ul>
+        <h3>Historical References</h3>
+        <ul>
+          <li><em>The Romans: From Village to Empire</em> — Mary T. Boatwright et al.</li>
+          <li><em>SPQR: A History of Ancient Rome</em> — Mary Beard</li>
+          <li><em>Rubicon: The Last Years of the Roman Republic</em> — Tom Holland</li>
+          <li><em>The Rise of Rome: The Making of the World's Greatest Empire</em> — Anthony Everitt</li>
+          <li>Various primary sources and open-source online translations</li>
+        </ul>
+        <h3>Special Thanks</h3>
+        <ul>
+          <li><strong>Playtesters:</strong> My 2024-2025 6th grade social studies students at Turner Sixth Grade Academy</li>
+          <p>They endured the original analogue version of this game on paper, and gave feedback for the original HTML-based version</p>
+          <li><strong>OpenAI</strong> for GPT-powered brainstorming and coding support</li>
+          <li><strong>You, the player</strong>, for helping Rome survive another day</li>
+        </ul>
+        <h3>Legal Notice</h3>
+        <p>
+          This game is a nonprofit fan creation for educational purposes.<br>
+          All music, art, and code used under fair use, educational, or creative commons terms where possible.<br>
+          If you are a rights holder and wish content to be removed or credited differently, please contact [your contact email].
+        </p>
+      </div>
+    </div>
+    <button class="modal-close-btn outside" onclick="document.getElementById('credits-modal').classList.add('hidden')">Close</button>
+  </div>
+  <script src="data/event_trees.js"></script>
+  <script src="data/event_trees_runner.js"></script>
+  <script src="data/spin.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
