@@ -108,3 +108,113 @@ body {
   background: var(--bg);
   padding: 0 .5rem;
 }
+
+/* ——— Code of Narammurabi: stone-tablet theme ——— */
+#code-of-narammurabi.law {
+  margin-top: 2rem; /* snug just under .hero */
+}
+
+/* Tablet card shell */
+#code-of-narammurabi .tablet {
+  position: relative;
+  overflow: hidden;
+  /* Subtle parchment/stone gradients (no external assets needed) */
+  background:
+    radial-gradient(120% 100% at 10% 0%, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 60%),
+    radial-gradient(120% 120% at 100% 120%, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, #f3efe6 0%, #e7e1d2 60%, #d9d2c3 100%);
+  border: 2px solid #b7ac97;
+  box-shadow:
+    0 10px 20px rgba(0,0,0,0.15),
+    inset 0 2px 0 rgba(255,255,255,0.6),
+    inset 0 -2px 0 rgba(0,0,0,0.05);
+  border-radius: 16px;
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+
+/* Carved notch + hairline striations */
+#code-of-narammurabi .tablet::before,
+#code-of-narammurabi .tablet::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+#code-of-narammurabi .tablet::before {
+  /* micro pitting / grain */
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.02) 0 1px, transparent 1px 5px);
+  mix-blend-mode: multiply;
+  opacity: 0.4;
+}
+#code-of-narammurabi .tablet::after {
+  /* top ‘chip’ and side wear */
+  background:
+    radial-gradient(200px 40px at 50% -10px, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 60%),
+    radial-gradient(40px 200px at -10px 50%, rgba(0,0,0,0.07) 0%, rgba(0,0,0,0) 60%),
+    radial-gradient(40px 200px at calc(100% + 10px) 50%, rgba(0,0,0,0.07) 0%, rgba(0,0,0,0) 60%);
+  opacity: 0.35;
+}
+
+/* Header + title treatment */
+#code-of-narammurabi .law-head {
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+#code-of-narammurabi .law-glyph {
+  font-size: 2rem; line-height: 1;
+  opacity: 0.6;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.7));
+}
+#code-of-narammurabi .law-title {
+  margin: 0.25rem 0 0.25rem;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+#code-of-narammurabi .law-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #5d5648;
+  opacity: 0.9;
+}
+
+/* Body text: faint “etched” look */
+#code-of-narammurabi .law-intro {
+  margin: 0.75rem 0 1rem;
+  color: #3e3a31;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* Button variant: etched rim */
+#code-of-narammurabi .btn-etch {
+  border: 1px solid #a2967f;
+  background: linear-gradient(180deg, #f6f2e9 0%, #e9e3d4 100%);
+  color: #433f36;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(0,0,0,0.05);
+}
+#code-of-narammurabi .btn-etch:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -1px 0 rgba(0,0,0,0.06);
+}
+
+/* Keep spacing consistent with your card grid */
+#code-of-narammurabi .law-actions {
+  margin-top: 0.5rem;
+}
+
+/* Responsive polish */
+@media (max-width: 640px) {
+  #code-of-narammurabi .tablet {
+    border-radius: 14px;
+    padding: 1rem 1rem 1.25rem;
+  }
+  #code-of-narammurabi .law-title { font-size: 1.15rem; }
+  #code-of-narammurabi .law-subtitle { font-size: 0.9rem; }
+}
