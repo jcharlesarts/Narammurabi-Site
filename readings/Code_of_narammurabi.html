@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Cinzel:wght@400;600;700&family=Macondo+Swash+Caps&display=swap" rel="stylesheet">
+  <title>Narammurabi’s Code — Class Rules Quiz</title>
+  <style>
+    :root{
+      --paper:#fff8e6; --ink:#1b1b1b; --gold:#d4af37; --jade:#2f7d48; --crimson:#9b1c1c;
+      --card:#fffaf0; --shadow: 0 10px 24px rgba(0,0,0,.12);
+      --base-font:16px;
+    }
+    html,body{margin:0;padding:0;background:
+      radial-gradient(1200px 600px at -10% -10%, #e6e2d6 0, transparent 60%),
+      radial-gradient(1000px 700px at 110% 10%, #efe9d9 0, transparent 55%),
+      linear-gradient(#f8f5ec,#f4efe2);
+      color:var(--ink); font-family: 'Alegreya', Georgia, "Times New Roman", Times, serif; font-size: var(--base-font);
+    }
+    .wrap{max-width:940px;margin:24px auto;padding:18px}
+    header{
+      background:var(--paper); border:2px solid var(--gold); border-radius:14px; padding:16px 18px;
+      box-shadow: var(--shadow);
+    }
+    h1{margin:.2rem 0 .5rem; font-family: 'Macondo Swash Caps', Georgia, "Times New Roman", Times, serif; letter-spacing:.5px}
+    h2{font-family: 'Cinzel', Georgia, "Times New Roman", Times, serif; letter-spacing:.5px}
+    .lead{margin:.2rem 0 0; color:#5b4630}
+    .screen{background:var(--card); border:1px solid #e6d598; border-radius:14px; padding:16px 18px; box-shadow: var(--shadow); margin-top:16px}
+    .controls{display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 0}
+    .btn{border:1px solid #b48d1d; border-radius:12px; padding:10px 14px; min-height:44px; cursor:pointer; background:linear-gradient(180deg,#ffefc2,#f8de86); transition: box-shadow .2s ease, filter .2s ease, transform .06s ease}
+    .btn.primary{background:linear-gradient(180deg,#c92f2f,#9b1c1c); color:#fff7ea; border-color:#8f1d1d}
+    .btn:disabled{opacity:.6; cursor:not-allowed}
+    .btn:hover:not(:disabled), .btn:focus-visible{filter:brightness(1.05); box-shadow: 0 0 0 2px rgba(212,175,55,.35) inset, 0 6px 18px rgba(0,0,0,.18), 0 0 12px rgba(255,223,128,.55)}
+    .btn.primary:hover:not(:disabled), .btn.primary:focus-visible{box-shadow: 0 0 0 2px rgba(156,28,28,.45) inset, 0 6px 18px rgba(0,0,0,.2), 0 0 14px rgba(201,47,47,.55)}
+    .btn:active{transform:translateY(1px) scale(.98)}
+    .flex{display:flex; gap:18px}
+    .sidebar{flex:1 1 260px}
+    .main{flex:2 1 480px; min-width:0}
+    @media (max-width: 860px){ .flex{flex-direction:column} }
+    .card{background:#fff; border:1px solid #eee; border-radius:12px; padding:12px 14px}
+    .q-meta{color:#6b5a40; font-size:.95rem; margin-bottom:6px}
+    .q{font-size:1.1rem; margin:6px 0 10px}
+    .choice{display:block; margin:8px 0}
+    .choice input{transform:translateY(2px)}
+    .feedback{margin-top:10px; font-weight:600}
+    .correct{color:#2e7d32}
+    .wrong{color:#c62828}
+    .rule-ref{margin-top:8px; padding:8px 10px; border-left:4px solid var(--gold); background:#fff8df; border-radius:8px}
+    .meter{margin-top:10px}
+    .bar{height:14px;background:#eee;border-radius:10px;overflow:hidden}
+    .fill{height:100%;width:0;background:linear-gradient(90deg,#43a047,#2e7d32);transition:width .35s ease}
+    .tiny{font-size:.9rem;color:#555}
+    details{background:#fff; border:1px solid #eee; border-radius:10px; padding:10px 12px}
+    summary{cursor:pointer; font-weight:600}
+    .result-big{font-size:1.15rem}
+    .pill{display:inline-block; padding:4px 10px; border:1px solid #c9a62a; border-radius:999px; background:linear-gradient(180deg,#ffefc2,#f8de86); margin:2px 4px 0 0}
+    .rulesheet{font-size:.95rem; line-height:1.5}
+    .rulesheet h3{margin:10px 0 6px; border-bottom:3px solid var(--gold); display:inline-block}
+    .muted{color:#6b5a40}
+    /* Accessibility helpers */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .skip-link{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;z-index:1000;border-radius:8px}
+    .a11y-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .btn:focus-visible{outline:3px solid #004aad; outline-offset:2px}
+    .text-spacing{line-height:1.8}
+    .text-spacing p,.text-spacing li{line-height:1.8}
+    .text-spacing *{letter-spacing:.12em;word-spacing:.16em}
+    /* Study deck */
+    .deck-flex{display:flex; gap:18px}
+    @media (max-width: 860px){ .deck-flex{flex-direction:column} }
+    .flashwrap{flex:2 1 520px; min-width:0}
+    .flashcard{position:relative; background:#fff; border:1px solid #eee; border-radius:14px; padding:18px; min-height:200px; box-shadow: var(--shadow)}
+    .flashcard .tag{position:absolute; top:10px; right:12px}
+    .flashcard .front{font-size:1.1rem}
+    .flashcard .back{display:none; font-size:1rem}
+    .flashcard.showback .front{display:none}
+    .flashcard.showback .back{display:block}
+    .deck-controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .deck-meta{font-size:.92rem; color:#6b5a40; margin-top:8px}
+    .micro{font-size:.85rem; color:#555}
+    /* Rule star annotations */
+    .star-btn{border:1px solid #d0b14a;border-radius:999px;background:#fff6cc;padding:4px 8px;cursor:pointer;margin-right:8px}
+    .star-btn[aria-pressed="true"]{background:#ffd966}
+    .rulesheet li{padding:4px 6px;border-radius:6px}
+    .rulesheet li.starred{background:#fff8df}
+    /* Notes panel */
+    .notes-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:320px;max-width:90vw;background:#fff;border:2px solid #c9a62a;border-radius:12px;box-shadow:var(--shadow);padding:12px 12px 14px;z-index:1001}
+    .notes-panel h2{margin:0 0 8px;font-size:1.1rem}
+    .notes-panel textarea{width:100%;min-height:140px}
+    @media (prefers-reduced-motion: reduce){ .fill{transition:none} .btn{transition:none} }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="wrap">
+    <header>
+      <h1>Narammurabi’s Code — Class Rules Quiz</h1>
+      <p class="lead">Quick scenarios. Choose the best action. Learn which rule it follows.</p>
+      <div class="controls">
+        <button id="show-study" class="btn">Study Deck</button>
+        <button id="start" class="btn primary">Start Quiz</button>
+        <button id="reset" class="btn" disabled>Reset</button>
+        <button id="show-rules" class="btn">Show Rule Sheet</button>
+      </div>
+      <div class="a11y-bar" role="region" aria-label="Accessibility settings">
+        <button id="font-smaller" class="btn" aria-label="Decrease font size">A-</button>
+        <button id="font-default" class="btn" aria-label="Reset font size">A</button>
+        <button id="font-bigger" class="btn" aria-label="Increase font size">A+</button>
+        <button id="toggle-spacing" class="btn" aria-pressed="false">Text Spacing</button>
+        <button id="open-notes" class="btn">Notes</button>
+      </div>
+    </header>
+    <main id="main" role="main">
+    <section id="study-screen" class="screen" hidden>
+      <h2>Study Deck</h2>
+      <div class="deck-flex">
+        <div class="flashwrap">
+          <div id="sd-card" class="flashcard" aria-live="polite">
+            <span id="sd-tag" class="pill tag"></span>
+            <div id="sd-front" class="front"></div>
+            <div id="sd-back" class="back"></div>
+          </div>
+          <div class="deck-controls">
+            <button id="sd-prev" class="btn">◀ Prev</button>
+            <button id="sd-flip" class="btn">Flip</button>
+            <button id="sd-next" class="btn">Next ▶</button>
+            <button id="sd-shuffle" class="btn">Shuffle</button>
+            <button id="sd-star" class="btn" aria-pressed="false">☆ Star</button>
+          </div>
+          <div class="deck-meta">
+            <span id="sd-progress">Card 0 of 0</span>
+          </div>
+        </div>
+        <aside class="sidebar">
+          <div class="card">
+            <strong>Filter</strong>
+            <div class="micro" style="margin-top:6px">
+              <label><input type="radio" name="sd-filter" value="all" checked> All</label>
+              <label style="margin-left:10px"><input type="radio" name="sd-filter" value="entry"> Entry</label>
+              <label style="margin-left:10px"><input type="radio" name="sd-filter" value="study"> Study</label>
+              <label style="margin-left:10px"><input type="radio" name="sd-filter" value="departure"> Departure</label>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <strong>How to use</strong>
+            <ul class="tiny">
+              <li>Read the front. Guess the rule.</li>
+              <li>Flip for the why + a tiny ancient joke.</li>
+              <li>Shuffle and try again later.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="quiz-screen" class="screen" hidden>
+      <div class="flex">
+        <div class="main">
+          <div class="q-meta"><span id="counter">Question 1 of 10</span> · <span id="category">—</span></div>
+          <div id="question" class="q"></div>
+          <form id="choices"></form>
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+          <div id="ruleref" class="rule-ref" hidden></div>
+          <div class="controls">
+            <button id="submit" class="btn primary" disabled>Submit</button>
+            <button id="next" class="btn" disabled>Next</button>
+          </div>
+          <div class="meter">
+            <div class="tiny">Score</div>
+            <div class="bar"><div id="scorefill" class="fill"></div></div>
+            <div class="tiny"><span id="score">0</span>/10 correct</div>
+          </div>
+        </div>
+        <aside class="sidebar">
+          <div class="card">
+            <strong>Hint</strong>
+            <p class="muted" id="hint">Think: entry, study, or departure?</p>
+            <div id="tags"></div>
+          </div>
+          <details style="margin-top:12px">
+            <summary>How it works</summary>
+            <ul class="tiny">
+              <li>10 randomized questions (multiple choice)</li>
+              <li>Instant feedback + rule reference</li>
+              <li>Goal: 8/10 for “Hall Monitor Badge”</li>
+            </ul>
+          </details>
+        </aside>
+      </div>
+    </section>
+
+    <section id="result-screen" class="screen" hidden>
+      <h2>Results</h2>
+      <p class="result-big" id="result-line"></p>
+      <p id="badge-line"></p>
+      <div id="review" class="rulesheet"></div>
+      <div class="controls">
+        <button id="again" class="btn primary">Play Again</button>
+      </div>
+    </section>
+
+    <section id="rules-screen" class="screen" hidden>
+      <h2>Rule Sheet (Narammurabi’s Code)</h2>
+      <div class="rulesheet" id="rulesheet"></div>
+      <div class="controls"><button id="close-rules" class="btn">Close</button></div>
+      <p class="tiny muted">Source: class rules (Laws of Entry, Study, Departure).</p>
+    </section>
+    </main>
+    <aside id="notes-panel" class="notes-panel" hidden role="dialog" aria-modal="true" aria-labelledby="notes-title">
+      <h2 id="notes-title">Notes</h2>
+      <textarea id="notes-text" aria-label="Notes"></textarea>
+      <div class="controls" style="margin-top:8px">
+        <button id="save-notes" class="btn primary">Save</button>
+        <button id="close-notes" class="btn">Close</button>
+      </div>
+      <div class="tiny muted" style="margin-top:6px">Notes are saved on this device.</div>
+    </aside>
+  </div>
+
+  <script>
+    // --- Rule text (short paraphrases) ---
+    const RULES = {
+      entry: {
+        title: "Laws of Entry (Beginning of Class)",
+        items: [
+          "Be in your seat when the bell rings.",
+          "Start on IXL right away (unless told otherwise).",
+          "Sit ready with materials; wait for instruction.",
+          "Keep outside conversations outside."
+        ]
+      },
+      study: {
+        title: "Laws of Study (Instruction & Work Time)",
+        items: [
+          "Raise your hand and wait to be called on.",
+          "Listen respectfully when someone else is speaking.",
+          "No outbursts; keep learning moving.",
+          "Use class time for social studies only.",
+          "Do not react to others’ disruptions; focus on your behavior.",
+          "Be kind and courteous; be patient with others and yourself.",
+          "Make good choices; stay focused on your learning.",
+          "Talk on-topic and with purpose in group/partner work."
+        ]
+      },
+      departure: {
+        title: "Laws of Departure (End of Class)",
+        items: [
+          "Wait for permission before getting up or leaving.",
+          "Push in chairs.",
+          "Return and neatly stack all materials.",
+          "Leave the room better than you found it."
+        ]
+      }
+    };
+
+    // --- Question bank (prompt, choices, answer index, rule ref) ---
+    const BANK = [
+      // Entry
+      {
+        cat: "Entry",
+        prompt: "The bell rings as you walk in. What now?",
+        choices: [
+          "Chat with a friend for a minute; class hasn’t really started.",
+          "Go to your seat and open IXL right away.",
+          "Stand in the doorway and finish your snack."
+        ],
+        answer: 1,
+        ruleRef: { group: "entry", index: [0,1] },
+        expl: "Be in your seat at the bell and start IXL immediately (unless told otherwise)."
+      },
+      {
+        cat: "Entry",
+        prompt: "You remember a story from the hallway and want to finish it.",
+        choices: [
+          "Keep it going—everyone needs the details.",
+          "Whisper it during attendance.",
+          "Save it for later; outside conversations stay outside."
+        ],
+        answer: 2,
+        ruleRef: { group: "entry", index: [3] },
+        expl: "Conversations from outside stay outside."
+      },
+      // Study
+      {
+        cat: "Study",
+        prompt: "A classmate is sharing an answer.",
+        choices: [
+          "Talk over them if you disagree.",
+          "Listen respectfully; raise your hand to respond.",
+          "Snap your fingers to speed them up."
+        ],
+        answer: 1,
+        ruleRef: { group: "study", index: [0,1] },
+        expl: "Raise your hand and wait; listen respectfully."
+      },
+      {
+        cat: "Study",
+        prompt: "You finish your worksheet early.",
+        choices: [
+          "Open a game on your iPad—free time!",
+          "Help a neighbor by shouting across the room.",
+          "Keep working on social studies tasks or read quietly."
+        ],
+        answer: 2,
+        ruleRef: { group: "study", index: [3,7] },
+        expl: "Use class time for social studies; conversations should be on-topic and purposeful."
+      },
+      {
+        cat: "Study",
+        prompt: "Two students start arguing across the room.",
+        choices: [
+          "Jump in to take sides.",
+          "Ignore it and refocus on your own work.",
+          "Record it on your phone."
+        ],
+        answer: 1,
+        ruleRef: { group: "study", index: [4,6] },
+        expl: "Don’t respond to disruptions; focus on your behavior and learning."
+      },
+      {
+        cat: "Study",
+        prompt: "You’re confused about the directions.",
+        choices: [
+          "Raise your hand and wait to be called on.",
+          "Call the teacher’s name until they answer.",
+          "Ask three classmates at once."
+        ],
+        answer: 0,
+        ruleRef: { group: "study", index: [0] },
+        expl: "Raise your hand and wait."
+      },
+      {
+        cat: "Study",
+        prompt: "Group work is assigned.",
+        choices: [
+          "Talk about weekend plans to build teamwork.",
+          "Discuss the task; keep it on-topic and purposeful.",
+          "Let one person work while you scroll."
+        ],
+        answer: 1,
+        ruleRef: { group: "study", index: [7,5] },
+        expl: "Conversations should be on-topic and courteous."
+      },
+      {
+        cat: "Study",
+        prompt: "You feel frustrated by a tricky question.",
+        choices: [
+          "Be patient with yourself; try one step at a time.",
+          "Close your packet and nap.",
+          "Throw your pencil and sigh loudly."
+        ],
+        answer: 0,
+        ruleRef: { group: "study", index: [5,8] },
+        expl: "Be patient and make good personal choices to be successful."
+      },
+      // Departure
+      {
+        cat: "Departure",
+        prompt: "The bell rings at the end of class.",
+        choices: [
+          "Stand up and head for the door immediately.",
+          "Wait for permission to get up and line up.",
+          "Shout “FREEEEEDOM!” and sprint."
+        ],
+        answer: 1,
+        ruleRef: { group: "departure", index: [0] },
+        expl: "Wait for the teacher before getting up or leaving."
+      },
+      {
+        cat: "Departure",
+        prompt: "You used a textbook and markers today.",
+        choices: [
+          "Leave them on your desk for the next class.",
+          "Return them; stack materials neatly before you go.",
+          "Stuff them into your backpack as a souvenir."
+        ],
+        answer: 1,
+        ruleRef: { group: "departure", index: [2] },
+        expl: "Return and neatly stack all materials."
+      },
+      {
+        cat: "Departure",
+        prompt: "Your chair is out and scraps are on the floor.",
+        choices: [
+          "Push in your chair and pick up around you.",
+          "Leave it; the custodian will get it.",
+          "Kick the scraps under the table."
+        ],
+        answer: 0,
+        ruleRef: { group: "departure", index: [1,3] },
+        expl: "Push in chairs and leave the room better than you found it."
+      }
+    ];
+
+    // --- State ---
+    let order = [];   // indexes into BANK
+    let idx = 0;      // which question we’re on
+    let score = 0;
+    const total = 10; // quiz length
+
+    // --- Elements ---
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const rulesScreen = document.getElementById('rules-screen');
+
+    const startBtn = document.getElementById('start');
+    const resetBtn = document.getElementById('reset');
+    const showRulesBtn = document.getElementById('show-rules');
+    const closeRulesBtn = document.getElementById('close-rules');
+
+    const counterEl = document.getElementById('counter');
+    const categoryEl = document.getElementById('category');
+    const qEl = document.getElementById('question');
+    const formEl = document.getElementById('choices');
+    const feedbackEl = document.getElementById('feedback');
+    const refEl = document.getElementById('ruleref');
+    const submitBtn = document.getElementById('submit');
+    const nextBtn = document.getElementById('next');
+    const scoreEl = document.getElementById('score');
+    const fillEl = document.getElementById('scorefill');
+    const tagsEl = document.getElementById('tags');
+
+    const resultLine = document.getElementById('result-line');
+    const badgeLine = document.getElementById('badge-line');
+    const reviewEl = document.getElementById('review');
+    const rulesheetEl = document.getElementById('rulesheet');
+
+    // --- Helpers ---
+    const shuffle = a => { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; };
+    const pickN = (n, arr) => shuffle(arr.slice()).slice(0,n);
+
+    // --- Accessibility controls (font size, spacing, notes) ---
+    const fontSmallerBtn = document.getElementById('font-smaller');
+    const fontDefaultBtn = document.getElementById('font-default');
+    const fontBiggerBtn = document.getElementById('font-bigger');
+    const spacingBtn = document.getElementById('toggle-spacing');
+    const openNotesBtn = document.getElementById('open-notes');
+    const notesPanel = document.getElementById('notes-panel');
+    const notesText = document.getElementById('notes-text');
+    const saveNotes = document.getElementById('save-notes');
+    const closeNotes = document.getElementById('close-notes');
+    const rootStyle = document.documentElement.style;
+
+    function applyFont(px){ rootStyle.setProperty('--base-font', px+"px"); localStorage.setItem('baseFontPx', String(px)); }
+    function initFont(){ const saved = Number(localStorage.getItem('baseFontPx')||'16'); applyFont(Math.min(22, Math.max(14, saved))); }
+    function setSpacing(on){ document.body.classList.toggle('text-spacing', !!on); spacingBtn.setAttribute('aria-pressed', on? 'true':'false'); localStorage.setItem('textSpacing', on? '1':'0'); }
+    function initSpacing(){ const on = localStorage.getItem('textSpacing')==='1'; setSpacing(on); }
+
+    function start(){
+      order = pickN(total, BANK.map((_,i)=>i));
+      idx = 0; score = 0;
+      scoreEl.textContent = '0'; fillEl.style.width = '0%';
+      startBtn.disabled = true; resetBtn.disabled = false;
+      resultScreen.hidden = true; rulesScreen.hidden = true; studyScreen.hidden = true; quizScreen.hidden = false;
+      setTimeout(()=>{ const first = quizScreen.querySelector('input,button,select,textarea'); if(first) first.focus(); }, 0);
+      renderQuestion();
+    }
+
+    function reset(){
+      startBtn.disabled = false; resetBtn.disabled = true;
+      quizScreen.hidden = true; resultScreen.hidden = true; rulesScreen.hidden = true;
+      feedbackEl.textContent = ''; refEl.hidden = true; formEl.innerHTML = '';
+    }
+
+    function renderQuestion(){
+      const q = BANK[order[idx]];
+      counterEl.textContent = `Question ${idx+1} of ${total}`;
+      categoryEl.textContent = q.cat;
+      qEl.textContent = q.prompt;
+      feedbackEl.textContent = ''; refEl.hidden = true; refEl.textContent = '';
+      submitBtn.disabled = true; nextBtn.disabled = true;
+
+      // hint tags
+      tagsEl.innerHTML = '';
+      q.cat.split(',').forEach(t=>{
+        const span = document.createElement('span'); span.className='pill'; span.textContent = t.trim(); tagsEl.appendChild(span);
+      });
+
+      formEl.innerHTML = '';
+      formEl.setAttribute('role','radiogroup');
+      formEl.setAttribute('aria-labelledby','question');
+      q.choices.forEach((c,i)=>{
+        const id = `c${i}`;
+        const label = document.createElement('label'); label.className='choice';
+        label.innerHTML = `<input type="radio" name="choice" value="${i}" id="${id}"> ${c}`;
+        formEl.appendChild(label);
+      });
+      formEl.onchange = ()=>{ submitBtn.disabled = false; };
+      submitBtn.onclick = submitAnswer;
+      nextBtn.onclick = nextQuestion;
+      const first = formEl.querySelector('input'); if(first) first.focus();
+    }
+
+    function submitAnswer(e){
+      e.preventDefault();
+      const q = BANK[order[idx]];
+      const chosen = formEl.querySelector('input[name="choice"]:checked');
+      if(!chosen) return;
+      const val = Number(chosen.value);
+      const correct = val === q.answer;
+      if(correct){
+        score++;
+        feedbackEl.textContent = "Correct!";
+        feedbackEl.className = "feedback correct";
+      }else{
+        feedbackEl.textContent = "Not quite. Learn the rule:";
+        feedbackEl.className = "feedback wrong";
+      }
+
+      // Lock choices
+      [...formEl.querySelectorAll('input')].forEach(r=>r.disabled=true);
+      submitBtn.disabled = true; nextBtn.disabled = false;
+
+      // Rule reference + why
+      const rule = q.ruleRef;
+      const bullets = (rule.index||[]).map(i=>RULES[rule.group].items[i]).join(" • ");
+      refEl.innerHTML = `<strong>${RULES[rule.group].title}</strong><br>${q.expl}<br><em>${bullets}</em>`;
+      refEl.hidden = false;
+
+      // Update score meter
+      scoreEl.textContent = String(score);
+      fillEl.style.width = `${Math.round((score/total)*100)}%`;
+    }
+
+    function nextQuestion(){
+      idx++;
+      if(idx >= total) return finish();
+      renderQuestion();
+    }
+
+    function finish(){
+      quizScreen.hidden = true;
+      resultScreen.hidden = false;
+
+      const percent = Math.round((score/total)*100);
+      resultLine.textContent = `You scored ${score}/${total} (${percent}%).`;
+
+      let badge = "";
+      if(score >= 9) badge = "Golden Seal — Class Leader 🏅";
+      else if(score >= 8) badge = "Hall Monitor Badge 🌟";
+      else if(score >= 6) badge = "Solid Start 👍";
+      else badge = "Keep Practicing — Try Again 💪";
+      badgeLine.textContent = badge;
+
+      // Show quick review of rules + a “what I missed”
+      const misses = [];
+      for(let i=0;i<total;i++){
+        const q = BANK[order[i]];
+        const mark = i < idx ? "✓" : "✓";
+        // We don’t track each item’s correctness history here; quick recap instead:
+        const rule = q.ruleRef;
+        const bullets = (rule.index||[]).map(ii=>RULES[rule.group].items[ii]).join(" • ");
+        misses.push(`<li><strong>${q.cat}</strong> — ${q.prompt}<br><em>Best action:</em> ${q.choices[q.answer]}<br><span class="tiny">${RULES[rule.group].title}: ${bullets}</span></li>`);
+      }
+      reviewEl.innerHTML = `<h3>What the Rules Say</h3><ol>${misses.join("")}</ol>`;
+    }
+
+    // Build the rule sheet viewer (with star annotations)
+    let starredRules = (()=>{ try{return JSON.parse(localStorage.getItem('starredRules')||'{}')}catch{ return {}; } })();
+    function isStarred(group,i){ const arr = starredRules[group]||[]; return arr.includes(i); }
+    function toggleStar(group,i){ const arr = starredRules[group]||[]; const idx = arr.indexOf(i); if(idx>=0) arr.splice(idx,1); else arr.push(i); starredRules[group]=arr; localStorage.setItem('starredRules', JSON.stringify(starredRules)); }
+    function buildRuleSheet(){
+      let html = "";
+      for(const key of ["entry","study","departure"]){
+        const group = RULES[key];
+        html += `<h3>${group.title}</h3><ul>`;
+        group.items.forEach((it, i)=>{
+          const on = isStarred(key,i);
+          html += `<li class="${on?'starred':''}" data-group="${key}" data-index="${i}"><button class="star-btn" aria-pressed="${on?'true':'false'}" aria-label="${on?'Unstar':'Star'} rule">${on?'★':'☆'}</button><span class="rule-text">${it}</span></li>`;
+        });
+        html += `</ul>`;
+      }
+      rulesheetEl.innerHTML = html;
+    }
+    rulesheetEl?.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.star-btn');
+      if(!btn) return;
+      const li = btn.closest('li');
+      const group = li.getAttribute('data-group');
+      const i = Number(li.getAttribute('data-index'));
+      const on = btn.getAttribute('aria-pressed')==='true';
+      toggleStar(group,i);
+      btn.setAttribute('aria-pressed', on? 'false':'true');
+      btn.textContent = on? '☆':'★';
+      li.classList.toggle('starred', !on);
+    });
+    
+    // --- Study Deck (built from RULES with kid-friendly jokes) ---
+    const SD_JOKES = {
+      entry: [
+        "Ancient tip: The empire of your desk begins with your seat.",
+        "Ancient tip: Arrive like a royal—on time and ready.",
+        "Ancient tip: Bells aren’t snacks; they’re start signals.",
+        "Ancient tip: Save the hallway saga for after class."
+      ],
+      study: [
+        "Ancient tip: Speak like a scholar, not a shouting dragon.",
+        "Ancient tip: On-topic talk builds pyramids of points.",
+        "Ancient tip: Calm brains beat chaos beasts.",
+        "Ancient tip: Ask with a hand, not a howl."
+      ],
+      departure: [
+        "Ancient tip: Heroes push in chairs before quests.",
+        "Ancient tip: Return supplies like a legendary librarian.",
+        "Ancient tip: Leave it better—your future self thanks you.",
+        "Ancient tip: The bell invites; the teacher releases."
+      ]
+    };
+    function sdWhy(group){
+      if(group==='entry') return 'Why: A strong start saves time and shows respect.';
+      if(group==='study') return 'Why: Focused talk and kind actions help everyone learn.';
+      return 'Why: Clean closes keep the next class ready and the room safe.';
+    }
+    
+    
+    let SD_CARDS = [];
+    function buildStudyCards(filter='all'){
+      const out = [];
+      for(const key of ['entry','study','departure']){
+        if(filter!=='all' && filter!==key) continue;
+        const group = RULES[key];
+        group.items.forEach((text, i)=>{
+          const jokeList = SD_JOKES[key];
+          const joke = jokeList[i % jokeList.length];
+          out.push({ group: key, front: text, back: `${sdWhy(key)}<br><em>${joke}</em>` });
+        });
+      }
+      SD_CARDS = shuffle(out);
+      sdIndex = 0;
+    }
+
+    // Elements for study deck
+    const studyScreen = document.getElementById('study-screen');
+    const showStudyBtn = document.getElementById('show-study');
+    const sdCard = document.getElementById('sd-card');
+    const sdFront = document.getElementById('sd-front');
+    const sdBack = document.getElementById('sd-back');
+    const sdTag = document.getElementById('sd-tag');
+    const sdPrev = document.getElementById('sd-prev');
+    const sdNext = document.getElementById('sd-next');
+    const sdFlip = document.getElementById('sd-flip');
+    const sdShuffle = document.getElementById('sd-shuffle');
+    const sdStar = document.getElementById('sd-star');
+    const sdProgress = document.getElementById('sd-progress');
+
+    let sdIndex = 0;
+
+    let starredCards = (()=>{ try{return JSON.parse(localStorage.getItem('starredCards')||'[]')}catch{ return []; } })();
+    function cardKey(c){ return `${c.group}|${c.front}`; }
+    function isCardStarred(c){ return starredCards.includes(cardKey(c)); }
+    function toggleCardStar(c){ const k = cardKey(c); const i = starredCards.indexOf(k); if(i>=0) starredCards.splice(i,1); else starredCards.push(k); localStorage.setItem('starredCards', JSON.stringify(starredCards)); }
+
+    function renderSD(){
+      if(!SD_CARDS.length){
+        sdFront.textContent = 'No cards. Try a different filter.';
+        sdBack.textContent = '';
+        sdTag.textContent = '';
+        sdProgress.textContent = 'Card 0 of 0';
+        sdCard.classList.remove('showback');
+        sdStar.setAttribute('aria-pressed','false');
+        sdStar.textContent = '☆ Star';
+        return;
+      }
+      const c = SD_CARDS[sdIndex];
+      sdFront.textContent = c.front;
+      sdBack.innerHTML = c.back;
+      sdTag.textContent = c.group.charAt(0).toUpperCase() + c.group.slice(1);
+      sdProgress.textContent = `Card ${sdIndex+1} of ${SD_CARDS.length}`;
+      const on = isCardStarred(c);
+      sdStar.setAttribute('aria-pressed', on? 'true':'false');
+      sdStar.textContent = on? '★ Starred' : '☆ Star';
+      sdCard.classList.remove('showback');
+    }
+
+    function sdFlipCard(){ sdCard.classList.toggle('showback'); }
+    function sdNextCard(){ if(!SD_CARDS.length) return; sdIndex = (sdIndex+1)%SD_CARDS.length; renderSD(); }
+    function sdPrevCard(){ if(!SD_CARDS.length) return; sdIndex = (sdIndex-1+SD_CARDS.length)%SD_CARDS.length; renderSD(); }
+
+    // Filter wiring
+    document.addEventListener('change', (e)=>{
+      if(e.target && e.target.name==='sd-filter'){
+        buildStudyCards(e.target.value);
+        renderSD();
+      }
+    });
+
+    // Buttons wiring
+    startBtn.addEventListener('click', start);
+    resetBtn.addEventListener('click', reset);
+    document.getElementById('again').addEventListener('click', ()=>{ reset(); start(); });
+    showRulesBtn.addEventListener('click', ()=>{ buildRuleSheet(); rulesScreen.hidden = false; quizScreen.hidden = true; resultScreen.hidden = true; studyScreen.hidden = true; });
+    closeRulesBtn.addEventListener('click', ()=>{ rulesScreen.hidden = true; });
+    showStudyBtn.addEventListener('click', ()=>{
+      buildStudyCards('all');
+      renderSD();
+      studyScreen.hidden = false; quizScreen.hidden = true; resultScreen.hidden = true; rulesScreen.hidden = true;
+      setTimeout(()=>{ const first = studyScreen.querySelector('button'); if(first) first.focus(); }, 0);
+    });
+    sdFlip.addEventListener('click', sdFlipCard);
+    sdNext.addEventListener('click', sdNextCard);
+    sdPrev.addEventListener('click', sdPrevCard);
+    sdShuffle.addEventListener('click', ()=>{ SD_CARDS = shuffle(SD_CARDS); sdIndex = 0; renderSD(); });
+    sdStar.addEventListener('click', ()=>{ const c = SD_CARDS[sdIndex]; if(!c) return; toggleCardStar(c); renderSD(); });
+
+    // Accessibility wiring
+    initFont(); initSpacing();
+    fontSmallerBtn.addEventListener('click', ()=>{ const cur = Number(localStorage.getItem('baseFontPx')||'16'); applyFont(Math.max(14, cur-1)); });
+    fontDefaultBtn.addEventListener('click', ()=> applyFont(16));
+    fontBiggerBtn.addEventListener('click', ()=>{ const cur = Number(localStorage.getItem('baseFontPx')||'16'); applyFont(Math.min(22, cur+1)); });
+    spacingBtn.addEventListener('click', ()=> setSpacing(!(document.body.classList.contains('text-spacing'))));
+    openNotesBtn.addEventListener('click', ()=>{ notesPanel.hidden = false; notesText.value = localStorage.getItem('notesText')||''; setTimeout(()=>notesText.focus(),0); });
+    closeNotes.addEventListener('click', ()=>{ notesPanel.hidden = true; });
+    saveNotes.addEventListener('click', ()=>{ localStorage.setItem('notesText', notesText.value||''); notesPanel.hidden = true; });
+
+  </script>
+</body>
+</html>
