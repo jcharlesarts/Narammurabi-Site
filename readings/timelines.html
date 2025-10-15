@@ -1,0 +1,1551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timeline Trainer — BCE / CE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Macondo+Swash+Caps&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b1b1b;
+    --ink-soft:#3b3427;
+    --bg:#f7f3e8; --bg2:#f1ead8; --card:#fffdf7; --soft:#e9e5da;
+    --accent:#2f7d48; --accent-emerald:#2e7d32; --accent-teal:#0f766e; --warn:#9b1c1c;
+    --gold:#d4af37; --gold-deep:#b48d1d; --muted:#6b5a40; --shadow:0 10px 26px rgba(0,0,0,.12);
+  }
+  html,body{margin:0;background:
+      radial-gradient(1200px 560px at -10% -10%, #efe8d7 0, transparent 60%),
+      radial-gradient(1200px 680px at 110% 0%, #efe3c7 0, transparent 55%),
+      linear-gradient(var(--bg), var(--bg2)),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0 2px, transparent 2px 6px);
+    color:var(--ink-soft);font-family:'Cinzel', Georgia, 'Times New Roman', serif}
+  .wrap{max-width:1280px;margin:20px auto;padding:16px}
+  header{background:linear-gradient(180deg,#fffdf7,#fbf5e6);border:2px solid var(--gold);border-radius:16px;padding:14px 16px;box-shadow:0 12px 24px rgba(0,0,0,.10)}
+  h1{margin:.2rem 0 .5rem;font-family:'Macondo Swash Caps', cursive}
+  h2,h3{font-family:'Macondo Swash Caps', cursive}
+  .muted{color:var(--muted)}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .btn{border:1px solid var(--gold-deep);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer;background:linear-gradient(180deg,#ffefc2,#f8de86);transition:transform .08s ease, box-shadow .08s ease}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.12)}
+  .btn.primary{background:linear-gradient(180deg,#2f7d48,#1e5a34);color:#fff;border-color:#1e5a34}
+  .btn.primary:hover{filter:saturate(1.08)}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  select, input[type="number"]{border:1px solid #c0b48a;border-radius:10px;padding:8px 10px;min-height:44px;background:#fff}
+  .screen{background:var(--card);border:1px solid #e6d598;border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);margin-top:16px}
+  .flex{display:flex;gap:16px}
+  @media (max-width: 980px){ .flex{flex-direction:column} }
+  .main{flex:2 1 600px;min-width:0}
+  .sidebar{flex:1 1 320px}
+  .card{background:linear-gradient(180deg,#fffdf7,#fdf7e9);border:1px solid #eadfbf;border-radius:14px;padding:12px 14px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--gold-deep);border-radius:999px;background:linear-gradient(180deg,#ffeaa1,#ffd664);margin:0 6px 6px 0;color:#3d301a}
+
+  /* Activity areas */
+  .stack,.order-area{display:flex;gap:10px;flex-wrap:wrap;min-height:80px}
+  /* Order mode with fixed slots */
+  .order-area.slots{flex-wrap:nowrap;justify-content:space-between;align-items:stretch}
+  .slot{flex:1 1 120px;min-height:84px;border:2px dashed #c9c3ad;border-radius:12px;background:#fcfbf7;display:flex;align-items:center;justify-content:center;padding:6px;position:relative}
+  .slot::before{content:attr(data-label);position:absolute;top:6px;left:8px;font-size:.8rem;color:#6b5a40}
+  .slot.hover{border-color:var(--accent);background:#f3fff7}
+  .slot.filled{border-style:solid;background:#fff}
+  .slot .tile{margin:0;width:100%}
+  .tile{user-select:none;background:linear-gradient(180deg,#ffffff,#fbf7ed);border:1px solid #e1d7b8;border-radius:12px;padding:10px;box-shadow:0 2px 10px rgba(0,0,0,.06);position:relative}
+  .tile[draggable="true"]{cursor:grab}
+  .tile.dragging{opacity:.6}
+  .tile.selected{outline:2px solid var(--accent); box-shadow:0 0 0 3px rgba(47,125,72,.2)}
+  .tile .year{font-weight:600;color:#2e3e47}
+  .tile .label{font-size:.95rem}
+  .dropzone{flex:1 1 120px;min-height:64px;border:2px dashed #c9c3ad;border-radius:12px;background:#fcfbf7;display:flex;align-items:center;justify-content:center;padding:6px}
+  .dropzone.active{border-color:var(--accent);background:#f3fff7}
+  .axis{position:relative;height:100px;border-radius:12px;background:
+      linear-gradient(90deg, rgba(33,150,243,.06) 0 50%, rgba(255,87,34,.06) 50% 100%),
+      linear-gradient(180deg,#fefefe,#f7f6f2);border:1px solid #e0d7ba;margin-top:8px}
+  .zero{position:absolute;left:50%;top:0;bottom:0;width:3px;background:#cdbb90}
+  .tick{position:absolute;bottom:0;width:1px;height:14px;background:#cdbb90}
+  .tick small{position:absolute;bottom:16px;transform:translateX(-50%);color:#5a4a33}
+  .meter{margin-top:8px}
+  .bar{height:12px;background:linear-gradient(180deg,#efe9d7,#e6dcc0);border-radius:10px;overflow:hidden;border:1px solid #e1d7b8}
+  .fill{height:100%;width:0;background:linear-gradient(90deg,#43a047,#2e7d32,#0f766e);transition:width .35s ease}
+  .tiny{font-size:.9rem;color:#555}
+  .feedback{margin-top:8px;font-weight:600}
+  .correct{color:#2e7d32}
+  .wrong{color:#c62828}
+  .warning{color:var(--warn)}
+
+  details{border:1px solid #eee;border-radius:10px;padding:10px 12px;background:#fff}
+  summary{cursor:pointer;font-weight:600}
+  .glossary b{font-weight:700}
+  /* Vocabulary Coach (slide deck) */
+  .coach{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+  .coach .title{font-weight:700;margin-bottom:6px}
+  .tabbar{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+  .tabbar .tab{border:1px solid #c0b48a;border-radius:999px;padding:6px 10px;background:#fff;cursor:pointer;font-size:.95rem}
+  .tabbar .tab.active{background:linear-gradient(180deg,#ffefc2,#f8de86);border-color:#b48d1d}
+  .slides{position:relative;min-height:140px;border:1px solid #eee;border-radius:12px;background:#fcfbf7;padding:12px}
+  .slidecard{font-size:1.05rem;line-height:1.45}
+  .slidecard p{margin:.4rem 0}
+  .pager{display:flex;align-items:center;gap:10px;margin-top:8px}
+  .pager .btn{min-height:36px;padding:6px 12px}
+  .dots{display:flex;gap:6px;margin-left:auto}
+  .dot{width:10px;height:10px;border-radius:50%;background:#d6cfb6;border:1px solid #c0b48a}
+  .dot.active{background:#2f7d48;border-color:#2f7d48}
+  /* Guided timeline additions */
+  .viewport{position:relative;height:140px;border-radius:12px;background:
+      linear-gradient(90deg, rgba(33,150,243,.05) 0 50%, rgba(255,87,34,.05) 50% 100%),
+      linear-gradient(180deg,#fefefe,#f7f6f2);border:1px solid #e0d7ba;margin-top:8px;overflow:hidden;touch-action:none}
+  .g-zero{position:absolute;top:0;bottom:0;width:3px;background:#cdbb90}
+  .g-tick{position:absolute;bottom:0;width:1px;height:14px;background:#cdbb90}
+  .g-tick small{position:absolute;bottom:16px;transform:translateX(-50%);color:#5d5039}
+  .marker{position:absolute;top:50%;width:0;height:0;transform:translate(-50%, -50%)}
+  .marker .pin{position:absolute;left:50%;top:-18px;transform:translateX(-50%);width:8px;height:18px;background:var(--accent);border-radius:3px}
+  .marker .head{position:absolute;left:50%;top:-26px;transform:translateX(-50%);width:16px;height:16px;background:var(--accent);border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  .marker.good .pin, .marker.good .head{background:#2e7d32}
+  .marker.ok .pin, .marker.ok .head{background:#b9891a}
+  .marker.off .pin, .marker.off .head{background:#c62828}
+  .zoombar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+  .zoombar .btn{min-height:36px;padding:6px 10px}
+  .guide-card .big{font-size:1.25rem;font-weight:600;font-family:'Macondo Swash Caps', cursive}
+  .ghost{opacity:.3}
+  /* Place mode snapping/locking */
+  .tile.placed{transform:scale(.9); opacity:.98}
+  .tile.snapped{animation:pop .18s ease-out}
+  @keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.02)}100%{transform:scale(.9)}}
+  .tick small{transition:transform .12s ease,color .12s ease}
+  .tick.active small{color:#1e5a34;transform:translateY(-2px) scale(1.1);animation:pulse .6s ease-in-out infinite}
+  @keyframes pulse{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.08)}100%{transform:translateY(0) scale(1)}}
+  .tick.micro{height:6px;opacity:.45}
+  .axis:not(.vertical) .tick.active{height:22px;background:var(--accent)}
+  .axis.vertical .tick.active{height:3px;background:#1e5a34}
+  /* Pointer arrow for placed/dragging tiles */
+  .axis:not(.vertical) .tile.placed::after, .axis:not(.vertical) .tile.dragging::after{
+    content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:-10px;width:0;height:0;
+    border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid var(--accent-emerald);
+  }
+  .axis.vertical .tile.placed::after, .axis.vertical .tile.dragging::after{
+    content:"";position:absolute;top:50%;transform:translateY(-50%);left:-10px;width:0;height:0;
+    border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:10px solid var(--accent-emerald);
+  }
+  /* Unlock control */
+  .unlock-btn{position:absolute;right:-8px;top:-8px;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);opacity:.0;transition:opacity .15s ease}
+  .tile:hover .unlock-btn{opacity:1}
+  .unlock-btn:after{content:"\1F513";font-size:14px;line-height:22px}
+  /* Guided micro ticks */
+  .g-tick.micro{height:6px;opacity:.45}
+  .viewport:not(.vertical) .g-tick.active{height:22px;background:var(--accent)}
+  .viewport.vertical .g-tick.active{height:3px;background:var(--accent)}
+  /* Placed band below timeline */
+  .placed-band{position:relative;min-height:140px;border:1px dashed #e0d7ba;border-radius:12px;background:linear-gradient(180deg,#fffdf7,#faf3df);margin-top:8px}
+  .placed-band .tile{position:absolute;transform:scale(.9)}
+  .placed-band .tile::after{content:"";position:absolute;left:50%;transform:translateX(-50%);top:-10px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid var(--accent)}
+  /* Vertical orientation overrides */
+  .axis.vertical{height:360px;background:
+      linear-gradient(0deg, rgba(33,150,243,.06) 0 50%, rgba(255,87,34,.06) 50% 100%),
+      linear-gradient(180deg,#fefefe,#f7f6f2)}
+  .axis.vertical .zero{left:0;right:0;width:auto;height:3px;top:50%;bottom:auto}
+  .axis.vertical .tick{bottom:auto;left:0;width:100%;height:1px}
+  .axis.vertical .tick small{left:0;bottom:auto;top:-18px;transform:none}
+  /* Wrong slot hint flash */
+  .slot.wrong-glow{ border-color:#c62828 !important; animation:wrongGlow .9s ease-in-out 0s 2; }
+  @keyframes wrongGlow{
+    0%{ box-shadow:0 0 0 0 rgba(198,40,40,0); }
+    50%{ box-shadow:0 0 0 6px rgba(198,40,40,.25); }
+    100%{ box-shadow:0 0 0 0 rgba(198,40,40,0); }
+  }
+  .viewport.vertical{height:420px}
+  .viewport.vertical .g-zero{left:0;right:0;width:auto;height:3px;top:50%;bottom:auto}
+  .viewport.vertical .g-tick{bottom:auto;left:0;width:100%;height:1px}
+  .viewport.vertical .g-tick small{left:0;bottom:auto;top:-18px;transform:none}
+  /* Mode chooser */
+  .mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+  .mode-card{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;border:2px solid var(--gold-deep);border-radius:16px;background:linear-gradient(180deg,#ffeaa1,#ffd664);box-shadow:0 10px 22px rgba(0,0,0,.12);cursor:pointer;transition:transform .12s ease, box-shadow .12s ease}
+  .mode-card:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(0,0,0,.12)}
+  .mode-card .title{font-family:'Macondo Swash Caps', cursive;font-size:1.4rem}
+  .mode-card .desc{font-size:.9rem;color:#6b5a40;margin-top:6px;text-align:center;padding:0 8px}
+  /* Coach panel */
+  .coach-panel{max-height:0;overflow:hidden;transition:max-height .35s ease;margin-top:8px}
+  .coach-panel.open{max-height:1000px}
+  /* Move action buttons into screens */
+  #check{ display:none !important; }
+  .action-row{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:10px }
+  /* Solo view toggles via URL flags */
+  body.solo #learnScreen { display:none !important; }
+  body.noheader header { display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Timeline Trainer — BCE / CE</h1>
+    <p class="muted">Practice placing events in time. Learn the words that make timelines make sense.</p>
+    <div id="controlsBar" class="controls" style="display:none">
+      <label>Mode:
+        <select id="mode">
+          <option value="order">Order Mode (drag earliest → latest)</option>
+          <option value="place">Place Mode (drop on number line)</option>
+          <option value="guided">Guided Timeline (zoom + labels)</option>
+        </select>
+      </label>
+      <label>Orientation:
+        <select id="orientation">
+          <option value="horizontal" selected>Horizontal</option>
+          <option value="vertical">Vertical</option>
+        </select>
+      </label>
+      <label>Era Filter:
+        <select id="era">
+          <option value="mixed">BCE + CE</option>
+          <option value="bce">BCE only</option>
+          <option value="ce">CE only</option>
+        </select>
+      </label>
+      <label># of Events:
+        <select id="count">
+          <option>5</option><option selected>7</option><option>10</option><option>12</option>
+        </select>
+      </label>
+      <label>Timer:
+        <select id="timer">
+          <option value="0">No timer (practice)</option>
+          <option value="60">60s</option>
+          <option value="90" selected>90s</option>
+          <option value="120">120s</option>
+        </select>
+      </label>
+      <button id="start" class="btn primary">Start</button>
+      <button id="check" class="btn" disabled>Check</button>
+      <button id="reset" class="btn" disabled>Reset</button>
+    </div>
+  </header>
+
+  <!-- Learn screen (pre-game) -->
+  <section id="learnScreen" class="screen">
+    <button id="coachToggle" class="btn">Want help understanding timelines?</button>
+    <div id="coachPanel" class="coach-panel">
+      <div class="coach" id="coach">
+        <div class="title">Vocabulary Coach (Choose a word and click "next" to learn more!)</div>
+        <div class="tabbar" id="coachTabs" role="tablist" aria-label="Vocabulary terms">
+          <!-- tabs injected -->
+        </div>
+        <div class="slides" id="coachSlides" aria-live="polite">
+          <!-- slide content injected -->
+        </div>
+        <div class="pager">
+          <button id="coachPrev" class="btn" aria-label="Previous">◀ Prev</button>
+          <button id="coachNext" class="btn" aria-label="Next">Next ▶</button>
+          <div class="dots" id="coachDots" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mode-grid" aria-label="Choose a practice mode">
+      <button id="quickOrder" class="mode-card" aria-label="Order Mode">
+        <div class="title">Order</div>
+        <div class="desc">Drag events into earliest → latest sequence</div>
+      </button>
+      <button id="quickPlace" class="mode-card" aria-label="Place Mode">
+        <div class="title">Place</div>
+        <div class="desc">Drop events onto the number line</div>
+      </button>
+      <button id="quickGuided" class="mode-card" aria-label="Guided Timeline">
+        <div class="title">Guided</div>
+        <div class="desc">Pin the year; zoom and pan if needed</div>
+      </button>
+    </div>
+    <button id="howToggle" class="btn" style="margin-top:8px">How it works</button>
+    <div id="howPanel" class="coach-panel">
+      <div class="card">
+        <strong>How It Works</strong>
+        <div class="tiny" style="margin-top:6px">
+          <p><b>Order Mode</b></p>
+          <ul>
+            <li>Drag the event cards into the slots from <b>earliest</b> on the left to <b>latest</b> on the right.</li>
+            <li>Fill every slot, then press <b>Finished!</b></li>
+            <li>Wrong spots flash red. Fix them and try again.</li>
+          </ul>
+          <p><b>Place Mode</b></p>
+          <ul>
+            <li>Drag each card to the number line. Left is <b>BCE</b>, right is <b>CE</b>.</li>
+            <li>Cards snap to nearby ticks. Use the unlock icon to move a placed card again.</li>
+            <li>Press <b>Check</b> to see your average error in years.</li>
+          </ul>
+          <p><b>Guided Timeline</b></p>
+          <ul>
+            <li>Read the prompt, then click (or <b>Shift+click</b>) to place the year.</li>
+            <li>Use <b>Zoom</b>, <b>Pan</b>, and <b>Center</b> to find the right spot.</li>
+            <li>Press <b>Check</b> → then <b>Next</b> or <b>Finish</b>.</li>
+          </ul>
+          <p><b>Timer & Score</b></p>
+          <ul>
+            <li>Choose a timer or practice with no timer.</li>
+            <li>In Order Mode, finishing early adds a small time bonus.</li>
+          </ul>
+          <p><b>Tip</b>: The <b>Vocabulary Coach</b> above explains <b>BCE</b>, <b>CE</b>, centuries, and more.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <strong>Teacher Tips</strong>
+      <ul class="tiny">
+        <li>Start with <i>Order</i> for simple sequencing; use <i>Place</i> or <i>Guided</i> to practice number lines.</li>
+        <li>Horizontal or Vertical orientation supports different spatial preferences.</li>
+        <li>Event cards always show the date with the title — students practice chronology, not recall.</li>
+        <li>Edit the event library in the <code>EVENTS</code> array (bottom of this file).</li>
+      </ul>
+    </div>
+    <details style="margin-top:10px">
+      <summary>Why BCE / CE?</summary>
+      <p class="tiny">We use <b>BCE</b> (Before Common Era) and <b>CE</b> (Common Era). These labels work for everyone in a global classroom. They match the same years as BC/AD but don’t assume a religion or Latin words.</p>
+    </details>
+    <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
+      <button id="enterGame" class="btn primary">Begin Game</button>
+      <button id="openSolo" class="btn">Open Solo View</button>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="screen" hidden>
+    <div class="flex">
+      <div class="main" style="flex:1 1 auto">
+        <div id="hud" class="card" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+          <span class="pill" id="round">Round 0</span>
+          <span class="pill" id="modeTag">—</span>
+          <span class="pill" id="eraTag">—</span>
+          <span class="pill" id="timerTag">—</span>
+          <span class="pill" id="highTag">High: 0</span>
+          <div class="meter" style="flex:1 1 200px">
+            <div class="tiny">Score</div>
+            <div class="bar"><div id="scoreFill" class="fill"></div></div>
+            <div class="tiny"><span id="score">0</span> pts</div>
+          </div>
+          <button id="backIntro" class="btn">Back to First Screen</button>
+        </div>
+
+        <!-- ORDER MODE -->
+        <div id="orderScreen" style="margin-top:10px" hidden>
+          <h3>Drag the event cards so they go from <em>earliest</em> (left) to <em>latest</em> (right).</h3>
+          <div id="orderBank" class="stack" aria-label="Card bank (drag from here)"></div>
+          <div id="orderArea" class="order-area" aria-label="Timeline slots (drop here)"></div>
+          <div id="orderFeedback" class="feedback"></div>
+          <div class="action-row"><button id="orderFinish" class="btn primary">Finished!</button></div>
+        </div>
+
+        <!-- PLACE MODE -->
+        <div id="placeScreen" style="margin-top:10px" hidden>
+          <h3>Drag each event card onto the number line. Left is BCE, right is CE.</h3>
+          <div id="stack" class="stack"></div>
+          <div id="axis" class="axis" aria-label="timeline number line">
+            <div class="zero" title="Year 0 (note: there is no year 0 in historical dating)"></div>
+            <!-- ticks injected here -->
+          </div>
+          <div id="placedBand" class="placed-band"></div>
+          <div id="placeFeedback" class="feedback"></div>
+          <div class="action-row"><button id="placeCheckBtn" class="btn primary">Check</button></div>
+        </div>
+
+        <!-- GUIDED MODE -->
+        <div id="guidedScreen" style="margin-top:10px" hidden>
+          <h3>Place the event at the correct year on the timeline. Zoom or pan to find the right spot.</h3>
+          <div id="guideCard" class="card guide-card" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <div class="big" id="guidePrompt">Place: —</div>
+          </div>
+          <div class="zoombar">
+            <button id="zoomOut" class="btn">− Zoom out</button>
+            <button id="zoomIn" class="btn">+ Zoom in</button>
+            <button id="centerView" class="btn">Center</button>
+            <span class="tiny" id="rangeTag">—</span>
+            <span class="tiny" style="margin-left:auto">Tip: drag to pan • scroll to zoom • Shift+click to place</span>
+          </div>
+          <div id="gView" class="viewport" aria-label="interactive timeline">
+            <div id="gZero" class="g-zero" title="Year 0"></div>
+            <div id="gTicks"></div>
+            <div id="gMarker" class="marker" hidden>
+              <div class="head"></div>
+              <div class="pin"></div>
+            </div>
+          </div>
+          <div id="guideFeedback" class="feedback"></div>
+          <div class="action-row"><button id="guidedActionBtn" class="btn primary">Check</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ===== Helpers ===== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]} return a; };
+const fmtYear = y => y < 0 ? `${Math.abs(y)} BCE` : `${y} CE`;
+
+// Simple CSS.escape polyfill for older browsers
+try{
+  if (typeof window !== 'undefined' && (!window.CSS || typeof window.CSS.escape !== 'function')) {
+    window.CSS = window.CSS || {};
+    window.CSS.escape = function (s) { return String(s).replace(/[^a-zA-Z0-9_\-]/g, '\\$&'); };
+  }
+}catch(_e){}
+
+/* ===== Vocabulary Coach (Tabbed Slide Deck) ===== */
+const COACH_DATA = {
+  "BCE": [
+    "BCE means ‘Before the Common Era.’",
+    "We count backward in BCE. 300 BCE is earlier than 200 BCE.",
+    "Think of numbers below zero on a thermometer: −300 is ‘farther back’ than −200."
+  ],
+  "CE": [
+    "CE means ‘Common Era.’",
+    "CE starts at year 1 and goes up: 200 CE comes after 100 CE.",
+    "CE matches the same years as AD, but uses neutral language."
+  ],
+  "Earlier vs Later": [
+    "‘Earlier’ means farther back in time. ‘Later’ means closer to today.",
+    "In CE: a smaller number is earlier (120 CE is earlier than 300 CE).",
+    "In BCE: a bigger number is earlier (500 BCE is earlier than 200 BCE)."
+  ],
+  "Century": [
+    "A century is 100 years.",
+    "The 400s CE are called the 5th century CE (count the hundreds!).",
+    "Tip: 1–100 = 1st century, 101–200 = 2nd, and so on."
+  ],
+  "Millennium": [
+    "A millennium is 1,000 years.",
+    "Examples: 1–1000 CE (1st millennium); 1001–2000 CE (2nd millennium).",
+    "Millennia help us talk about very long timelines."
+  ],
+  "Year 0?": [
+    "Historians don’t use a year 0.",
+    "Timelines sometimes show a middle line between BCE and CE.",
+    "It goes … 2 BCE, 1 BCE, then 1 CE, 2 CE …"
+  ],
+  "BCE/CE Story": [
+    "Long ago, many books used BC (‘Before Christ’) and AD (Latin: ‘Anno Domini’).",
+    "In today’s world, classes include many cultures and religions.",
+    "So we use BCE (‘Before the Common Era’) and CE (‘Common Era’).",
+    "They point to the same exact years as BC/AD—only the names changed.",
+    "This keeps our timeline fair and easy for everyone to use.",
+    "You’ll see BCE/CE in museums, libraries, and in this game!"
+  ]
+};
+let coachTerm = Object.keys(COACH_DATA)[0];
+let coachIndex = 0;
+function renderCoach(){
+  // Tabs
+  const tabs = document.getElementById('coachTabs');
+  tabs.innerHTML = '';
+  Object.keys(COACH_DATA).forEach(term=>{
+    const b = document.createElement('button');
+    b.className = 'tab' + (term===coachTerm?' active':'');
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-selected', term===coachTerm ? 'true':'false');
+    b.textContent = term;
+    b.addEventListener('click', ()=>{ coachTerm = term; coachIndex = 0; updateCoach(); });
+    tabs.appendChild(b);
+  });
+  updateCoach();
+}
+function updateCoach(){
+  const slides = COACH_DATA[coachTerm];
+  if(!slides) return;
+  // Content
+  const area = document.getElementById('coachSlides');
+  if(!area) return;
+  area.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'slidecard';
+  // Split long slide into short lines for readability
+  const text = slides[coachIndex];
+  text.split(/\s*;\s*|\n/).forEach(line=>{
+    const p = document.createElement('p');
+    p.textContent = line;
+    card.appendChild(p);
+  });
+  area.appendChild(card);
+  // Tabs active state
+  const tabs = Array.from(document.querySelectorAll('#coachTabs .tab'));
+  tabs.forEach(t=>{
+    const on = t.textContent===coachTerm; t.classList.toggle('active', on); t.setAttribute('aria-selected', on?'true':'false');
+  });
+  // Dots
+  const dots = document.getElementById('coachDots');
+  if(dots){
+    dots.innerHTML = '';
+    slides.forEach((_,i)=>{
+      const d = document.createElement('div'); d.className = 'dot' + (i===coachIndex?' active':''); dots.appendChild(d);
+    });
+  }
+  // Prev/Next enable
+  const prevBtn = document.getElementById('coachPrev');
+  const nextBtn = document.getElementById('coachNext');
+  if(prevBtn) prevBtn.disabled = (coachIndex===0);
+  if(nextBtn) nextBtn.disabled = (coachIndex===slides.length-1);
+}
+function nextCoach(){ const slides = COACH_DATA[coachTerm]; if(coachIndex < slides.length-1){ coachIndex++; updateCoach(); } }
+function prevCoach(){ if(coachIndex>0){ coachIndex--; updateCoach(); } }
+
+/* ===== Event Library (expand/modify freely) =====
+ Each event: { title, year }  where BCE = negative year (221 BCE -> -221)
+ Mix of world regions + eras; dates rounded where needed for classroom practice.
+*/
+const EVENTS = [
+  // Deep Ancient (BCE)
+  {title:"Earliest cuneiform writing in Sumer", year:-3200},
+  {title:"Upper & Lower Egypt unified", year:-3100},
+  {title:"Great Pyramid at Giza completed", year:-2560},
+  {title:"Code of Hammurabi", year:-1754},
+  {title:"Shang dynasty begins (China)", year:-1600},
+  {title:"Iron use spreads (Anatolia)", year:-1200},
+  {title:"Zhou dynasty begins (China)", year:-1046},
+  {title:"First Olympic Games (Greece)", year:-776},
+  {title:"Traditional founding of Rome", year:-753},
+  {title:"Confucius born", year:-551},
+  {title:"Siddhartha Gautama (Buddha) born (trad.)", year:-563},
+  {title:"Roman Republic begins", year:-509},
+  {title:"Battle of Marathon", year:-490},
+  {title:"Battle of Thermopylae", year:-480},
+  {title:"Peloponnesian War begins", year:-431},
+  {title:"Socrates dies", year:-399},
+  {title:"Alexander the Great becomes king", year:-336},
+  {title:"Alexander the Great dies", year:-323},
+  {title:"Qin unifies China", year:-221},
+  {title:"Han dynasty begins (China)", year:-206},
+  {title:"Rome defeats Carthage (3rd Punic War)", year:-146},
+  {title:"Julius Caesar assassinated", year:-44},
+  {title:"Augustus (Octavian) becomes first Roman emperor", year:-27},
+  {title:"Wheel and plow used in Mesopotamia", year:-3500},
+  {title:"Egyptian hieroglyphic writing appears", year:-3200},
+  {title:"Bronze working spreads in the Near East", year:-3000},
+  {title:"Cities of Mohenjo-Daro and Harappa thrive (Indus Valley)", year:-2600},
+  {title:"Main circle of Stonehenge raised (Britain)", year:-2500},
+  {title:"Mycenaean Greece rises", year:-1600},
+  {title:"Hittite Empire grows in Anatolia", year:-1500},
+  {title:"Olmec civilization begins (Mesoamerica)", year:-1500},
+  {title:"Phoenician trading cities grow on the coast", year:-1400},
+  {title:"Ramses II begins long reign in Egypt", year:-1279},
+  {title:"Battle of Kadesh: Egypt vs. Hittites", year:-1274},
+  {title:"Merneptah Stele mentions a people called ‘Israel’", year:-1208},
+  {title:"Hittite Empire collapses", year:-1180},
+  {title:"Alphabet spreads from the Phoenicians", year:-1100},
+  {title:"Kingdom of Israel forms", year:-1000},
+  {title:"Solomon builds a great temple in Jerusalem", year:-960},
+  {title:"Chavín culture rises in the Andes (Peru)", year:-900},
+  {title:"Carthage founded by Phoenician settlers (North Africa)", year:-814},
+  {title:"Greek alphabet in use; oral epics take shape", year:-800},
+  {title:"Assyria conquers the Kingdom of Israel (Samaria falls)", year:-722},
+  {title:"Nok iron-working culture in West Africa", year:-700},
+  {title:"First coins minted in Lydia (Asia Minor)", year:-600},
+  {title:"Solon’s reforms in Athens", year:-594},
+  {title:"Babylonians destroy Jerusalem; many people exiled", year:-586},
+  {title:"Cyrus the Great founds the Persian Empire", year:-550},
+  {title:"Cyrus captures Babylon; people allowed to return home", year:-539},
+  {title:"Cleisthenes’ democratic reforms in Athens", year:-508},
+  {title:"Greeks defeat Persians at Plataea", year:-479},
+  {title:"Age of Pericles begins in Athens", year:-461},
+  {title:"The Twelve Tables (early Roman laws) are posted", year:-450},
+  {title:"Peloponnesian War ends; Sparta defeats Athens", year:-404},
+  {title:"Plato founds the Academy in Athens", year:-387},
+  {title:"Battle of Leuctra: Thebes defeats Sparta", year:-371},
+  {title:"Philip II becomes king of Macedon", year:-359},
+  {title:"Philip II wins at Chaeronea; Greece unites under Macedon", year:-338},
+  {title:"Alexander invades the Persian Empire", year:-334},
+  {title:"Battle of Gaugamela; Persia falls to Alexander", year:-331},
+  {title:"Ptolemaic kingdom begins in Egypt", year:-305},
+  {title:"Euclid writes Elements (geometry)", year:-300},
+  {title:"Early Maya cities begin to grow (Mesoamerica)", year:-300},
+  {title:"Qin crackdown on books and scholars (harsh rule)", year:-213},
+  {title:"Shi Huangdi (Qin emperor) dies", year:-210},
+  {title:"Hannibal defeated at the Battle of Zama", year:-202},
+{title:"Yayoi rice farming spreads in Japan", year:-300},
+
+  // Early CE
+  {title:"Great Fire of Rome", year:64},
+  {title:"Vesuvius erupts at Pompeii", year:79},
+  {title:"Han dynasty ends (China)", year:220},
+  {title:"Edict of Milan (toleration in Rome)", year:313},
+  {title:"Fall of Western Roman Empire", year:476},
+  {title:"Tang dynasty begins (China)", year:618},
+  {title:"Battle of Tours", year:732},
+  {title:"Charlemagne crowned emperor", year:800},
+  {title:"Song dynasty begins (China)", year:960},
+  {title:"Norman Conquest of England", year:1066},
+  {title:"Genghis Khan unites the Mongols", year:1206},
+  {title:"Magna Carta", year:1215},
+  {title:"Mansa Musa’s famous hajj", year:1324},
+  {title:"Black Death reaches Europe", year:1347},
+  {title:"Ottomans take Constantinople", year:1453},
+  {title:"Gutenberg printing spreads (mid-1400s)", year:1455},
+  {title:"Columbus reaches the Caribbean", year:1492},
+  {title:"Martin Luther’s 95 Theses", year:1517},
+  {title:"Mughal Empire founded (India)", year:1526},
+  {title:"Tokugawa shogunate begins (Japan)", year:1603},
+  {title:"Qing dynasty begins (China)", year:1644},
+  {title:"American Declaration of Independence", year:1776},
+  {title:"French Revolution begins", year:1789},
+  {title:"Haitian Revolution begins", year:1791},
+  {title:"Napoleon crowned emperor", year:1804},
+  {title:"British Slavery Abolition Act", year:1833},
+  {title:"First Opium War begins", year:1839},
+  {title:"US Civil War begins", year:1861},
+  {title:"Meiji Restoration (Japan)", year:1868},
+  {title:"Berlin Conference (Africa partition)", year:1884},
+  {title:"World War I begins", year:1914},
+  {title:"Russian Revolution", year:1917},
+  {title:"Treaty of Versailles", year:1919},
+  {title:"Global Great Depression begins", year:1929},
+  {title:"World War II begins", year:1939},
+  {title:"World War II ends", year:1945},
+  {title:"India becomes independent", year:1947},
+  {title:"People’s Republic of China founded", year:1949},
+  {title:"Korean War begins", year:1950},
+  {title:"US Civil Rights Act", year:1964},
+  {title:"First Moon landing", year:1969},
+  {title:"Berlin Wall falls", year:1989},
+  {title:"USSR dissolves", year:1991},
+  {title:"End of apartheid elections (South Africa)", year:1994},
+  {title:"September 11 attacks", year:2001},
+  {title:"Global financial crisis", year:2008},
+  {title:"Arab Spring peaks", year:2011},
+  {title:"COVID-19 pandemic declared", year:2020},
+];
+
+/* ===== State ===== */
+const TARGET_SCORE = 100;
+let round = 0, score = 0, timerId = null, timeLeft = 0, initialRoundTime = 0;
+let current = []; // events selected for round
+let mode = 'order'; // 'order'|'place'
+
+/* ===== DOM ===== */
+const startBtn = $('#start'), resetBtn = $('#reset'), checkBtn = $('#check');
+const modeSel = $('#mode'), eraSel = $('#era'), countSel = $('#count'), timerSel = $('#timer');
+const orientationSel = $('#orientation');
+const controlsBar = $('#controlsBar');
+const learnScreen = $('#learnScreen');
+const gameScreen = $('#gameScreen');
+const enterGameBtn = $('#enterGame');
+const openSoloBtn = $('#openSolo');
+const scoreFill = $('#scoreFill'), scoreEl = $('#score'), roundEl = $('#round');
+const modeTag = $('#modeTag'), eraTag = $('#eraTag'), timerTag = $('#timerTag');
+const highTag = $('#highTag');
+let highScore = 0; // session high score
+const orderScreen = $('#orderScreen'), orderArea = $('#orderArea'), orderFeedback = $('#orderFeedback'), orderBank = $('#orderBank');
+const placeScreen = $('#placeScreen'), axis = $('#axis'), placedBand = $('#placedBand'), placeFeedback = $('#placeFeedback'), stack = $('#stack');
+// Guided DOM
+const guidedScreen = document.getElementById('guidedScreen');
+const guidePrompt = document.getElementById('guidePrompt');
+const gView = document.getElementById('gView');
+const gTicks = document.getElementById('gTicks');
+const gZero = document.getElementById('gZero');
+const gMarker = document.getElementById('gMarker');
+const guideFeedback = document.getElementById('guideFeedback');
+const zoomInBtn = document.getElementById('zoomIn');
+const zoomOutBtn = document.getElementById('zoomOut');
+const centerViewBtn = document.getElementById('centerView');
+const rangeTag = document.getElementById('rangeTag');
+// Local action buttons per screen
+const orderFinishBtn = document.getElementById('orderFinish');
+const placeCheckBtn = document.getElementById('placeCheckBtn');
+const guidedActionBtn = document.getElementById('guidedActionBtn');
+// Quick mode launchers on intro page
+const quickOrderBtn = document.getElementById('quickOrder');
+const quickPlaceBtn = document.getElementById('quickPlace');
+const quickGuidedBtn = document.getElementById('quickGuided');
+// Back to intro
+const backIntroBtn = document.getElementById('backIntro');
+
+/* ===== UI Helpers ===== */
+function setHUD(){
+  modeTag.textContent = (modeSel.value === 'order') ? 'Order Mode' : (modeSel.value === 'place' ? 'Place Mode' : 'Guided Timeline');
+  eraTag.textContent = eraSel.value === 'mixed' ? 'BCE + CE' : (eraSel.value.toUpperCase());
+  timerTag.textContent = +timerSel.value ? `${timerSel.value}s` : 'No timer';
+  roundEl.textContent = `Round ${round}`;
+  scoreEl.textContent = score.toString();
+  scoreFill.style.width = Math.min(100, score).toString() + '%';
+  if(highTag) highTag.textContent = `High: ${highScore}`;
+  // Start button label: show Next if still playing toward target
+  if(!startBtn.disabled){
+    if(round>0 && score < TARGET_SCORE){ startBtn.textContent = 'Next'; }
+    else { startBtn.textContent = 'Start'; }
+  }
+}
+function startTimer(){
+  const t = +timerSel.value;
+  if(!t){ $('#timerTag').textContent = 'Practice'; return; }
+  timeLeft = t;
+  initialRoundTime = t;
+  $('#timerTag').textContent = `${timeLeft}s`;
+  clearInterval(timerId);
+  timerId = setInterval(()=>{
+    timeLeft -= 1;
+    $('#timerTag').textContent = `${Math.max(0,timeLeft)}s`;
+    if(timeLeft<=0){ clearInterval(timerId); timerId=null; checkRound(true); }
+  }, 1000);
+}
+
+/* ===== Round building ===== */
+function pickEvents(){
+  const era = eraSel.value;
+  let pool = EVENTS.slice();
+  if(era==='bce') pool = pool.filter(e=>e.year<0);
+  if(era==='ce')  pool = pool.filter(e=>e.year>0);
+  shuffle(pool);
+  const n = +countSel.value;
+  current = pool.slice(0, n).map(e => ({...e, id: cryptoRandomId()}));
+}
+function cryptoRandomId(){
+  // Simple unique id; ok if crypto unavailable
+  try { return crypto.randomUUID(); } catch { return 'x'+Math.random().toString(36).slice(2,9); }
+}
+
+/* ===== ORDER MODE ===== */
+function renderOrder(){
+  orderFeedback.textContent = '';
+  // build slots
+  orderArea.innerHTML = '';
+  orderArea.classList.add('slots');
+  for(let i=0;i<current.length;i++){
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.dataset.index = i;
+    slot.dataset.label = (i===0) ? '1 (earliest)' : (i===current.length-1 ? `${i+1} (latest)` : `${i+1}`);
+    slot.setAttribute('aria-label', `Position ${i+1}`);
+    orderArea.appendChild(slot);
+  }
+  // build shuffled bank
+  if(orderBank){ orderBank.innerHTML = ''; }
+  const pool = current.slice();
+  shuffle(pool);
+  pool.forEach(ev=>{
+    const card = document.createElement('div');
+    card.className = 'tile';
+    card.draggable = true;
+    card.dataset.id = ev.id;
+    card.innerHTML = `<div class="label">${fmtYear(ev.year)} — ${ev.title}</div>`;
+    orderBank.appendChild(card);
+  });
+  wireOrderDnD();
+  wireOrderTap();
+}
+
+function wireOrderDnD(){
+  // drag start/end for cards
+  const onDragStart = (e)=>{
+    const t = e.target.closest('.tile');
+    if(!t) return; if(e.dataTransfer) e.dataTransfer.setData('text/plain', t.dataset.id||'');
+    if(e.dataTransfer) e.dataTransfer.effectAllowed='move';
+    t.classList.add('dragging');
+  };
+  const onDragEnd = (e)=>{ const el = e.target.closest('.tile'); if(el) el.classList.remove('dragging'); };
+  [...document.querySelectorAll('#orderBank .tile, #orderArea .slot .tile')].forEach(t=>{
+    t.addEventListener('dragstart', onDragStart);
+    t.addEventListener('dragend', onDragEnd);
+  });
+  // allow dropping into bank
+  if(orderBank){
+    orderBank.addEventListener('dragover', e=>{ e.preventDefault(); e.dataTransfer && (e.dataTransfer.dropEffect='move'); });
+    orderBank.addEventListener('drop', e=>{
+      e.preventDefault();
+      const id = e.dataTransfer ? e.dataTransfer.getData('text/plain') : '';
+      if(!id) return;
+      const card = document.querySelector(`.tile[data-id="${CSS.escape(id)}"]`);
+      if(!card) return;
+      // if it was in a slot, unfill that slot
+      const parentSlot = card.closest('.slot');
+      if(parentSlot){ parentSlot.classList.remove('filled'); }
+      card.draggable = true;
+      orderBank.appendChild(card);
+    });
+  }
+  // each slot handles over/leave/drop
+  $$('#orderArea .slot').forEach(slot=>{
+    slot.addEventListener('dragover', e=>{ e.preventDefault(); e.dataTransfer && (e.dataTransfer.dropEffect='move'); slot.classList.add('hover'); });
+    slot.addEventListener('dragleave', ()=> slot.classList.remove('hover'));
+    slot.addEventListener('drop', e=>{
+      e.preventDefault(); slot.classList.remove('hover');
+      const id = e.dataTransfer ? e.dataTransfer.getData('text/plain') : '';
+      if(!id) return;
+      const card = document.querySelector(`.tile[data-id="${CSS.escape(id)}"]`);
+      if(!card) return;
+      // if slot already has a card, send it back to bank
+      const existing = slot.querySelector('.tile');
+      if(existing){ orderBank.appendChild(existing); }
+      // if card came from another slot, unfill that one
+      const fromSlot = card.closest('.slot');
+      if(fromSlot && fromSlot!==slot){ fromSlot.classList.remove('filled'); }
+      slot.appendChild(card);
+      slot.classList.add('filled');
+    });
+  });
+}
+// Touch-friendly tap-to-place fallback for iPad
+function wireOrderTap(){
+  if(!orderArea || !orderBank) return;
+  let selected = null;
+  const select = (card)=>{
+    if(selected) selected.classList.remove('selected');
+    selected = card || null;
+    if(selected) selected.classList.add('selected');
+  };
+  // Tap a card in bank to select
+  orderBank.addEventListener('click', (e)=>{
+    const card = e.target && e.target.closest ? e.target.closest('.tile') : null;
+    if(card) select(card);
+  });
+  // Tap a card in a slot to select it (to move elsewhere)
+  orderArea.addEventListener('click', (e)=>{
+    const card = e.target && e.target.closest ? e.target.closest('.tile') : null;
+    if(card){ select(card); return; }
+    const slot = e.target && e.target.closest ? e.target.closest('.slot') : null;
+    if(!slot) return;
+    if(selected){
+      const existing = slot.querySelector('.tile');
+      if(existing){ orderBank.appendChild(existing); }
+      const fromSlot = selected.closest('.slot');
+      if(fromSlot){ fromSlot.classList.remove('filled'); }
+      slot.appendChild(selected);
+      slot.classList.add('filled');
+      select(null);
+    }
+  });
+}
+function enableHorizontalDrag(container){
+  let dragEl = null;
+  container.addEventListener('dragstart', e=>{
+    if(e.target.classList.contains('tile')){ dragEl = e.target; dragEl.classList.add('dragging'); if(e.dataTransfer) e.dataTransfer.effectAllowed='move'; }
+  });
+  container.addEventListener('dragend', ()=>{ if(dragEl){ dragEl.classList.remove('dragging'); dragEl=null; } });
+  container.addEventListener('dragover', e=>{
+    e.preventDefault();
+    if(e.dataTransfer) e.dataTransfer.dropEffect='move';
+    const after = getAfterElement(container, e.clientX);
+    const dragging = container.querySelector('.dragging');
+    if(!dragging) return;
+    if(after==null){ container.appendChild(dragging); }
+    else{ container.insertBefore(dragging, after); }
+  });
+  function getAfterElement(container, x){
+    const els = [...container.querySelectorAll('.tile:not(.dragging)')];
+    return els.reduce((closest, child)=>{
+      const box = child.getBoundingClientRect();
+      const offset = x - box.left - box.width/2;
+      if(offset < 0 && offset > closest.offset) return {offset, element: child};
+      else return closest;
+    }, {offset: Number.NEGATIVE_INFINITY}).element;
+  }
+}
+function gradeOrder(){
+  const slots = $$('#orderArea .slot');
+  // ensure all slots filled
+  const unfilled = slots.some(s=>!s.querySelector('.tile'));
+  if(unfilled){
+    orderFeedback.innerHTML = `<span class="wrong">Fill all slots from earliest to latest before checking.</span>`;
+    return false;
+  }
+  const ids = slots.map(s => s.querySelector('.tile').dataset.id);
+  const correct = current.slice().sort((a,b)=>a.year-b.year).map(e=>e.id);
+  let correctPositions = 0;
+  const slotsEls = $$('#orderArea .slot');
+  ids.forEach((id,i)=>{
+    const isRight = id===correct[i];
+    if(isRight) correctPositions++;
+    else {
+      const s = slotsEls[i];
+      if(s){ s.classList.add('wrong-glow'); setTimeout(()=>s.classList.remove('wrong-glow'), 1200); }
+    }
+  });
+  const n = current.length;
+  const pct = Math.round((correctPositions/n)*100);
+  const add = Math.round(pct/10);
+  score += add;
+  orderFeedback.innerHTML = (pct===100)
+    ? `<span class="correct">Perfect order! +${add} pts</span>`
+    : `<span class="warning">${correctPositions}/${n} in the right spot (${pct}%). +${add} pts</span><br><span class="tiny">Correct order:</span> ` +
+      `<div class="tiny">${current.slice().sort((a,b)=>a.year-b.year).map(e=>fmtYear(e.year)+' — '+e.title).join('<br>')}</div>`;
+  scoreFill.style.width = Math.min(100, score) + '%';
+  return true;
+}
+
+/* ===== PLACE MODE ===== */
+function renderAxis(){
+  // Clear ticks
+  $$('#axis .tick').forEach(t=>t.remove());
+  // Make nice ticks based on selected events
+  const years = current.map(e=>e.year);
+  const min = Math.min(...years, -500);
+  const max = Math.max(...years,  500);
+  const span = max - min;
+  const step = niceStep(span);
+  const axis = $('#axis');
+  const vertical = orientationSel.value === 'vertical';
+  axis.classList.toggle('vertical', vertical);
+  // expose axis scale for snapping
+  window.__placeAxis = {min, max, step};
+  for(let y = Math.ceil(min/step)*step; y <= max; y+=step){
+    const tick = document.createElement('div');
+    tick.className = 'tick';
+    const pct = (y - min) / (max - min);
+    if(vertical){ tick.style.top = (pct*100)+'%'; } else { tick.style.left = (pct*100)+'%'; }
+    tick.innerHTML = `<small>${labelYear(y)}</small>`;
+    tick.dataset.year = y;
+    tick.dataset.pct = pct.toFixed(6);
+    axis.appendChild(tick);
+  }
+  // micro ticks at decades
+  const micro = 10;
+  for(let y = Math.ceil(min/micro)*micro; y <= max; y += micro){
+    const pct = (y - min) / (max - min);
+    const t = document.createElement('div');
+    t.className = 'tick micro';
+    if(vertical){ t.style.top = (pct*100)+'%'; } else { t.style.left = (pct*100)+'%'; }
+    t.dataset.year = y; t.dataset.pct = pct.toFixed(6);
+    axis.appendChild(t);
+  }
+  // zero line pos
+  const zeroPct = (0 - min) / (max - min);
+  const zero = axis.querySelector('.zero');
+  if(vertical){ zero.style.top = (zeroPct*100)+'%'; zero.style.left='0'; }
+  else{ zero.style.left = (zeroPct*100)+'%'; zero.style.top='0'; }
+}
+function labelYear(y){ return y<0 ? `${Math.abs(y)} BCE` : `${y} CE`; }
+function niceStep(span){
+  const raw = span/8;
+  const mags = [1,2,5,10,20,50,100,200,500,1000,2000,5000];
+  return mags.find(m=>m>=raw) || 10000;
+}
+/* ===== PLACE PIN MODE (sequential) ===== */
+let pIndex = 0; let pPlacedPct = null; let pIsGraded = false; let pYears = null; let pMin= -500, pMax=500;
+const pMarker = document.getElementById('pMarker');
+const placePromptEl = document.getElementById('placePrompt');
+function initPinMode(){
+  // compute range from current events with margin
+  const years = current.map(e=>e.year);
+  if(years.length){
+    const min = Math.min(...years), max = Math.max(...years);
+    const margin = Math.max(200, Math.round((max-min)*0.2));
+    pMin = min - margin; pMax = max + margin;
+  } else { pMin = -500; pMax = 500; }
+  pYears = {min:pMin, max:pMax};
+  // reset state
+  pIndex = 0; pPlacedPct = null; pIsGraded = false; pMarker.hidden = true; placeFeedback.textContent='';
+  // show first event
+  showPinEvent();
+  // interactions
+  axis.onclick = (e)=>{
+    const rect = axis.getBoundingClientRect();
+    const vertical = orientationSel.value === 'vertical';
+    const pct = Math.max(0, Math.min(1, vertical ? ((e.clientY - rect.top) / rect.height) : ((e.clientX - rect.left) / rect.width)));
+    pPlacedPct = pct;
+    placePinMarker(pPlacedPct);
+  };
+}
+function showPinEvent(){
+  const ev = current[pIndex];
+  if(!ev){ // if we exhausted, repick
+    pickEvents(); pIndex = 0;
+  }
+  const evt = current[pIndex];
+  const oldBig = placePromptEl.querySelector('.big'); if(oldBig) oldBig.remove();
+  const d = document.createElement('div'); d.className='big';
+  d.textContent = `Pin: ${fmtYear(evt.year)} — ${evt.title}`;
+  placePromptEl.appendChild(d);
+  placeFeedback.textContent=''; pIsGraded=false; pPlacedPct=null; pMarker.hidden=true;
+}
+function placePinMarker(pct){
+  const vertical = orientationSel.value === 'vertical';
+  if(vertical){ pMarker.style.top = (pct*100)+'%'; pMarker.style.left='50%'; }
+  else { pMarker.style.left = (pct*100)+'%'; pMarker.style.top='50%'; }
+  pMarker.hidden = false;
+}
+function gradePin(){
+  if(pPlacedPct==null){ placeFeedback.innerHTML = `<span class="wrong">Click the timeline to pin your answer.</span>`; return false; }
+  const ev = current[pIndex];
+  const yPlaced = pMin + pPlacedPct*(pMax - pMin);
+  const err = Math.abs(yPlaced - ev.year);
+  let add = 3, cls='off', note='off by ';
+  if(err<=5){ add=10; cls='good'; note='perfect! '; }
+  else if(err<=50){ add=8; cls='good'; note='very close — '; }
+  else if(err<=200){ add=6; cls='ok'; note='close — '; }
+  score += add;
+  if(score > highScore){ highScore = score; }
+  pMarker.classList.remove('good','ok','off'); pMarker.classList.add(cls);
+  placeFeedback.innerHTML = `<span class="${add>=8?'correct':(add>=6?'warning':'wrong')}">${note}${Math.round(err)} years. +${add} pts</span>`;
+  scoreFill.style.width = Math.min(100, score) + '%';
+  setHUD();
+  pIsGraded = true;
+  checkBtn.textContent = 'Next';
+  return true;
+}
+function nextPin(){
+  pIndex++;
+  if(pIndex >= current.length){ pickEvents(); pIndex = 0; }
+  showPinEvent();
+  checkBtn.textContent = 'Check';
+}
+function renderPlace(){
+  stack.innerHTML='';
+  placedBand.innerHTML='';
+  placedBand.hidden = false;
+  placeFeedback.textContent='';
+  renderAxis();
+  current.forEach(ev=>{
+    const t = document.createElement('div');
+    t.className = 'tile';
+    t.draggable = true;
+    t.dataset.id = ev.id;
+    t.innerHTML = `<div class="label">${fmtYear(ev.year)} — ${ev.title}</div>`;
+    stack.appendChild(t);
+  });
+  enablePlaceDrag();
+}
+function enablePlaceDrag(){
+  const axis = $('#axis');
+  let dragging = null;
+  let activeTick = null;
+  $$('#stack .tile').forEach(t=>{
+    t.addEventListener('dragstart', e=>{ dragging = t; t.classList.add('dragging'); if(e.dataTransfer) e.dataTransfer.effectAllowed='move'; });
+    t.addEventListener('dragend', e=>{
+      if(!dragging) return;
+      dragging.classList.remove('dragging');
+      dragging = null;
+      if(activeTick){ activeTick.classList.remove('active'); activeTick = null; }
+      axis.classList.remove('active-axis');
+    });
+  });
+  // enable dragging from axis after unlock
+  axis.addEventListener('dragstart', e=>{
+    const t = e.target.closest && e.target.closest('.tile');
+    if(!t) return; dragging = t; t.classList.add('dragging'); if(e.dataTransfer) e.dataTransfer.effectAllowed='move';
+  });
+  axis.addEventListener('dragend', e=>{
+    const t = e.target.closest && e.target.closest('.tile');
+    if(t){ t.classList.remove('dragging'); }
+    dragging = null;
+    if(activeTick){ activeTick.classList.remove('active'); activeTick = null; }
+    axis.classList.remove('active-axis');
+  });
+  // enable dragging from placed band (after unlock)
+  placedBand.addEventListener('dragstart', e=>{
+    const t = e.target.closest && e.target.closest('.tile');
+    if(!t) return; dragging = t; t.classList.add('dragging'); if(e.dataTransfer) e.dataTransfer.effectAllowed='move';
+  });
+  placedBand.addEventListener('dragend', e=>{
+    const t = e.target.closest && e.target.closest('.tile');
+    if(t){ t.classList.remove('dragging'); }
+    dragging = null;
+    if(activeTick){ activeTick.classList.remove('active'); activeTick = null; }
+    axis.classList.remove('active-axis');
+  });
+  axis.addEventListener('dragover', e=>{
+    e.preventDefault();
+    if(e.dataTransfer) e.dataTransfer.dropEffect='move';
+    axis.classList.add('active-axis');
+    // highlight nearest tick
+    const rect = axis.getBoundingClientRect();
+    const vertical = orientationSel.value === 'vertical';
+    const pct = vertical ? ((e.clientY - rect.top) / rect.height) : ((e.clientX - rect.left) / rect.width);
+    const ticks = [...axis.querySelectorAll('.tick')];
+    if(!ticks.length) return;
+    let best = null, bestDiff = Infinity; 
+    ticks.forEach(tk=>{
+      const tp = parseFloat(tk.dataset.pct||'0');
+      const diff = Math.abs(tp - pct);
+      if(diff < bestDiff){ bestDiff = diff; best = tk; }
+    });
+    if(activeTick && activeTick!==best){ activeTick.classList.remove('active'); }
+    activeTick = best; if(activeTick) activeTick.classList.add('active');
+  });
+  axis.addEventListener('drop', e=>{
+    e.preventDefault();
+    axis.classList.remove('active-axis');
+    if(!dragging) return;
+    // Position within axis
+    const rect = axis.getBoundingClientRect();
+    const vertical = orientationSel.value === 'vertical';
+    let pct = vertical ? ((e.clientY - rect.top) / rect.height) : ((e.clientX - rect.left) / rect.width);
+    // snap to nearest tick if any
+    if(activeTick){ pct = parseFloat(activeTick.dataset.pct||pct); activeTick.classList.remove('active'); activeTick = null; }
+    pct = Math.max(0, Math.min(1, pct));
+    // Move to placed band and arrange
+    placedBand.appendChild(dragging);
+    dragging.dataset.pos = pct.toFixed(4);
+    // lock + resize
+    dragging.draggable = false;
+    dragging.classList.add('placed','snapped');
+    addUnlockButton(dragging);
+    layoutPlacedBand();
+  });
+  axis.addEventListener('click', e=>{
+    const btn = e.target.closest && e.target.closest('.unlock-btn');
+    if(!btn) return;
+    const tile = btn.closest('.tile');
+    if(!tile) return;
+    unlockTile(tile);
+  });
+  axis.addEventListener('dblclick', e=>{
+    const tile = e.target.closest && e.target.closest('.tile');
+    if(tile && tile.classList.contains('placed')) unlockTile(tile);
+  });
+  placedBand.addEventListener('click', e=>{
+    const btn = e.target.closest && e.target.closest('.unlock-btn');
+    if(!btn) return;
+    const tile = btn.closest('.tile');
+    if(!tile) return;
+    unlockTile(tile);
+  });
+  placedBand.addEventListener('dblclick', e=>{
+    const tile = e.target.closest && e.target.closest('.tile');
+    if(tile && tile.classList.contains('placed')) unlockTile(tile);
+  });
+}
+function addUnlockButton(tile){
+  if(tile.querySelector('.unlock-btn')) return;
+  const b = document.createElement('button');
+  b.className = 'unlock-btn';
+  b.title = 'Unlock to move';
+  tile.appendChild(b);
+}
+function unlockTile(tile){
+  tile.draggable = true;
+  tile.classList.remove('placed');
+  // keep current position until dropped again
+  tile.style.left=''; tile.style.top='';
+  if(typeof stack !== 'undefined' && stack){ stack.appendChild(tile); }
+  layoutPlacedBand();
+}
+function layoutPlacedBand(){
+  const band = placedBand;
+  const tiles = [...band.querySelectorAll('.tile')];
+  if(!tiles.length) return;
+  const w = band.clientWidth || band.getBoundingClientRect().width;
+  const margin = 14; const laneH = 56;
+  // sort by pos
+  tiles.sort((a,b)=>parseFloat(a.dataset.pos||'0')-parseFloat(b.dataset.pos||'0'));
+  const lanes = [];
+  tiles.forEach(tile=>{
+    const pct = parseFloat(tile.dataset.pos||'0');
+    // measure width
+    tile.style.left='-1000px'; tile.style.top='0px';
+    const width = tile.getBoundingClientRect().width || 240;
+    const x = pct * w;
+    const start = x - width/2 - margin;
+    const end = x + width/2 + margin;
+    let lane = 0, placed = false;
+    while(!placed){
+      if(!lanes[lane]) lanes[lane] = [];
+      const overlaps = lanes[lane].some(seg => !(end < seg.start || start > seg.end));
+      if(!overlaps){ lanes[lane].push({start,end}); placed = true; }
+      else lane++;
+    }
+    tile.style.top = (lane*laneH)+'px';
+    tile.style.left = `calc(${(pct*100).toFixed(2)}% - ${Math.round(width/2)}px)`;
+  });
+  // ensure band height accommodates lanes
+  band.style.minHeight = Math.max(140, (lanes.length*laneH)+20)+'px';
+}
+function gradePlace(){
+  // Map each tile’s pos% to implied year on axis scale
+  const years = current.map(e=>e.year);
+  const min = Math.min(...years, -500);
+  const max = Math.max(...years,  500);
+  const span = max - min;
+  // Build actual + placed arrays (from placed band)
+  const placed = [];
+  $$('#placedBand .tile').forEach(t=>{
+    const id = t.dataset.id;
+    const pct = parseFloat(t.dataset.pos||'NaN');
+    placed.push({ id, pct });
+  });
+  // Check placed count
+  if(placed.length < current.length){
+    placeFeedback.innerHTML = `<span class="wrong">Place all cards on the line before checking.</span>`;
+    return false;
+  }
+  // Compute absolute error in years
+  let totalErr = 0;
+  placed.forEach(p=>{
+    const ev = current.find(e=>e.id===p.id);
+    const yPlaced = min + (p.pct*span);
+    totalErr += Math.abs(yPlaced - ev.year);
+  });
+  const avgErr = totalErr / current.length;
+  // Points: better than 100 years avg => +10, 200 => +8, 300 => +6, else +3
+  let add = 3;
+  if(avgErr <= 100) add = 10;
+  else if(avgErr <= 200) add = 8;
+  else if(avgErr <= 300) add = 6;
+  score += add;
+  placeFeedback.innerHTML = `<span class="${add>=8?'correct':(add>=6?'warning':'wrong')}">Average error: ${Math.round(avgErr)} years. +${add} pts</span><br>
+    <span class="tiny">Targets:</span><div class="tiny">${
+      current.slice().sort((a,b)=>a.year-b.year).map(e=>fmtYear(e.year)+' — '+e.title).join('<br>')
+    }</div>`;
+  scoreFill.style.width = Math.min(100, score) + '%';
+  return true;
+}
+
+/* ===== GUIDED MODE ===== */
+let gIndex = 0; // which event within current
+let gMin = -500, gMax = 500; // year range
+let gIsGraded = false; // has current event been graded
+let gPlacedYear = null; // current marker value
+let isPanning = false, panStartX = 0, panStartY = 0, panStartMin = 0, panStartMax = 0;
+let guidedWired = false;
+
+function renderGuided(){
+  guideFeedback.textContent='';
+  // Range based on selected events + margin
+  const years = current.map(e=>e.year);
+  if(years.length===0){ return; }
+  const min = Math.min(...years);
+  const max = Math.max(...years);
+  const margin = Math.max(200, Math.round((max-min)*0.2));
+  setRange(min - margin, max + margin);
+  gIndex = 0; gIsGraded = false; gPlacedYear = null; gMarker.hidden = true;
+  showGuidedEvent();
+  wireGuidedInteractions();
+}
+function setRange(min, max){
+  // clamp to a broad world range
+  const worldMin = -4000, worldMax = 2100;
+  gMin = Math.max(worldMin, Math.min(min, worldMax-10));
+  gMax = Math.min(worldMax, Math.max(max, worldMin+10));
+  if(gMax - gMin < 20){ // prevent too narrow
+    const mid = (gMin+gMax)/2; gMin = mid-10; gMax = mid+10;
+  }
+  updateGuidedAxis();
+}
+function updateGuidedAxis(){
+  // ticks
+  gTicks.innerHTML='';
+  const span = gMax - gMin;
+  const step = niceStep(span);
+  const vertical = orientationSel.value === 'vertical';
+  gView.classList.toggle('vertical', vertical);
+  for(let y = Math.ceil(gMin/step)*step; y <= gMax; y+=step){
+    const tick = document.createElement('div');
+    tick.className = 'g-tick';
+    const pct = (y - gMin) / (gMax - gMin);
+    if(vertical){ tick.style.top = (pct*100)+'%'; } else { tick.style.left = (pct*100)+'%'; }
+    tick.innerHTML = `<small>${labelYear(y)}</small>`;
+    gTicks.appendChild(tick);
+  }
+  // micro ticks (decades)
+  const micro = 10;
+  for(let y = Math.ceil(gMin/micro)*micro; y <= gMax; y+=micro){
+    const pct = (y - gMin) / (gMax - gMin);
+    const t = document.createElement('div');
+    t.className = 'g-tick micro';
+    if(vertical){ t.style.top = (pct*100)+'%'; } else { t.style.left = (pct*100)+'%'; }
+    gTicks.appendChild(t);
+  }
+  // zero line position
+  const zeroPct = (0 - gMin) / (gMax - gMin);
+  if(vertical){ gZero.style.top = (zeroPct*100)+'%'; gZero.style.left='0'; }
+  else{ gZero.style.left = (zeroPct*100)+'%'; gZero.style.top='0'; }
+  rangeTag.textContent = `${labelYear(Math.round(gMin))} → ${labelYear(Math.round(gMax))}`;
+  // update marker position if placed
+  if(gPlacedYear!=null){ placeMarkerAtYear(gPlacedYear, false); }
+}
+function projectYearToPct(year){ return (year - gMin) / (gMax - gMin); }
+function pctToYear(pct){ return gMin + pct * (gMax - gMin); }
+function placeMarkerAtPct(pct){
+  const clamped = Math.max(0, Math.min(1, pct));
+  const vertical = orientationSel.value === 'vertical';
+  if(vertical){ gMarker.style.top = (clamped*100)+'%'; gMarker.style.left='50%'; }
+  else { gMarker.style.left = (clamped*100)+'%'; gMarker.style.top='50%'; }
+  gMarker.hidden = false;
+}
+function placeMarkerAtYear(year, setState=true){
+  const pct = projectYearToPct(year);
+  placeMarkerAtPct(pct);
+  if(setState){ gPlacedYear = year; }
+}
+function showGuidedEvent(){
+  const ev = current[gIndex];
+  guidePrompt.textContent = `Place: ${fmtYear(ev.year)} — ${ev.title}`;
+  guideFeedback.textContent='';
+  gIsGraded = false; gPlacedYear = null; gMarker.hidden = true;
+  if(guidedActionBtn) guidedActionBtn.textContent = 'Check';
+}
+function checkGuided(){
+  const ev = current[gIndex];
+  if(gPlacedYear==null){ guideFeedback.innerHTML = `<span class="wrong">Click (or Shift+click) the timeline to place the year.</span>`; return false; }
+  const err = Math.abs(gPlacedYear - ev.year);
+  // distance score only
+  let add = 3, cls='off', note='off by ';
+  if(err<=5){ add=10; cls='good'; note='perfect! '; }
+  else if(err<=50){ add=8; cls='good'; note='very close — '; }
+  else if(err<=200){ add=6; cls='ok'; note='close — '; }
+  score += add;
+  // marker color
+  gMarker.classList.remove('good','ok','off');
+  gMarker.classList.add(cls);
+  // feedback
+  guideFeedback.innerHTML = `
+    <span class="${add>=8?'correct':(add>=6?'warning':'wrong')}">${note}${Math.round(err)} years. +${add} pts</span>
+    <div class="tiny">Target: ${fmtYear(ev.year)} — ${ev.title}</div>
+  `;
+  scoreFill.style.width = Math.min(100, score) + '%';
+  setHUD();
+  gIsGraded = true;
+  if(guidedActionBtn) guidedActionBtn.textContent = (gIndex < current.length-1) ? 'Next' : 'Finish';
+  return true;
+}
+function nextGuided(){
+  if(gIndex < current.length-1){
+    gIndex++; showGuidedEvent();
+  }else{
+    guideFeedback.innerHTML += `<div class="tiny">Round complete.</div>`;
+    if(guidedActionBtn) guidedActionBtn.disabled = true;
+    startBtn.disabled = false;
+    if(timerId){ clearInterval(timerId); timerId = null; }
+  }
+}
+function wireGuidedInteractions(){
+  if(guidedWired) return; guidedWired = true;
+  // wheel zoom
+  gView.addEventListener('wheel', (e)=>{
+    e.preventDefault();
+    const rect = gView.getBoundingClientRect();
+    const vertical = orientationSel.value === 'vertical';
+    const pct = vertical ? ((e.clientY - rect.top) / rect.height) : ((e.clientX - rect.left) / rect.width);
+    const factor = e.deltaY < 0 ? 1.25 : 0.8;
+    zoomAround(pct, factor);
+  }, {passive:false});
+  // pan
+  gView.addEventListener('mousedown', (e)=>{
+    if(e.shiftKey){
+      const rect = gView.getBoundingClientRect();
+      const vertical = orientationSel.value === 'vertical';
+      const pct = vertical ? ((e.clientY - rect.top) / rect.height) : ((e.clientX - rect.left) / rect.width);
+      const year = pctToYear(pct);
+      placeMarkerAtYear(year);
+      return;
+    }
+    isPanning = true; panStartX = e.clientX; panStartY = e.clientY; panStartMin = gMin; panStartMax = gMax;
+    gView.classList.add('ghost');
+  });
+  window.addEventListener('mouseup', ()=>{ isPanning=false; gView.classList.remove('ghost'); });
+  window.addEventListener('mousemove', (e)=>{
+    if(!isPanning) return;
+    const rect = gView.getBoundingClientRect();
+    const vertical = orientationSel.value === 'vertical';
+    const d = vertical ? (e.clientY - panStartY) : (e.clientX - panStartX);
+    const dpct = vertical ? (d / rect.height) : (d / rect.width);
+    const dYears = dpct * (panStartMax - panStartMin);
+    setRange(panStartMin - dYears, panStartMax - dYears);
+  });
+  // click to place
+  gView.addEventListener('click', (e)=>{
+    const rect = gView.getBoundingClientRect();
+    const vertical = orientationSel.value === 'vertical';
+    const pct = vertical ? ((e.clientY - rect.top) / rect.height) : ((e.clientX - rect.left) / rect.width);
+    const year = pctToYear(pct);
+    placeMarkerAtYear(year);
+  });
+  // buttons
+  zoomInBtn.addEventListener('click', ()=> zoomAround(0.5, 1.25));
+  zoomOutBtn.addEventListener('click', ()=> zoomAround(0.5, 0.8));
+  centerViewBtn.addEventListener('click', ()=>{
+    const years = current.map(e=>e.year);
+    const min = Math.min(...years);
+    const max = Math.max(...years);
+    const margin = Math.max(200, Math.round((max-min)*0.2));
+    setRange(min - margin, max + margin);
+  });
+}
+function zoomAround(pct, factor){
+  const center = pctToYear(pct);
+  const span = (gMax - gMin) / factor;
+  const newMin = center - pct * span;
+  const newMax = newMin + span;
+  setRange(newMin, newMax);
+}
+
+/* ===== Round flow ===== */
+function startRound(){
+  round++; setHUD();
+  pickEvents();
+  mode = modeSel.value;
+  $('#check').disabled = false;
+  $('#reset').disabled = false;
+  $('#start').disabled = true;
+  orderScreen.hidden = mode!=='order';
+  placeScreen.hidden = mode!=='place';
+  guidedScreen.hidden = mode!=='guided';
+  // Label local action buttons for the current mode
+  if(orderFinishBtn) orderFinishBtn.textContent = 'Finished!';
+  if(placeCheckBtn) placeCheckBtn.textContent = 'Check';
+  if(guidedActionBtn) guidedActionBtn.textContent = 'Check';
+  if(orderFinishBtn) orderFinishBtn.disabled = (mode!=='order');
+  if(placeCheckBtn) placeCheckBtn.disabled = (mode!=='place');
+  if(guidedActionBtn) guidedActionBtn.disabled = (mode!=='guided');
+  if(mode==='order') renderOrder();
+  else if(mode==='place') renderPlace();
+  else renderGuided();
+  startTimer();
+}
+function checkRound(auto=false){
+  if(mode==='place'){
+    const ok = gradePlace();
+    if(ok){
+      clearInterval(timerId); timerId=null;
+      $('#start').disabled = false;
+      if(placeCheckBtn) placeCheckBtn.disabled = true;
+    }else if(auto){
+      placeFeedback.innerHTML += `<div class="tiny">Time! Round ended.</div>`;
+      $('#start').disabled = false;
+      if(placeCheckBtn) placeCheckBtn.disabled = true;
+    }
+    setHUD();
+    return;
+  }
+  if(mode==='guided'){
+    if(!gIsGraded){
+      const graded = checkGuided();
+      if(!graded && auto){ guideFeedback.innerHTML += `<div class=\"tiny\">Time! Round ended.</div>`; if(guidedActionBtn) guidedActionBtn.disabled = true; startBtn.disabled=false; }
+    }else{
+      nextGuided();
+    }
+    setHUD();
+    return;
+  }
+  const ok = (mode==='order') ? (gradeOrder(), true) : gradePlace();
+  if(ok){
+    // Time bonus only for Order Mode with a timer selected
+    if(mode==='order' && initialRoundTime>0 && typeof timeLeft==='number'){
+      const baseline = 90; // default option in UI
+      const difficulty = Math.max(0.5, Math.min(2, baseline / initialRoundTime)); // shorter timer = higher multiplier
+      const secs = Math.max(0, timeLeft);
+      const tBonus = Math.round(secs * 0.1 * difficulty); // ~1 pt per 10s at baseline; scales with difficulty
+      if(tBonus>0){
+        score += tBonus;
+        scoreFill.style.width = Math.min(100, score) + '%';
+        orderFeedback.innerHTML += `<div class=\"tiny\">Time bonus: +${tBonus} pts (${secs}s left; ×${difficulty.toFixed(2)})</div>`;
+      }
+    }
+    clearInterval(timerId); timerId=null;
+    $('#start').disabled = false;
+    if(mode==='order' && orderFinishBtn) orderFinishBtn.disabled = true;
+    if(mode==='place' && placeCheckBtn) placeCheckBtn.disabled = true;
+    if(mode==='guided' && guidedActionBtn) guidedActionBtn.disabled = true;
+  }else if(auto){
+    // Time ran out but not all placed
+    placeFeedback.innerHTML += `<div class=\"tiny\">Time! Round ended.</div>`;
+    $('#start').disabled = false;
+    if(mode==='order' && orderFinishBtn) orderFinishBtn.disabled = true;
+    if(mode==='place' && placeCheckBtn) placeCheckBtn.disabled = true;
+    if(mode==='guided' && guidedActionBtn) guidedActionBtn.disabled = true;
+  }
+  setHUD();
+}
+function resetGame(){
+  round = 0; score = 0; clearInterval(timerId); timerId = null;
+  $('#start').disabled = false; $('#check').disabled = true; $('#reset').disabled = true;
+  orderArea.innerHTML=''; orderArea.classList.remove('slots');
+  if(orderBank) orderBank.innerHTML='';
+  placedBand && (placedBand.innerHTML=''); $$('#axis .tile').forEach(t=>t.remove());
+  orderScreen.hidden = true; placeScreen.hidden = true; guidedScreen.hidden = true;
+  guideFeedback && (guideFeedback.textContent='');
+  setHUD();
+}
+
+/* ===== Wire it up ===== */
+startBtn.addEventListener('click', startRound);
+checkBtn.addEventListener('click', ()=>checkRound(false));
+orderFinishBtn && orderFinishBtn.addEventListener('click', ()=>checkRound(false));
+placeCheckBtn && placeCheckBtn.addEventListener('click', ()=>checkRound(false));
+guidedActionBtn && guidedActionBtn.addEventListener('click', ()=>checkRound(false));
+resetBtn.addEventListener('click', resetGame);
+modeSel.addEventListener('change', setHUD);
+eraSel.addEventListener('change', setHUD);
+countSel.addEventListener('change', setHUD);
+timerSel.addEventListener('change', setHUD);
+orientationSel.addEventListener('change', ()=>{
+  if(modeSel.value==='place') renderPlace();
+  if(modeSel.value==='guided') updateGuidedAxis();
+});
+window.addEventListener('resize', ()=>{ if(modeSel.value==='place' && !placeScreen.hidden) layoutPlacedBand(); });
+enterGameBtn.addEventListener('click', ()=>{
+  learnScreen.hidden = true;
+  gameScreen.hidden = false;
+  controlsBar.style.display = '';
+});
+openSoloBtn && openSoloBtn.addEventListener('click', ()=>{
+  const url = new URL(location.href);
+  url.searchParams.set('solo','1');
+  url.searchParams.set('noheader','1');
+  window.open(url.toString(), '_blank');
+});
+// Quick mode buttons: jump straight to gameplay
+function goToGameWithMode(m){
+  if(modeSel) modeSel.value = m;
+  learnScreen.hidden = true;
+  gameScreen.hidden = false;
+  controlsBar.style.display = '';
+  startRound();
+}
+quickOrderBtn && quickOrderBtn.addEventListener('click', ()=>goToGameWithMode('order'));
+quickPlaceBtn && quickPlaceBtn.addEventListener('click', ()=>goToGameWithMode('place'));
+quickGuidedBtn && quickGuidedBtn.addEventListener('click', ()=>goToGameWithMode('guided'));
+backIntroBtn && backIntroBtn.addEventListener('click', ()=>{
+  // stop any timer and reset the game UI
+  if(timerId){ clearInterval(timerId); timerId = null; }
+  resetGame();
+  // navigate back to intro
+  gameScreen.hidden = true;
+  learnScreen.hidden = false;
+  controlsBar.style.display = 'none';
+});
+// Coach controls
+(function(){
+  const prev = document.getElementById('coachPrev');
+  const next = document.getElementById('coachNext');
+  const toggle = document.getElementById('coachToggle');
+  const panel = document.getElementById('coachPanel');
+  // How it works toggle
+  const howToggle = document.getElementById('howToggle');
+  const howPanel = document.getElementById('howPanel');
+  // Wire buttons if present
+  if(prev) prev.addEventListener('click', prevCoach);
+  if(next) next.addEventListener('click', nextCoach);
+  // Render slides and tabs now
+  renderCoach();
+  // Toggle panel visibility
+  if(toggle && panel){
+    const setLabel = ()=>{ toggle.textContent = panel.classList.contains('open') ? 'Hide help' : 'Want help understanding timelines?'; };
+    setLabel();
+    // ensure collapsed initial height
+    panel.style.maxHeight = panel.classList.contains('open') ? (panel.scrollHeight + 'px') : '0px';
+    toggle.addEventListener('click', ()=>{
+      const willOpen = !panel.classList.contains('open');
+      panel.classList.toggle('open');
+      // animate height
+      if(willOpen){ panel.style.maxHeight = panel.scrollHeight + 'px'; }
+      else { panel.style.maxHeight = '0px'; }
+      setLabel();
+    });
+  }
+  // Toggle HOW panel visibility
+  if(howToggle && howPanel){
+    const setHowLabel = ()=>{ howToggle.textContent = howPanel.classList.contains('open') ? 'Hide how it works' : 'How it works'; };
+    setHowLabel();
+    howToggle.addEventListener('click', ()=>{ howPanel.classList.toggle('open'); setHowLabel(); });
+  }
+})();
+// Solo mode activation via URL: ?solo=1 (and optional &noheader=1)
+(function initSolo(){
+  const params = new URLSearchParams(location.search);
+  const hash = (location.hash||'').replace('#','');
+  const wantSolo = params.has('solo') || params.get('screen')==='game' || hash==='play' || hash==='game';
+  if (wantSolo) {
+    document.body.classList.add('solo');
+    learnScreen.hidden = true;
+    gameScreen.hidden = false;
+    controlsBar.style.display = '';
+  }
+  if (params.has('noheader')) {
+    document.body.classList.add('noheader');
+  }
+})();
+setHUD();
+</script>
+</body>
+</html>
