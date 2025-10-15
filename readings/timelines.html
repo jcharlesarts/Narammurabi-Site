@@ -32,6 +32,8 @@
   .btn.primary{background:linear-gradient(180deg,#2f7d48,#1e5a34);color:#fff;border-color:#1e5a34}
   .btn.primary:hover{filter:saturate(1.08)}
   .btn:disabled{opacity:.6;cursor:not-allowed}
+  /* Bigger intro helper buttons */
+  #coachToggle, #howToggle{ font-size:1.05rem; padding:12px 18px; min-height:52px }
   select, input[type="number"]{border:1px solid #c0b48a;border-radius:10px;padding:8px 10px;min-height:44px;background:#fff}
   .screen{background:var(--card);border:1px solid #e6d598;border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);margin-top:16px}
   .flex{display:flex;gap:16px}
@@ -994,6 +996,7 @@ function renderPlace(){
     stack.appendChild(t);
   });
   enablePlaceDrag();
+  wirePlaceTap();
 }
 function enablePlaceDrag(){
   const axis = $('#axis');
@@ -1093,6 +1096,59 @@ function enablePlaceDrag(){
   placedBand.addEventListener('dblclick', e=>{
     const tile = e.target.closest && e.target.closest('.tile');
     if(tile && tile.classList.contains('placed')) unlockTile(tile);
+  });
+}
+// Tap-friendly placement for iPad (select card -> tap line to place)
+function wirePlaceTap(){
+  if(!axis || !stack || !placedBand) return;
+  let selected = null;
+  const select = (tile)=>{
+    if(selected) selected.classList.remove('selected');
+    selected = tile || null;
+    if(selected) selected.classList.add('selected');
+  };
+  // Tap a card in the stack to select
+  stack.addEventListener('click', (e)=>{
+    const tile = e.target && e.target.closest ? e.target.closest('.tile') : null;
+    if(!tile) return;
+    // If tile already placed, ignore here (handled by placedBand listener)
+    if(tile.parentElement===placedBand) return;
+    select(tile);
+  });
+  // Tap a placed tile to select for re-place
+  placedBand.addEventListener('click', (e)=>{
+    const btn = e.target && e.target.closest ? e.target.closest('.unlock-btn') : null;
+    if(btn) return; // handled elsewhere
+    const tile = e.target && e.target.closest ? e.target.closest('.tile') : null;
+    if(!tile) return;
+    select(tile);
+  });
+  // Tap the axis to place the selected tile
+  axis.addEventListener('click', (e)=>{
+    // ignore unlock clicks
+    const onUnlock = e.target && e.target.closest ? e.target.closest('.unlock-btn') : null;
+    if(onUnlock) return;
+    if(!selected) return;
+    const rect = axis.getBoundingClientRect();
+    const vertical = orientationSel.value === 'vertical';
+    let pct = vertical ? ((e.clientY - rect.top) / rect.height) : ((e.clientX - rect.left) / rect.width);
+    // snap to nearest tick (including micro ticks)
+    const ticks = [...axis.querySelectorAll('.tick')];
+    if(ticks.length){
+      let best = null, bestDiff = Infinity;
+      const target = pct;
+      ticks.forEach(tk=>{ const tp = parseFloat(tk.dataset.pct||'0'); const d = Math.abs(tp-target); if(d<bestDiff){ bestDiff=d; best=tk; } });
+      if(best) pct = parseFloat(best.dataset.pct||pct);
+    }
+    pct = Math.max(0, Math.min(1, pct));
+    // Move to placed band and arrange
+    placedBand.appendChild(selected);
+    selected.dataset.pos = pct.toFixed(4);
+    selected.draggable = false;
+    selected.classList.add('placed','snapped');
+    addUnlockButton(selected);
+    layoutPlacedBand();
+    select(null);
   });
 }
 function addUnlockButton(tile){
@@ -1339,6 +1395,61 @@ function wireGuidedInteractions(){
     const pct = vertical ? ((e.clientY - rect.top) / rect.height) : ((e.clientX - rect.left) / rect.width);
     const year = pctToYear(pct);
     placeMarkerAtYear(year);
+  });
+  // Touch gestures: two-finger pan and pinch-to-zoom
+  const activePointers = new Map(); // id -> {x,y}
+  let prevCenter = null; // in px along axis
+  let prevDist = null;   // distance along axis in px
+  const updatePointer = (e)=>{ activePointers.set(e.pointerId, {x:e.clientX, y:e.clientY}); };
+  const removePointer = (e)=>{ activePointers.delete(e.pointerId); if(activePointers.size < 2){ prevCenter = null; prevDist = null; } };
+  gView.addEventListener('pointerdown', (e)=>{
+    if(e.pointerType !== 'touch') return;
+    e.preventDefault();
+    gView.setPointerCapture && gView.setPointerCapture(e.pointerId);
+    updatePointer(e);
+    if(activePointers.size===2){
+      const rect = gView.getBoundingClientRect();
+      const pts = Array.from(activePointers.values());
+      const vertical = orientationSel.value === 'vertical';
+      const c = vertical ? ((pts[0].y + pts[1].y)/2 - rect.top) : ((pts[0].x + pts[1].x)/2 - rect.left);
+      const d = Math.abs((vertical ? pts[0].y - pts[1].y : pts[0].x - pts[1].x));
+      prevCenter = c; prevDist = d;
+    }
+  }, {passive:false});
+  gView.addEventListener('pointermove', (e)=>{
+    if(e.pointerType !== 'touch') return;
+    if(!activePointers.has(e.pointerId)) return;
+    e.preventDefault();
+    updatePointer(e);
+    if(activePointers.size>=2){
+      const rect = gView.getBoundingClientRect();
+      const pts = Array.from(activePointers.values());
+      const vertical = orientationSel.value === 'vertical';
+      const centerNow = vertical ? ((pts[0].y + pts[1].y)/2 - rect.top) : ((pts[0].x + pts[1].x)/2 - rect.left);
+      const distNow = Math.abs((vertical ? pts[0].y - pts[1].y : pts[0].x - pts[1].x));
+      if(prevCenter==null || prevDist==null){ prevCenter = centerNow; prevDist = distNow; return; }
+      // Pan: move by center delta
+      const axisLen = vertical ? rect.height : rect.width;
+      const dCenter = centerNow - prevCenter;
+      if(axisLen>0 && Math.abs(dCenter) > 0){
+        const dpct = dCenter / axisLen;
+        const dYears = dpct * (gMax - gMin);
+        setRange(gMin - dYears, gMax - dYears);
+      }
+      // Pinch: zoom by distance ratio
+      if(prevDist>0 && distNow>0){
+        const factor = distNow/prevDist;
+        if(Math.abs(factor-1) > 0.01){
+          const pct = centerNow / (axisLen||1);
+          zoomAround(pct, factor);
+        }
+      }
+      prevCenter = centerNow; prevDist = distNow;
+    }
+  }, {passive:false});
+  const endEvents = ['pointerup','pointercancel','pointerleave','pointerout'];
+  endEvents.forEach(type=>{
+    gView.addEventListener(type, (e)=>{ if(e.pointerType==='touch'){ removePointer(e); } }, {passive:true});
   });
   // buttons
   zoomInBtn.addEventListener('click', ()=> zoomAround(0.5, 1.25));
