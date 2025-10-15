@@ -53,6 +53,7 @@
   .slot.filled{border-style:solid;background:#fff}
   .slot .tile{margin:0;width:100%}
   .tile{user-select:none;background:linear-gradient(180deg,#ffffff,#fbf7ed);border:1px solid #e1d7b8;border-radius:12px;padding:10px;box-shadow:0 2px 10px rgba(0,0,0,.06);position:relative}
+  .tile{touch-action:manipulation}
   .tile[draggable="true"]{cursor:grab}
   .tile.dragging{opacity:.6}
   .tile.selected{outline:2px solid var(--accent); box-shadow:0 0 0 3px rgba(47,125,72,.2)}
@@ -119,6 +120,9 @@
   .tick.micro{height:6px;opacity:.45}
   .axis:not(.vertical) .tick.active{height:22px;background:var(--accent)}
   .axis.vertical .tick.active{height:3px;background:#1e5a34}
+  /* Flash placement guide on axis */
+  .drop-line{position:absolute;background:var(--accent-emerald);opacity:.85;pointer-events:none;animation:fadeLine .9s ease-out forwards}
+  @keyframes fadeLine{0%{opacity:.9}80%{opacity:.5}100%{opacity:0}}
   /* Pointer arrow for placed/dragging tiles */
   .axis:not(.vertical) .tile.placed::after, .axis:not(.vertical) .tile.dragging::after{
     content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:-10px;width:0;height:0;
@@ -1066,6 +1070,8 @@ function enablePlaceDrag(){
     // snap to nearest tick if any
     if(activeTick){ pct = parseFloat(activeTick.dataset.pct||pct); activeTick.classList.remove('active'); activeTick = null; }
     pct = Math.max(0, Math.min(1, pct));
+    // Visual guide at snapped position
+    showPlacementLine(pct);
     // Move to placed band and arrange
     placedBand.appendChild(dragging);
     dragging.dataset.pos = pct.toFixed(4);
@@ -1108,21 +1114,26 @@ function wirePlaceTap(){
     if(selected) selected.classList.add('selected');
   };
   // Tap a card in the stack to select
-  stack.addEventListener('click', (e)=>{
+  const onStackPick = (e)=>{
     const tile = e.target && e.target.closest ? e.target.closest('.tile') : null;
     if(!tile) return;
     // If tile already placed, ignore here (handled by placedBand listener)
     if(tile.parentElement===placedBand) return;
     select(tile);
-  });
+  };
+  stack.addEventListener('click', onStackPick);
+  stack.addEventListener('pointerdown', (e)=>{ if(e.pointerType==='touch') { e.preventDefault(); onStackPick(e);} }, {passive:false});
+  stack.addEventListener('touchstart', (e)=>{ /* fallback */ }, {passive:true});
   // Tap a placed tile to select for re-place
-  placedBand.addEventListener('click', (e)=>{
+  const onBandPick = (e)=>{
     const btn = e.target && e.target.closest ? e.target.closest('.unlock-btn') : null;
     if(btn) return; // handled elsewhere
     const tile = e.target && e.target.closest ? e.target.closest('.tile') : null;
     if(!tile) return;
     select(tile);
-  });
+  };
+  placedBand.addEventListener('click', onBandPick);
+  placedBand.addEventListener('pointerdown', (e)=>{ if(e.pointerType==='touch') { e.preventDefault(); onBandPick(e);} }, {passive:false});
   // Tap the axis to place the selected tile
   axis.addEventListener('click', (e)=>{
     // ignore unlock clicks
@@ -1141,6 +1152,8 @@ function wirePlaceTap(){
       if(best) pct = parseFloat(best.dataset.pct||pct);
     }
     pct = Math.max(0, Math.min(1, pct));
+    // Flash guide line where it locks
+    showPlacementLine(pct);
     // Move to placed band and arrange
     placedBand.appendChild(selected);
     selected.dataset.pos = pct.toFixed(4);
@@ -1150,6 +1163,23 @@ function wirePlaceTap(){
     layoutPlacedBand();
     select(null);
   });
+}
+// Draw a brief guide line on the axis at the snapped position
+function showPlacementLine(pct){
+  const axisEl = axis;
+  if(!axisEl) return;
+  const vertical = orientationSel.value === 'vertical';
+  const line = document.createElement('div');
+  line.className = 'drop-line';
+  if(vertical){
+    line.style.left = 0; line.style.right = 0; line.style.height = '2px';
+    line.style.top = (pct*100)+'%';
+  }else{
+    line.style.top = 0; line.style.bottom = 0; line.style.width = '2px';
+    line.style.left = (pct*100)+'%';
+  }
+  axisEl.appendChild(line);
+  setTimeout(()=>{ line.remove(); }, 900);
 }
 function addUnlockButton(tile){
   if(tile.querySelector('.unlock-btn')) return;
