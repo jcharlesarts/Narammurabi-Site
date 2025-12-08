@@ -25,7 +25,7 @@
   }
   *{box-sizing:border-box}
   @font-face{font-family:'Herculanum Local'; src: local('Herculanum'); font-display:swap}
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,#0e1b3d, var(--bg));color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;font-size:17px}
+  html,body{height:100%;margin:0;overflow-x:hidden;background:linear-gradient(180deg,#0e1b3d, var(--bg));color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;font-size:17px}
   /* Game font */
   :root{ --game-font: 'Herculanum Local','Herculanum','Papyrus','Copperplate',serif }
   .app{display:grid;grid-template-columns: 260px 1fr 260px; grid-auto-rows:auto; gap:16px; padding:16px; max-width:1400px;margin:0 auto}
@@ -86,7 +86,7 @@
   .p1{background:var(--good1)}
   .p2{background:var(--good2)}
   /* SVG map styling */
-  svg{width:100%;height:100%;display:block}
+  svg{width:100%;height:auto;display:block;aspect-ratio:16/7}
   .city{fill:#f1f5f9}
   .city-label{font-size:13px;fill:#e2e8f0;font-family:var(--game-font);letter-spacing:.01em}
   .edge{stroke:var(--route);stroke-width:3;stroke-linecap:round;stroke-dasharray:10 6;opacity:.95;filter:drop-shadow(0 0 6px rgba(255,209,102,.6))}
@@ -144,8 +144,15 @@
   .board{grid-column:2; grid-row:1}
   #p2panel{grid-column:3; grid-row:1}
   .maplog{grid-column:2; grid-row:2}
-  @media (max-width: 900px){
-    #p1panel, #p2panel, .board, .maplog{grid-column:auto; grid-row:auto}
+  /* Tablet/iframe stacking for iPad embeds */
+  @media (max-width: 1200px){
+    .app{grid-template-columns:1fr; grid-auto-rows:auto; max-width:100%; width:100%; padding:12px}
+    #p1panel, #p2panel, .board, .maplog, #settingsPanel, .bottom{grid-column:1; grid-row:auto}
+    .board{min-height:clamp(320px, 55vh, 640px)}
+    .bottom{grid-template-columns:1fr}
+  }
+  @media (max-width: 820px){
+    .controls{grid-template-columns:1fr}
   }
   /* Pick-a-card modal styles */
   .pick-cards{display:flex;gap:14px;justify-content:center;align-items:stretch;margin:6px 0 2px 0;width:100%}
@@ -195,6 +202,9 @@
     <div class="controls">
       <button id="p1rollBtn" class="primary" disabled>🎲 Roll</button>
       <button id="p1endBtn" disabled>End Turn</button>
+    </div>
+    <div class="controls" style="grid-template-columns:1fr">
+      <button id="p1buyBtn" class="secondary" disabled>Buy goods here</button>
     </div>
     <div class="controls">
       <label class="row" style="gap:6px; align-items:center; justify-content:flex-start">
@@ -396,6 +406,9 @@
       <button id="p2rollBtn" class="primary" disabled>🎲 Roll</button>
       <button id="p2endBtn" disabled>End Turn</button>
     </div>
+    <div class="controls" style="grid-template-columns:1fr">
+      <button id="p2buyBtn" class="secondary" disabled>Buy goods here</button>
+    </div>
     <div class="row"><div>Roll:</div><div id="rollOut" class="roll-value">–</div><span id="spinner2" class="spinner" aria-hidden="true" style="display:none"></span></div>
     <div class="controls">
       <button id="p2resBtn" class="simple-hide">Hire Guide (‑1 coin)</button>
@@ -567,6 +580,9 @@ const FACTS = [
   'Governments sometimes taxed caravans; in return they offered protection on parts of the route.',
   'Most traders moved goods in stages—few went all the way from China to Rome.'
 ];
+// Regional market lookups
+const WEST_MARKET_NAMES = new Set(['Antioch','Rome','Alexandria','Ctesiphon','Palmyra']);
+const EAST_MARKET_NAMES = new Set(["Chang'an",'Dunhuang','Kashgar','Samarkand','Merv','Bukhara','Herat']);
 
 // Node market pools for localized goods
 const nodeMarket = {};
@@ -674,10 +690,26 @@ function coinPop(player, amount){
     setTimeout(()=> el.remove(), 1000);
   }
 }
+// Turn-based market availability for buy buttons
+function updateBuyButtons(){
+  players.forEach(p=>{
+    const btn = document.getElementById(`p${p.id}buyBtn`);
+    if(!btn) return;
+    const node = NODES[p.node] || {};
+    const namedCity = node.name && node.name!=='Outpost';
+    const capLeft = Math.max(0, (p.capacity||0) - (p.carrying?.length||0));
+    const activeTurn = players[currentPlayer]?.id === p.id;
+    const hasCoins = (p.coins||0) > 0;
+    const goodsType = (p.direction==='west') ? 'east' : 'west';
+    btn.disabled = !(namedCity && capLeft>0 && activeTurn && hasCoins);
+    btn.textContent = namedCity ? `Buy ${goodsType==='west'?'western':'eastern'} goods here` : 'No market here';
+  });
+}
 function updateCoins(){
   $('#p1coins').textContent = players[0].coins; $('#p2coins').textContent = players[1].coins;
   const teamVal = document.getElementById('teamCoins');
   if(teamVal){ teamVal.textContent = (players[0].coins||0) + (players[1].coins||0); }
+  updateBuyButtons();
 }
 function updatePanels(){
   const p1 = players[0], p2 = players[1];
@@ -742,6 +774,7 @@ function updatePanels(){
   const sum = (players[0].coins||0) + (players[1].coins||0);
   if(teamVal) teamVal.textContent = sum;
   if(teamEl) teamEl.style.display = coopMode ? '' : 'none';
+  updateBuyButtons();
 }
 function genContract(p){
   // 50/50 chance of east-bound or west-bound contract
@@ -1235,6 +1268,7 @@ function openGoodsModal(p, type, onDone){
   ensureRemainingInit(p);
   const modal = document.getElementById('fullModal'); const t = document.getElementById('modalTitle'); const b = document.getElementById('modalBody'); const primary = document.getElementById('modalPrimary'); const cancel = document.getElementById('modalCancel');
   if(!modal||!t||!b||!primary||!cancel) return;
+  primary.onclick = null; cancel.onclick = null;
   modal.style.display='flex';
   const limit = 2 + (p.extraPick||0);
   t.textContent = type==='west' ? `Player ${p.id}: Choose Western Goods` : `Player ${p.id}: Choose Eastern Goods`;
@@ -1310,6 +1344,80 @@ function openGoodsModal(p, type, onDone){
     primary.disabled = !any;
   });
   // Also handle Enter key to confirm when enabled
+  modal.onkeydown = (e)=>{ if(e.key==='Enter' && !primary.disabled){ handler(); } };
+  cancel.onclick = ()=>{ modal.style.display='none'; primary.removeEventListener('click', handler); };
+}
+// In-route buy modal for refilling cargo mid-journey
+function buyPrice(g, type, nodeName){
+  const base = g.base || g.value || 6;
+  const regional = (type==='west' && WEST_MARKET_NAMES.has(nodeName)) || (type==='east' && EAST_MARKET_NAMES.has(nodeName)) ? 0.8 : 0.95;
+  const flow = type==='west' ? 0.95 : 0.9;
+  return Math.max(2, Math.round(base * regional * flow));
+}
+function openBuyModal(p){
+  ensureRemainingInit(p);
+  const modal = document.getElementById('fullModal'); const t = document.getElementById('modalTitle'); const b = document.getElementById('modalBody'); const primary = document.getElementById('modalPrimary'); const cancel = document.getElementById('modalCancel');
+  if(!modal||!t||!b||!primary||!cancel) return;
+  primary.onclick = null; cancel.onclick = null;
+  const nodeName = NODES[p.node]?.name || 'this city';
+  if(nodeName==='Outpost'){
+    showOverlay('No market at this outpost', {type:'event', player:p.id, ms:2200});
+    return;
+  }
+  const goodsType = (p.direction==='west') ? 'east' : 'west'; // buy for the route ahead
+  const source = goodsType==='west' ? WEST_GOODS : GOODS;
+  const capLeft = Math.max(0, (p.capacity||0) - (p.carrying?.length||0));
+  if(capLeft<=0){
+    showOverlay('No space to buy goods', {type:'event', player:p.id, desc:'Free a slot before purchasing.', ms:2000});
+    return;
+  }
+  const limit = Math.max(1, Math.min(3, capLeft));
+  modal.style.display='flex';
+  t.textContent = `Buy ${goodsType==='west'?'Western':'Eastern'} Goods`;
+  const hint = goodsType==='west' ? 'western goods to take east' : 'eastern goods to take west';
+  b.innerHTML = `
+    <div class="tiny">Buy up to <b>${limit} goods</b> in <b>${nodeName}</b>. Each costs coins.</div>
+    <div class="sep"></div>
+    <div id="buyGoodsList" class="goods"></div>
+    <div class="tiny">Coins available: <b>${p.coins}</b> • carrying ${p.carrying?.length||0}/${p.capacity||0}</div>
+    <div class="tiny" style="opacity:.85">Tip: aim for ${hint}.</div>
+  `;
+  const list = document.getElementById('buyGoodsList');
+  source.forEach(g=>{
+    const price = buyPrice(g, goodsType, nodeName);
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="checkbox" data-id="${g.id}" data-price="${price}"> <b>${g.name}</b> <span class="tiny">Price ${price} • base ${g.base||g.value||0}</span>`;
+    list.appendChild(label);
+  });
+  primary.textContent = 'Buy';
+  primary.disabled = true;
+  const handler = ()=>{
+    const checked = Array.from(list.querySelectorAll('input:checked'));
+    if(!checked.length){ alert('Choose at least 1 good.'); return; }
+    const picks = checked.slice(0, limit);
+    const total = picks.reduce((sum, el)=> sum + Number(el.dataset.price||0), 0);
+    if((p.coins||0) < total){ alert('Not enough coins.'); return; }
+    const chosen = [];
+    picks.forEach(el=>{
+      const id = el.dataset.id;
+      const g = source.find(x=>x.id===id);
+      if(g) chosen.push({...g, origin: goodsType==='west'?'west':'east', bought:true});
+    });
+    if(!chosen.length){ alert('No goods selected.'); return; }
+    p.coins = Math.max(0, (p.coins||0) - total);
+    p.carrying = (p.carrying||[]).concat(chosen);
+    updateCoins(); updatePanels();
+    log(`Player ${p.id} bought ${chosen.map(c=>c.name).join(', ')} in ${nodeName} for ${total} coins.`);
+    showOverlay(`Bought goods in <b>${nodeName}</b>`, {type:'event', player:p.id, desc:`-${total} coins • ${chosen.map(c=>c.name).join(', ')}`, ms:3000});
+    modal.style.display='none'; primary.removeEventListener('click', handler);
+  };
+  primary.addEventListener('click', handler);
+  list.addEventListener('change', ()=>{
+    const checked = Array.from(list.querySelectorAll('input:checked'));
+    if(checked.length > limit){ checked[0].checked = false; }
+    const any = list.querySelector('input:checked');
+    primary.disabled = !any;
+  });
   modal.onkeydown = (e)=>{ if(e.key==='Enter' && !primary.disabled){ handler(); } };
   cancel.onclick = ()=>{ modal.style.display='none'; primary.removeEventListener('click', handler); };
 }
@@ -1870,6 +1978,9 @@ document.getElementById('p1resBtn').onclick = ()=>{
 // Load UI controls — open fullscreen picker for west goods
 const p1loadBtn = document.getElementById('p1loadBtn'); if(p1loadBtn){ p1loadBtn.addEventListener('click', ()=>openGoodsModal(players[0], 'west')); }
 const p2loadBtn = document.getElementById('p2loadBtn'); if(p2loadBtn){ p2loadBtn.addEventListener('click', ()=>openGoodsModal(players[1], 'west')); }
+// Buy buttons — purchase goods mid-route with coins
+const p1buyBtn = document.getElementById('p1buyBtn'); if(p1buyBtn){ p1buyBtn.addEventListener('click', ()=>openBuyModal(players[0])); }
+const p2buyBtn = document.getElementById('p2buyBtn'); if(p2buyBtn){ p2buyBtn.addEventListener('click', ()=>openBuyModal(players[1])); }
 
 // Capacity helpers and loading logic
 function currentLoad(p){ return p.goods.reduce((sum,g)=> sum + (g.weight||1), 0); }
@@ -1972,6 +2083,7 @@ function endTurn(){
   const r2b = document.getElementById('p2rollBtn'); if(r2b) r2b.disabled = true;
   document.getElementById(`p${nextId}rollBtn`).disabled = false;
   document.getElementById(`p${nextId}endBtn`).disabled = true;
+  updatePanels();
   // close any open panels
   // no banner progression; map remains centered with modal overlays
 }
