@@ -28,7 +28,7 @@
   html,body{height:100%;margin:0;overflow-x:hidden;background:linear-gradient(180deg,#0e1b3d, var(--bg));color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;font-size:17px}
   /* Game font */
   :root{ --game-font: 'Herculanum Local','Herculanum','Papyrus','Copperplate',serif }
-  .app{display:grid;grid-template-columns: 260px 1fr 260px; grid-auto-rows:auto; gap:16px; padding:16px; max-width:1400px;margin:0 auto}
+  .app{display:grid;grid-template-columns: 260px 1fr 260px; grid-auto-rows:auto; gap:10px; padding:16px; max-width:1400px;margin:0 auto}
   /* Top overlay for live updates */
   .overlay{position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:1000; display:none; pointer-events:none;}
   .overlay .card{
@@ -53,6 +53,7 @@
   .sidebar{background:var(--panel);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px;display:flex;flex-direction:column;gap:12px}
   h1{font-size:26px;margin:0 0 8px;font-family:var(--game-font);letter-spacing:.02em}
   .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .layout-controls{display:none!important}
   button{appearance:none;border:none;border-radius:12px;padding:10px 12px;background:var(--muted);color:#f9fafb;font-weight:700;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.2);font-family:var(--game-font);letter-spacing:.02em}
   button.primary{background:var(--acc);color:#1f2937}
   button.secondary{background:var(--acc2);color:#0b1020}
@@ -72,13 +73,16 @@
   .spinner{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;animation:spin 0.9s linear infinite}
   .spinner::before{content:'🎲'; font-size:18px; line-height:1}
   @keyframes spin{to{transform:rotate(360deg)}}
+  .roll-value{font-size:22px;font-weight:700;display:inline-block;min-width:26px;text-align:center;transition:transform .2s ease}
   .roll-value.rolling{animation:roll-pulse .7s ease-in-out infinite}
   @keyframes roll-pulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .roll-pop{animation:roll-pop 0.8s ease}
+  @keyframes roll-pop{0%{transform:scale(1.4)}20%{transform:scale(1.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
   /* Game-piece styling for nodes */
   .node{filter:drop-shadow(0 2px 0 rgba(0,0,0,.25)); transition:transform .15s ease}
   .node.small{stroke-width:3}
   .node:hover{transform:translateY(-1px)}
-  .log{background:#0d1a39;border-radius:12px;padding:12px;height:200px;overflow:auto;font-size:14px;border:1px solid #1f2b55}
+  .log{background:#0d1a39;border-radius:12px;padding:12px;height:200px;overflow:auto;font-size:14px;border:1px solid #1f2b55; margin-top:-6px}
   .log p{margin:6px 0}
   .legend{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--game-font);letter-spacing:.02em}
   .legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px}
@@ -118,9 +122,12 @@
   .mountains{fill:var(--mount);opacity:.35}
   .market, .facts{background:#0d1a39;border-radius:12px;padding:10px;border:1px solid #1f2b55}
   .market b{font-family:var(--game-font);letter-spacing:.02em}
-  .bottom{grid-column:1 / -1; display:grid; grid-template-columns: 1fr 260px; gap:16px}
+  .bottom{grid-column:1 / -1; display:grid; grid-template-columns:1fr; gap:10px; max-width:860px; margin:0 auto 10px; justify-items:center}
+  .bottom > div{width:100%}
   .legend{background:#0d1a39;border-radius:12px;padding:10px;border:1px solid #1f2b55}
   .toolbar{display:flex;gap:8px;align-items:center;background:#0d1a39;border-radius:12px;padding:8px;border:1px solid #1f2b55;margin-top:8px;font-family:var(--game-font);letter-spacing:.02em}
+  #gameToolbar{justify-content:center}
+  #factsBox, #gameToolbar, #teamBox, .legend{max-width:720px; margin-left:auto; margin-right:auto}
   .goods{display:flex;flex-wrap:wrap;gap:6px}
   .goods label{background:#111a2d;border:1px solid #24324d;border-radius:10px;padding:7px 10px;display:flex;gap:8px;align-items:center;font-size:15px}
   .goods input{accent-color:var(--acc)}
@@ -206,7 +213,7 @@
     <div class="controls" style="grid-template-columns:1fr">
       <button id="p1buyBtn" class="secondary" disabled>Buy goods here</button>
     </div>
-    <div class="controls">
+    <div class="controls layout-controls">
       <label class="row" style="gap:6px; align-items:center; justify-content:flex-start">
         <input type="checkbox" id="alignModeToggle" /> <span class="tiny">Align Mode</span>
       </label>
@@ -425,6 +432,9 @@
     <div class="toolbar" id="gameToolbar">
       <button id="newGameBtn">New Game</button>
       <button id="settingsBtn" class="secondary">Settings</button>
+      <label class="row tiny" style="gap:6px; align-items:center">
+        <input type="checkbox" id="singleModeToggle" /> Single Player
+      </label>
     </div>
     <div class="stat" id="teamBox" style="margin-top:12px; display:none"><span>Team Coins:</span><b id="teamCoins">0</b></div>
   </div>
@@ -636,6 +646,7 @@ let simpleMode = false;
 let coopMode = false;
 let teamContracts = [];
 let awaitingMove = false; // prevents multiple rolls in one turn
+let singlePlayer = false;
 // End condition variables
 let endMode = 'rounds';
 let coinTarget = 50;
@@ -776,6 +787,41 @@ function updatePanels(){
   if(teamEl) teamEl.style.display = coopMode ? '' : 'none';
   updateBuyButtons();
 }
+function applySingleModeUI(val){
+  singlePlayer = !!val;
+  const toggle = document.getElementById('singleModeToggle'); if(toggle) toggle.checked = singlePlayer;
+  const p2panel = document.getElementById('p2panel'); if(p2panel) p2panel.style.display = singlePlayer ? 'none' : '';
+  const legendRows = document.querySelectorAll('.legend-row'); legendRows.forEach((row, idx)=>{ if(idx===1) row.style.display = singlePlayer ? 'none' : ''; });
+  const r2 = document.getElementById('p2rollBtn'); if(r2) r2.disabled = true;
+  const e2 = document.getElementById('p2endBtn'); if(e2) e2.disabled = true;
+  currentPlayer = 0;
+  setTurnLabel(); applyActiveTokenClass(); updatePanels();
+}
+function askPlayerCount(onDone){
+  const modal = document.getElementById('fullModal'); const t = document.getElementById('modalTitle'); const b = document.getElementById('modalBody'); const primary = document.getElementById('modalPrimary'); const cancel = document.getElementById('modalCancel');
+  if(!modal||!t||!b||!primary||!cancel){ if(typeof onDone==='function') onDone(); return; }
+  primary.onclick = null; cancel.onclick = null;
+  modal.style.display='flex';
+  t.textContent = 'How many players?';
+  b.innerHTML = `
+    <div class="tiny">Choose the number of players to start.</div>
+    <div class="goods" style="margin-top:8px">
+      <label><input type="radio" name="playerCount" value="1"> 1 Player</label>
+      <label><input type="radio" name="playerCount" value="2" checked> 2 Players</label>
+    </div>
+  `;
+  primary.textContent = 'Continue';
+  primary.disabled = false;
+  const handler = ()=>{
+    const choice = b.querySelector('input[name="playerCount"]:checked');
+    const val = choice ? choice.value : '2';
+    applySingleModeUI(val==='1');
+    modal.style.display='none'; primary.removeEventListener('click', handler); cancel.onclick = null;
+    if(typeof onDone==='function') onDone();
+  };
+  primary.addEventListener('click', handler);
+  cancel.onclick = ()=>{ applySingleModeUI(false); modal.style.display='none'; primary.removeEventListener('click', handler); if(typeof onDone==='function') onDone(); };
+}
 function genContract(p){
   // 50/50 chance of east-bound or west-bound contract
   if(Math.random()<0.5){
@@ -796,8 +842,13 @@ function genContract(p){
 function setTurnLabel(){
   const p1 = $('#turnPill1'), p2 = $('#turnPill2');
   if(p1 && p2){
-    p1.textContent = currentPlayer===0 ? 'Your Turn' : 'Waiting';
-    p2.textContent = currentPlayer===1 ? 'Your Turn' : 'Waiting';
+    if(singlePlayer){
+      p1.textContent = 'Your Turn';
+      p2.textContent = 'Solo';
+    } else {
+      p1.textContent = currentPlayer===0 ? 'Your Turn' : 'Waiting';
+      p2.textContent = currentPlayer===1 ? 'Your Turn' : 'Waiting';
+    }
   }
 }
 function applyActiveTokenClass(){
@@ -806,6 +857,16 @@ function applyActiveTokenClass(){
   const bTok = document.getElementById('p2token');
   const bSym = document.getElementById('p2sym');
   [aTok,aSym,bTok,bSym].forEach(el=>{ if(el){ el.classList.remove('active'); }});
+  if(singlePlayer){
+    if(aTok) aTok.classList.add('active');
+    if(aSym) aSym.classList.add('active');
+    if(bTok) bTok.style.display = 'none';
+    if(bSym) bSym.style.display = 'none';
+    return;
+  } else {
+    if(bTok) bTok.style.display = '';
+    if(bSym) bSym.style.display = '';
+  }
   const curId = players[currentPlayer].id;
   if(curId===1){ if(aTok) aTok.classList.add('active'); if(aSym) aSym.classList.add('active'); }
   else { if(bTok) bTok.classList.add('active'); if(bSym) bSym.classList.add('active'); }
@@ -912,7 +973,7 @@ function animatePathHop(p, path, done){
 }
 
 // --- Align Mode + Dynamic Edges ---
-let alignMode = false; let dynEdges = false; let drag = null; let arcK = 0.32;
+let alignMode = false; let dynEdges = true; let drag = null; let arcK = 0.17;
 const svgEl = document.getElementById('mapSVG');
 function svgPoint(evt){
   const pt = svgEl.createSVGPoint();
@@ -1234,11 +1295,16 @@ document.getElementById('dynEdgesToggle').addEventListener('change', (e)=>{
 (() => {
   const t = document.getElementById('dynEdgesToggle');
   if (t) {
-    dynEdges = !!t.checked;
+    t.checked = true; t.disabled = true;
+    dynEdges = true;
     const edgesLayer = document.getElementById('edges');
-    if (edgesLayer) edgesLayer.style.display = dynEdges ? 'none' : '';
+    if (edgesLayer) edgesLayer.style.display = 'none';
     drawDynamicEdges();
   }
+  const arc = document.getElementById('arcFactor'); if(arc){ arc.value = '0.17'; arc.disabled = true; }
+  const alignToggle = document.getElementById('alignModeToggle'); if(alignToggle){ alignToggle.disabled = true; }
+  const layoutButtons = ['spaceNodesBtn','boardLayoutBtn'];
+  layoutButtons.forEach(id=>{ const el=document.getElementById(id); if(el){ el.disabled = true; }});
 })();
 document.getElementById('arcFactor').addEventListener('input', (e)=>{
   arcK = parseFloat(e.target.value)||0; drawDynamicEdges(); autoSpaceNodes();
@@ -1737,6 +1803,19 @@ function sellIfDestination(p){
     if (lastSaleEl) lastSaleEl.textContent = "–";
     return;
   }
+  // Optional trade offer before automatic sale
+  const tradePool = (p.carrying && p.carrying.length) ? p.carrying : (p.goods||[]);
+  if(tradePool && tradePool.length){
+    const pickIdx = randInt(0, tradePool.length-1);
+    const good = tradePool[pickIdx];
+    const offer = Math.max(2, Math.round((good.base||6) * (1.15 + Math.random()*0.55)));
+    if(window.confirm(`A local trader in ${nodeName} offers ${offer} coins for your ${good.name}. Trade it?`)){
+      tradePool.splice(pickIdx,1);
+      p.coins += offer; updateCoins(); updatePanels();
+      log(`Player ${p.id} traded ${good.name} in ${nodeName} for ${offer} coins.`);
+      showOverlay(`Traded ${good.name}`, {type:'sell', player:p.id, desc:`+${offer} coins in ${nodeName}`, ms:2600});
+    }
+  }
   // Prevent repeated selling at the same market per player
   if((p.soldAt||[]).includes(nodeName)){
     if(lastSaleEl) lastSaleEl.textContent = '–';
@@ -2002,6 +2081,13 @@ function handleRoll(idx){
     showOverlay('Choose eastern goods to carry west', {type:'event', player:p.id});
     return;
   }
+  // If empty mid-route at a city (not outpost), offer a quick buy prompt
+  if((!p.carrying || p.carrying.length===0) && nodeName && nodeName!=='Outpost' && (p.coins||0)>0){
+    if(window.confirm(`You have no goods. Buy more in ${nodeName}?`)){
+      openBuyModal(p);
+      return;
+    }
+  }
   // Supplies do not block rolling; no message.
   if(p.skip){
     const reason = p.skipReason || 'You lose this turn.';
@@ -2036,20 +2122,25 @@ function handleRoll(idx){
       if(rP1) rP1.textContent = rolled;
       if(sp) sp.style.display = 'none';
       if(rP1) rP1.classList.remove('rolling'); if(rP2) rP2.classList.remove('rolling');
-      const name = players[currentPlayer].name || `Player ${p.id}`;
-      showOverlay(`${name} rolled <b>${rolled}</b>`, {type:'roll', player:p.id, desc:'Choose a glowing city to move.'});
-      log(`Player ${p.id} rolled ${rolled}. Choose a destination.`);
-      // Focus camera on current player's area for their move
-      zoomFocusOnPlayer(p, 500);
-      highlightReachable();
-      awaitingMove = true;
-      // if no moves, auto-end turn
-      if(reachable.size===0){
-        log('No reachable cities. Turn ends.');
-        drawEvent(p);
-        awaitingMove = false;
-        endTurn();
-      }
+      // Pop the roll value for clarity, then pause briefly before enabling moves
+      [rP1,rP2].forEach(el=>{ if(el){ el.classList.add('roll-pop'); setTimeout(()=>el.classList.remove('roll-pop'), 800); }});
+      const revealMs = 1000;
+      setTimeout(()=>{
+        const name = players[currentPlayer].name || `Player ${p.id}`;
+        showOverlay(`${name} rolled <b>${rolled}</b>`, {type:'roll', player:p.id, desc:'Choose a glowing city to move.'});
+        log(`Player ${p.id} rolled ${rolled}. Choose a destination.`);
+        // Focus camera on current player's area for their move
+        zoomFocusOnPlayer(p, 500);
+        highlightReachable();
+        awaitingMove = true;
+        // if no moves, auto-end turn
+        if(reachable.size===0){
+          log('No reachable cities. Turn ends.');
+          drawEvent(p);
+          awaitingMove = false;
+          endTurn();
+        }
+      }, revealMs);
     }
   }, 70);
 }
@@ -2073,7 +2164,7 @@ function endTurn(){
   // increment turns taken for the player who just finished
   players[currentPlayer].turnsTaken = (players[currentPlayer].turnsTaken||0) + 1;
   turnCount += 1; checkEndCondition();
-  currentPlayer = currentPlayer===0 ? 1 : 0;
+  currentPlayer = singlePlayer ? 0 : (currentPlayer===0 ? 1 : 0);
   setTurnLabel(); applyActiveTokenClass();
   const nextId = players[currentPlayer].id;
   // Zoom out after each turn; next player will zoom in after their roll
@@ -2081,8 +2172,14 @@ function endTurn(){
   // disable both roll buttons, then enable only the next player's
   const r1b = document.getElementById('p1rollBtn'); if(r1b) r1b.disabled = true;
   const r2b = document.getElementById('p2rollBtn'); if(r2b) r2b.disabled = true;
-  document.getElementById(`p${nextId}rollBtn`).disabled = false;
-  document.getElementById(`p${nextId}endBtn`).disabled = true;
+  if(singlePlayer){
+    if(r1b) r1b.disabled = false;
+    const e1 = document.getElementById('p1endBtn'); if(e1) e1.disabled = true;
+    const e2 = document.getElementById('p2endBtn'); if(e2) e2.disabled = true;
+  } else {
+    document.getElementById(`p${nextId}rollBtn`).disabled = false;
+    document.getElementById(`p${nextId}endBtn`).disabled = true;
+  }
   updatePanels();
   // close any open panels
   // no banner progression; map remains centered with modal overlays
@@ -2212,19 +2309,23 @@ initViewBoxBase();
 updateTokens(); updateCoins(); setTurnLabel(); applyActiveTokenClass(); updatePanels(); updateTitles();
 // Initialize remaining goods and start setup sequence
   players.forEach(p=>{ p.carrying=[]; p.direction='west'; p.deliverBonus=0; p.skip=false; p.skipReason=''; p.remainingEast = GOODS.map(g=>g.id); p.remainingWest = WEST_GOODS.map(g=>g.id); p.soldAt=[]; });
-startSetupSequence();
+askPlayerCount(startSetupSequence);
 
 function startSetupSequence(){
-  const nextP2Name = ()=> openNameModal(1, nextP1Goods);
-  const nextP1Goods = ()=> openGoodsModal(players[0], 'east', nextP2Goods);
-  const nextP2Goods = ()=> openGoodsModal(players[1], 'east', finishSetup);
   const finishSetup = ()=>{
     updatePanels();
     document.getElementById('p1rollBtn').disabled=false;
     showOverlay('Setup complete', {type:'event', desc:'Player 1: roll to begin.'});
     zoomFull(0);
   };
-  openNameModal(0, nextP2Name);
+  if(singlePlayer){
+    openNameModal(0, ()=> openGoodsModal(players[0], 'east', finishSetup));
+  } else {
+    const nextP2Goods = ()=> openGoodsModal(players[1], 'east', finishSetup);
+    const nextP1Goods = ()=> openGoodsModal(players[0], 'east', nextP2Goods);
+    const nextP2Name = ()=> openNameModal(1, nextP1Goods);
+    openNameModal(0, nextP2Name);
+  }
 }
 
 function openNameModal(idx, onDone){
@@ -2332,6 +2433,13 @@ if(settingsSave){ settingsSave.addEventListener('click', ()=>{
   showOverlay('Settings saved', {type:'event', desc:`Mode: ${endMode}`});
   if(settingsPanel) settingsPanel.style.display='none';
 }); }
+// Single-player toggle (manual switch in toolbar)
+const singleToggle = document.getElementById('singleModeToggle');
+if(singleToggle){
+  singleToggle.addEventListener('change', ()=>{
+    applySingleModeUI(singleToggle.checked);
+  });
+}
 
 // New Game button handler
 document.getElementById('newGameBtn').addEventListener('click', ()=>{
@@ -2362,8 +2470,9 @@ document.getElementById('newGameBtn').addEventListener('click', ()=>{
   document.getElementById('p1endBtn').disabled = true;
   document.getElementById('p2rollBtn').disabled = true;
   document.getElementById('p2endBtn').disabled = true;
+  applySingleModeUI(singlePlayer);
   log('New game started. Setup: names and first deliveries.');
-  startSetupSequence();
+  askPlayerCount(startSetupSequence);
 });
 
 // Name entry handlers
