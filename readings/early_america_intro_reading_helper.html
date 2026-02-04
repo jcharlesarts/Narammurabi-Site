@@ -475,7 +475,7 @@
       <strong>Rules</strong>
       <div style="color:var(--muted); margin-top:6px;">
         <div>✅ Every answer should match the reading.</div>
-        <div>✅ Use <b>evidence</b> (copy 4–6 words from the chunk).</div>
+        <div>✅ Use <b>evidence</b> when the worksheet asks for it (copy 4–6 words from the slide).</div>
         <div>✅ If stuck: re-read → ask partner → raise hand.</div>
       </div>
     </div>
@@ -495,17 +495,17 @@
     <div class="box">
       <strong>Targets for Day 1</strong>
       <div style="color:var(--muted); margin-top:6px;">
-        <div>• Geography matters: food, cities, travel, power</div>
-        <div>• Mesoamerica vs Andes (big regions)</div>
-        <div>• Maya + Aztec snapshot</div>
-        <div>• Inca snapshot</div>
+        <div>• How geography shapes life: <b>food</b>, <b>building</b>, <b>travel</b>, <b>protection</b></div>
+        <div>• Two regions: <b>Mesoamerica (jungle + lakes)</b> vs <b>Andes (mountains)</b></div>
+        <div>• Maya + Aztec: locate them + name one way geography shaped their cities</div>
+        <div>• Picture Analysis purpose: use the images to infer <b>challenges</b> + <b>advantages</b> of each environment</div>
       </div>
     </div>
 
     <div class="box" id="pictureAnalysisBox" style="display:none; border-left: 4px solid rgba(167,139,250,.6);">
       <strong style="color: var(--accent2);">Worksheet Part: Picture Analysis</strong>
       <div style="color:var(--muted); margin-top:6px;">
-        Look at the pictures. On your worksheet, describe <b>one challenge</b> and <b>one unique thing</b> for each civilization.
+        Look at the pictures. On your worksheet, describe <b>one challenge</b> and <b>one unique thing</b> for each civilization, then add <b>evidence</b> (copy 4–6 words from the caption or the slide).
       </div>
 
       <div class="img-grid" style="margin-top:10px; grid-template-columns: 1fr;">
@@ -516,6 +516,7 @@
           <p>Jungle region with stone cities and temples.</p>
           <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
           <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
+          <div class="line-fill"><b>Evidence (4–6 words):</b> <span class="blank" style="min-width:220px;"></span></div>
         </div>
 
         <div class="img-card" data-picture="1">
@@ -525,6 +526,7 @@
           <p>Capital city built on water with causeways and canals.</p>
           <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
           <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
+          <div class="line-fill"><b>Evidence (4–6 words):</b> <span class="blank" style="min-width:220px;"></span></div>
         </div>
 
         <div class="img-card" data-picture="2">
@@ -534,6 +536,7 @@
           <p>Mountain empire with roads and high-altitude cities.</p>
           <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
           <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
+          <div class="line-fill"><b>Evidence (4–6 words):</b> <span class="blank" style="min-width:220px;"></span></div>
         </div>
       </div>
     </div>
@@ -590,7 +593,7 @@
   // --- Reading chunks (6 total: 3 reading, 3 picture analysis) ---
   const CHUNKS = [
     {
-      tag: "Chunk 1",
+      tag: "Section 1",
       skill: "Big idea",
       title: "Early Americas: same continent, different worlds",
       body: `
@@ -599,11 +602,11 @@
         )}</p>
         <p><b>Key idea:</b> Geography isn’t just “where they lived.” Geography shaped food, cities, travel, and power.</p>
       `,
-      nextTask: `Write one sentence: <b>“Geography matters because ____.”</b><br/>Evidence: copy <b>4–6 words</b> from this chunk that proves your point.`,
+      nextTask: `Do Now (write in a full sentence):<br/>Stem: <b>“Geography shapes life because ____.”</b><br/>Then add a second sentence using a stem:<br/>Stem: <b>“One example is ____ because ____.”</b><br/><span style="color:rgba(229,231,235,.9)">Evidence (optional today): copy 4–6 words that support your example.</span>`,
       hint: `Look for the line that says geography “changed everything about daily life.”`
     },
     {
-      tag: "Chunk 2",
+      tag: "Section 2",
       skill: "Region + cities",
       title: "Mesoamerica: Maya + Aztec snapshot",
       body: `
@@ -614,11 +617,11 @@
           "The Aztec were located in central Mexico. Their empire became powerful in the 1400s, and their society was strongly connected to religion. Their capital, Tenochtitlan, was built on an island in Lake Texcoco. The city had a large temple complex, districts laid out in a grid, and it used causeways to reach the mainland and aqueducts to bring in fresh water."
         )}</p>
       `,
-      nextTask: `1) Which group lived in <b>central Mexico</b>? (circle one) <b>Maya / Aztec</b><br/>2) One way geography shaped a city (use Tenochtitlan): <b>_____</b><br/>3) Evidence: copy <b>4–6 words</b> that proves your answer.`,
+      nextTask: `1) Maya location (write):<br/>Stem: <b>“The Maya lived in ____.”</b><br/>2) Aztec location (write):<br/>Stem: <b>“The Aztec lived in ____.”</b><br/>3) City + geography (Aztec):<br/>Stem: <b>“Tenochtitlan was built ____ so they had to ____.”</b><br/>4) Comparison (Maya vs Aztec):<br/>Stem: <b>“Both civilizations lived in Mesoamerica, but ____ while ____.”</b><br/>Evidence: copy <b>4–6 words</b> that support your comparison.`,
       hint: `Find the line about the capital being built on an island in a lake.`
     },
     {
-      tag: "Chunk 3",
+      tag: "Section 3",
       skill: "Mountains + conquest",
       title: "The Inca: mountains + systems",
       body: `
@@ -629,16 +632,16 @@
           "Their ruler was called the Sapa Inca, and their capital was Cuzco. When the Spanish arrived, the Inca were weakened by civil war and diseases like smallpox, which made it easier for Francisco Pizarro to conquer the empire in 1533."
         )}</p>
       `,
-      nextTask: `1) The Inca lived in the <b>____</b> Mountains.<br/>2) Name one “system” that helped the Inca manage their empire.<br/>3) Why were the Inca easier to conquer? Pick <b>one cause</b> and explain.<br/>4) Evidence: copy <b>4–6 words</b> that supports your answer.`,
+      nextTask: `1) Terrain (fill in): The Inca lived in the <b>____</b> Mountains.<br/>2) Systems (name one):<br/>Stem: <b>“One system the Inca used was ____.”</b><br/>3) Conquest cause (pick one + explain):<br/>Stem: <b>“The Inca were easier to conquer because ____.”</b><br/>4) Deeper thought (one sentence):<br/>Stem: <b>“Mountains helped the Inca by ____, but also made life harder because ____.”</b>`,
       hint: `Two causes are named at the end: civil war and smallpox.`
     }
     ,
     {
-      tag: "Slide 4",
+      tag: "Picture 1",
       skill: "Picture analysis",
       title: "Picture Analysis: Maya",
       body: `
-        <p><b>Look at the picture.</b> On your worksheet, write <b>one challenge</b> and <b>one unique thing</b> about life in this place.</p>
+        <p><b>Look at the picture.</b> Your goal is to infer how the environment shaped life. On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
         <div class="img-card" style="margin-top:10px;">
           <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
           <h4>Maya</h4>
@@ -646,15 +649,15 @@
           <p>Jungle region with stone cities and temples.</p>
         </div>
       `,
-      nextTask: `Worksheet: For the <b>Maya</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Then add <b>one sentence</b> explaining how geography affects life.`,
+      nextTask: `Worksheet: For the <b>Maya</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Add <b>evidence</b> (copy <b>4–6 words</b> from the caption or slide). Then add <b>one sentence</b> explaining how geography affects life.`,
       hint: `Use the caption: jungle + stone cities + temples. Think: farming, travel, building materials, weather.`
     },
     {
-      tag: "Slide 5",
+      tag: "Picture 2",
       skill: "Picture analysis",
       title: "Picture Analysis: Aztec",
       body: `
-        <p><b>Look at the picture.</b> On your worksheet, write <b>one challenge</b> and <b>one unique thing</b> about life in this place.</p>
+        <p><b>Look at the picture.</b> Your goal is to infer how the environment shaped life. On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
         <div class="img-card" style="margin-top:10px;">
           <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
           <h4>Aztec</h4>
@@ -662,15 +665,15 @@
           <p>Capital city built on water with causeways and canals.</p>
         </div>
       `,
-      nextTask: `Worksheet: For the <b>Aztec</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Then add <b>one sentence</b> explaining how geography affects life.`,
+      nextTask: `Worksheet: For the <b>Aztec</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Add <b>evidence</b> (copy <b>4–6 words</b> from the caption or slide). Then add <b>one sentence</b> explaining how geography affects life.`,
       hint: `Use the caption: city on water + causeways + canals. Think: food, fresh water, travel, defense.`
     },
     {
-      tag: "Slide 6",
+      tag: "Picture 3",
       skill: "Picture analysis",
       title: "Picture Analysis: Inca",
       body: `
-        <p><b>Look at the picture.</b> On your worksheet, write <b>one challenge</b> and <b>one unique thing</b> about life in this place.</p>
+        <p><b>Look at the picture.</b> Your goal is to infer how the environment shaped life. On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
         <div class="img-card" style="margin-top:10px;">
           <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
           <h4>Inca</h4>
@@ -678,7 +681,7 @@
           <p>Mountain empire with roads and high-altitude cities.</p>
         </div>
       `,
-      nextTask: `Worksheet: For the <b>Inca</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Then add <b>one sentence</b> explaining how geography affects life.`,
+      nextTask: `Worksheet: For the <b>Inca</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Add <b>evidence</b> (copy <b>4–6 words</b> from the caption or slide). Then add <b>one sentence</b> explaining how geography affects life.`,
       hint: `Use the caption: mountains + roads + high altitude. Think: farming, travel, building, communication.`
     }
   ];
