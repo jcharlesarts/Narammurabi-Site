@@ -1,0 +1,1030 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Early Americas — Intro Reading Helper (Chunked)</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --ink:#e5e7eb;
+      --muted:#cbd5e1;
+      --accent:#38bdf8;
+      --accent2:#a78bfa;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --line: rgba(255,255,255,.12);
+    }
+
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(1100px 700px at 15% 10%, rgba(56,189,248,.14), transparent 60%),
+                  radial-gradient(1100px 700px at 85% 20%, rgba(167,139,250,.14), transparent 55%),
+                  var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    header{
+      padding: 18px 18px 10px;
+      max-width: 1040px;
+      margin: 0 auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:flex-end;
+      justify-content:space-between;
+    }
+    header h1{
+      margin:0;
+      font-size: 1.2rem;
+      letter-spacing:.2px;
+    }
+    header .sub{
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size:.95rem;
+    }
+
+    .wrap{
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 12px 18px 26px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+    }
+
+    .card{
+      background: rgba(17,24,39,.86);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+      padding: 16px;
+    }
+
+    .chunk-title{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin: 0 0 8px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      font-size:.82rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .pill.accent{ color: var(--accent); border-color: rgba(56,189,248,.35); }
+    .pill.violet{ color: var(--accent2); border-color: rgba(167,139,250,.35); }
+    .pill.good{ color: var(--good); border-color: rgba(52,211,153,.35); }
+    .pill.warn{ color: var(--warn); border-color: rgba(251,191,36,.35); }
+
+    .chunk h2{
+      margin:0;
+      font-size: 1.05rem;
+    }
+    .chunk p{
+      margin: 10px 0 0;
+      font-size: 1rem;
+    }
+
+    /* Reading font size (LEFT card only) */
+    .chunk.reading-sm #chunkBody { font-size: 0.98rem; }
+    .chunk.reading-md #chunkBody { font-size: 1.05rem; }
+    .chunk.reading-lg #chunkBody { font-size: 1.15rem; }
+    .chunk.reading-xl #chunkBody { font-size: 1.28rem; }
+
+    .chunk.reading-sm #chunkBody p,
+    .chunk.reading-sm #chunkBody li { font-size: 0.98rem; }
+    .chunk.reading-md #chunkBody p,
+    .chunk.reading-md #chunkBody li { font-size: 1.05rem; }
+    .chunk.reading-lg #chunkBody p,
+    .chunk.reading-lg #chunkBody li { font-size: 1.15rem; }
+    .chunk.reading-xl #chunkBody p,
+    .chunk.reading-xl #chunkBody li { font-size: 1.28rem; }
+
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 14px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    button{
+      appearance:none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--ink);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 650;
+      letter-spacing:.2px;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+    }
+    button:hover{
+      background: rgba(255,255,255,.09);
+      border-color: rgba(255,255,255,.22);
+    }
+    button:active{ transform: translateY(1px); }
+    button:disabled{ opacity:.5; cursor:not-allowed; }
+
+    .btn-primary{
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.12);
+    }
+    .btn-primary:hover{ background: rgba(56,189,248,.16); }
+
+    .btn-secondary{
+      border-color: rgba(167,139,250,.35);
+      background: rgba(167,139,250,.12);
+    }
+    .btn-secondary:hover{ background: rgba(167,139,250,.16); }
+
+    .btn-hint{
+      border-color: rgba(251,191,36,.35);
+      background: rgba(251,191,36,.10);
+    }
+    .btn-hint:hover{ background: rgba(251,191,36,.14); }
+
+    .progress{
+      font-size: .92rem;
+      color: var(--muted);
+    }
+
+    /* Right side */
+    .panel h3{ margin:0 0 8px; font-size: 1rem; }
+    .panel .box{
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .next-task{ border-left: 4px solid rgba(56,189,248,.6); }
+    .next-task strong{ color: var(--accent); }
+
+    .hints{ border-left: 4px solid rgba(251,191,36,.7); display:none; }
+    .hints strong{ color: var(--warn); }
+
+    .rules{ border-left: 4px solid rgba(52,211,153,.6); }
+    .rules strong{ color: var(--good); }
+
+    /* Vocab */
+    .vocab{
+      color: var(--accent);
+      font-weight: 750;
+      cursor: pointer;
+      border-bottom: 1px dotted rgba(56,189,248,.7);
+      padding: 0 2px;
+      border-radius: 6px;
+      transition: background .15s ease, box-shadow .15s ease, transform .05s ease;
+    }
+    .vocab:hover{ background: rgba(56,189,248,.12); }
+    .vocab:active{ transform: translateY(1px); }
+    .vocab:focus{ outline: none; }
+    .vocab:focus-visible{
+      box-shadow: 0 0 0 3px rgba(56,189,248,.4);
+    }
+    .vocab.vocab-active{
+      background: rgba(56,189,248,.18);
+      box-shadow: 0 0 0 2px rgba(56,189,248,.35);
+    }
+    .vocab.vocab-selected{
+      background: rgba(56,189,248,.22);
+      box-shadow: 0 0 0 2px rgba(56,189,248,.55);
+    }
+
+    .vocab-list{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .vocab-items{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      max-height: 320px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+    .vocab-item{
+      border:1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      background: rgba(255,255,255,.05);
+      color: var(--ink);
+      font-weight: 700;
+      text-align: left;
+    }
+    .vocab-item:hover{ background: rgba(56,189,248,.12); }
+    .vocab-item.active{
+      border-color: rgba(56,189,248,.6);
+      background: rgba(56,189,248,.18);
+    }
+    .vocab-def{
+      border:1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(255,255,255,.03);
+      min-height: 120px;
+    }
+    .vocab-def strong{ display:block; margin-bottom: 6px; }
+    .vocab-def .muted{ color: var(--muted); }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .modal{
+      max-width: 640px;
+      width: 100%;
+      background: rgba(17,24,39,.96);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.45);
+      padding: 16px 16px 12px;
+    }
+    .modal h4{ margin:0 0 6px; font-size: 1.05rem; }
+    .modal p{ margin:0 0 12px; color: var(--muted); }
+    .modal .row{ display:flex; justify-content:flex-end; }
+
+    /* Early finisher */
+    .finisher-wrap{
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      display:none;
+    }
+    .finisher-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .finisher-tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin: 10px 0;
+    }
+    .finisher-tab{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .finisher-tab.active{
+      color: var(--ink);
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.12);
+    }
+    .finisher-panel{ display:none; }
+    .finisher-panel.active{ display:block; }
+
+    .img-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .img-card{
+      border:1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,.03);
+      padding: 10px;
+      position: relative;
+    }
+    .img-card h4{ margin:0 0 6px; font-size: .98rem; }
+    .img-card img{
+      width:100%;
+      max-height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      cursor: zoom-in;
+      transition: max-height .2s ease, transform .2s ease;
+    }
+    .img-card.expanded img{
+      max-height: 260px;
+      transform: scale(1.01);
+      cursor: zoom-out;
+    }
+    .img-card .img-close{
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.5);
+      color: var(--ink);
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: none;
+    }
+    .img-card.expanded .img-close{ display: inline-flex; }
+    .img-card p{ margin: 8px 0 8px; color: var(--muted); font-size:.95rem; }
+    .line-fill{ margin-top: 6px; color: var(--muted); }
+    .blank{
+      display:inline-block;
+      min-width: 160px;
+      border-bottom: 2px solid rgba(255,255,255,.22);
+      transform: translateY(-1px);
+    }
+
+    .quiz-q{
+      border:1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(255,255,255,.03);
+      margin-top: 10px;
+    }
+    .quiz-q .q{ font-weight: 800; }
+    .quiz-opts{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .quiz-opt{
+      border:1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      cursor:pointer;
+      background: rgba(255,255,255,.05);
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .quiz-opt:hover{ background: rgba(255,255,255,.08); }
+    .quiz-opt.correct{ border-color: rgba(52,211,153,.55); background: rgba(52,211,153,.16); }
+    .quiz-opt.wrong{ border-color: rgba(251,113,133,.55); background: rgba(251,113,133,.14); }
+
+    @media (max-width: 940px){
+      .wrap{ grid-template-columns: 1fr; }
+      .img-grid{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div>
+    <h1>Early Americas — Intro Reading Helper</h1>
+    <div class="sub">Read the chunked lesson → complete the checkpoint → then do Picture Analysis → click Next.</div>
+  </div>
+  <div class="progress" id="progressText">Slide 1 of 6</div>
+</header>
+
+<main class="wrap">
+  <!-- LEFT: Reading chunk -->
+  <section class="card chunk reading-md" aria-live="polite">
+    <div class="chunk-title">
+      <span class="pill accent" id="unitTag">Unit: Early Americas</span>
+      <span class="pill violet" id="chunkTag">Chunk</span>
+      <span class="pill" id="skillTag">Skill: Evidence</span>
+      <span class="pill good" id="sourceTag">Info Source: Classroom Reading</span>
+    </div>
+
+    <h2 id="chunkTitle">Welcome</h2>
+    <div id="chunkBody"></div>
+
+    <div class="controls">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn-secondary" id="btnPrev" type="button">← Back</button>
+        <button class="btn-primary" id="btnNext" type="button">Next →</button>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <button class="btn-hint" id="btnHint" type="button">Hint</button>
+        <button id="btnVocab" type="button">Vocab List</button>
+        <span style="width:1px; height:22px; background: var(--line); display:inline-block;"></span>
+        <span style="color:var(--muted); font-size:.92rem;">Reading size:</span>
+        <button id="btnFontSm" type="button" aria-label="Smaller reading text">A-</button>
+        <button id="btnFontMd" type="button" aria-label="Default reading text">A</button>
+        <button id="btnFontLg" type="button" aria-label="Larger reading text">A+</button>
+        <button id="btnFontXl" type="button" aria-label="Extra large reading text">A++</button>
+      </div>
+    </div>
+
+    <!-- Early finisher: only appears on final chunk -->
+    <div class="finisher-wrap" id="finisherWrap">
+      <div class="finisher-head">
+        <div>
+          <span class="pill warn">Early Finisher (Optional)</span>
+          <span class="pill">Pick ONE</span>
+        </div>
+        <button id="btnFinisherToggle" type="button" class="btn-secondary">Open Choice Board</button>
+      </div>
+
+      <div class="finisher-tabs" id="finisherTabs">
+        <div class="finisher-tab active" data-finisher-tab="match">Vocab Quick Match</div>
+        <div class="finisher-tab" data-finisher-tab="compare">1‑Min Compare</div>
+      </div>
+
+      <div class="finisher-panel active" data-finisher-panel="match">
+        <div style="color:var(--muted); margin-top:6px;">Tap an answer. It will check itself.</div>
+        <div id="finisherQuiz"></div>
+      </div>
+
+      <div class="finisher-panel" data-finisher-panel="compare">
+        <div class="quiz-q" style="margin-top:10px;">
+          <div class="q">Pick TWO civilizations. Write one geography difference and how it changes life.</div>
+          <div style="margin-top:10px; color:var(--muted);">
+            Geography difference: <span class="blank" style="min-width: 260px;"></span>
+          </div>
+          <div style="margin-top:10px; color:var(--muted);">
+            How it changes life: <span class="blank" style="min-width: 300px;"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RIGHT: worksheet directions + hints -->
+  <aside class="card panel">
+    <h3>Worksheet Checkpoint</h3>
+
+    <div class="box rules">
+      <strong>Rules</strong>
+      <div style="color:var(--muted); margin-top:6px;">
+        <div>✅ Every answer should match the reading.</div>
+        <div>✅ Use <b>evidence</b> (copy 4–6 words from the chunk).</div>
+        <div>✅ If stuck: re-read → ask partner → raise hand.</div>
+      </div>
+    </div>
+
+    <div class="box next-task" id="nextTaskBox">
+      <strong>After reading, do this now:</strong>
+      <div id="nextTaskText" style="color:var(--muted); margin-top:6px;">
+        Read the directions, then click Next.
+      </div>
+    </div>
+
+    <div class="box hints" id="hintsBox">
+      <strong>Hint</strong>
+      <div id="hintsText" style="color:var(--muted); margin-top:6px;"></div>
+    </div>
+
+    <div class="box">
+      <strong>Targets for Day 1</strong>
+      <div style="color:var(--muted); margin-top:6px;">
+        <div>• Geography matters: food, cities, travel, power</div>
+        <div>• Mesoamerica vs Andes (big regions)</div>
+        <div>• Maya + Aztec snapshot</div>
+        <div>• Inca snapshot</div>
+      </div>
+    </div>
+
+    <div class="box" id="pictureAnalysisBox" style="display:none; border-left: 4px solid rgba(167,139,250,.6);">
+      <strong style="color: var(--accent2);">Worksheet Part: Picture Analysis</strong>
+      <div style="color:var(--muted); margin-top:6px;">
+        Look at the pictures. On your worksheet, describe <b>one challenge</b> and <b>one unique thing</b> for each civilization.
+      </div>
+
+      <div class="img-grid" style="margin-top:10px; grid-template-columns: 1fr;">
+        <div class="img-card" data-picture="0">
+          <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+          <h4>Maya</h4>
+          <img src="https://images.squarespace-cdn.com/content/v1/6047d405b02148755fb6e601/42c604a2-9471-4d64-a922-c72b94d17a12/ver-centroamerica-guatemala-ruinas-tikal-04.jpg?format=2500w" alt="Maya ruins at Tikal (Guatemala)" />
+          <p>Jungle region with stone cities and temples.</p>
+          <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
+          <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
+        </div>
+
+        <div class="img-card" data-picture="1">
+          <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+          <h4>Aztec</h4>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Painting_of_Tenochtitlan-Tlatelolco_on_Lake_Texcoco_%289755215791%29.jpg" alt="Painting of Tenochtitlan on Lake Texcoco" />
+          <p>Capital city built on water with causeways and canals.</p>
+          <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
+          <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
+        </div>
+
+        <div class="img-card" data-picture="2">
+          <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+          <h4>Inca</h4>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Pisac%2C_Cuzco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_99.JPG" alt="Inca terraces near Pisac, Peru" />
+          <p>Mountain empire with roads and high-altitude cities.</p>
+          <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
+          <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- Modal for vocab -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-label="Vocabulary definition">
+  <div class="modal">
+    <h4 id="modalTitle">Vocabulary</h4>
+    <div id="modalText" class="modal-body"></div>
+    <div class="row">
+      <button id="modalClose" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- Vocab bank (clickable words) ---
+  const VOCAB = {
+    "mesoamerica": "A region in southern Mexico and Central America where the Maya and Aztec lived.",
+    "terrain": "The type of land (mountains, jungle, desert, lake area, etc.).",
+    "city-state": "A city that acts like its own small country with its own leaders and rules.",
+    "empire": "A large territory controlled by one government or ruler.",
+    "capital": "The main city where leaders rule from.",
+    "tenochtitlan": "The Aztec capital city, built on an island in Lake Texcoco.",
+    "lake texcoco": "The lake where the Aztec capital was built.",
+    "causeway": "A raised road that connects land over water.",
+    "aqueduct": "A structure that carries water to a city.",
+    "andes": "A huge mountain range along the west side of South America.",
+    "peru": "A country in South America where the Inca were centered.",
+    "south america": "A continent south of North America, where the Inca lived.",
+    "sapa inca": "The title for the Inca emperor (the ruler).",
+    "cuzco": "The capital city of the Inca Empire.",
+    "astronomy": "The study of the stars and sky.",
+    "conquistador": "A Spanish explorer/soldier who conquered lands in the Americas.",
+    "hernan cortes": "The Spanish conquistador who conquered the Aztec.",
+    "francisco pizarro": "The Spanish conquistador who conquered the Inca.",
+    "civil war": "A war between groups inside the same country or empire.",
+    "smallpox": "A deadly disease brought by Europeans that killed many Indigenous people."
+  };
+
+  function vocabify(text){
+    const keys = Object.keys(VOCAB).sort((a,b)=>b.length-a.length);
+    let out = text;
+    keys.forEach(k=>{
+      const safe = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp(`\\b${safe}\\b`, "gi");
+      out = out.replace(re, (match)=>`<span class="vocab" data-vocab="${k.toLowerCase()}">${match}</span>`);
+    });
+    return out;
+  }
+
+  // --- Reading chunks (6 total: 3 reading, 3 picture analysis) ---
+  const CHUNKS = [
+    {
+      tag: "Chunk 1",
+      skill: "Big idea",
+      title: "Early Americas: same continent, different worlds",
+      body: `
+        <p>${vocabify(
+          "The Maya, Aztec, and Inca were three major civilizations in the Americas before the Spanish arrived. Even though they lived on the same continents, their geography was very different — and that changed everything about daily life. Some lived in hot jungle regions, some lived in central Mexico, and some built a huge empire in the Andes Mountains."
+        )}</p>
+        <p><b>Key idea:</b> Geography isn’t just “where they lived.” Geography shaped food, cities, travel, and power.</p>
+      `,
+      nextTask: `Write one sentence: <b>“Geography matters because ____.”</b><br/>Evidence: copy <b>4–6 words</b> from this chunk that proves your point.`,
+      hint: `Look for the line that says geography “changed everything about daily life.”`
+    },
+    {
+      tag: "Chunk 2",
+      skill: "Region + cities",
+      title: "Mesoamerica: Maya + Aztec snapshot",
+      body: `
+        <p>${vocabify(
+          "The Maya were in a region called Mesoamerica (parts of southern Mexico and Central America). They built many cities in jungle areas and were organized into city-states — cities that acted like their own small countries. The Maya were also known for writing, math, astronomy, and huge pyramids built for their gods."
+        )}</p>
+        <p>${vocabify(
+          "The Aztec were located in central Mexico. Their empire became powerful in the 1400s, and their society was strongly connected to religion. Their capital, Tenochtitlan, was built on an island in Lake Texcoco. The city had a large temple complex, districts laid out in a grid, and it used causeways to reach the mainland and aqueducts to bring in fresh water."
+        )}</p>
+      `,
+      nextTask: `1) Which group lived in <b>central Mexico</b>? (circle one) <b>Maya / Aztec</b><br/>2) One way geography shaped a city (use Tenochtitlan): <b>_____</b><br/>3) Evidence: copy <b>4–6 words</b> that proves your answer.`,
+      hint: `Find the line about the capital being built on an island in a lake.`
+    },
+    {
+      tag: "Chunk 3",
+      skill: "Mountains + conquest",
+      title: "The Inca: mountains + systems",
+      body: `
+        <p>${vocabify(
+          "The Inca Empire was centered in Peru and spread across much of the west coast of South America in the 1400s. This was a huge empire, and it was built in the Andes Mountains — meaning a lot of steep terrain. The Inca did not have a writing system like the Maya, but they still ran a complex society. Their government and road system helped connect people and supplies, and their society was organized so that everyone had work, a home, and enough food."
+        )}</p>
+        <p>${vocabify(
+          "Their ruler was called the Sapa Inca, and their capital was Cuzco. When the Spanish arrived, the Inca were weakened by civil war and diseases like smallpox, which made it easier for Francisco Pizarro to conquer the empire in 1533."
+        )}</p>
+      `,
+      nextTask: `1) The Inca lived in the <b>____</b> Mountains.<br/>2) Name one “system” that helped the Inca manage their empire.<br/>3) Why were the Inca easier to conquer? Pick <b>one cause</b> and explain.<br/>4) Evidence: copy <b>4–6 words</b> that supports your answer.`,
+      hint: `Two causes are named at the end: civil war and smallpox.`
+    }
+    ,
+    {
+      tag: "Slide 4",
+      skill: "Picture analysis",
+      title: "Picture Analysis: Maya",
+      body: `
+        <p><b>Look at the picture.</b> On your worksheet, write <b>one challenge</b> and <b>one unique thing</b> about life in this place.</p>
+        <div class="img-card" style="margin-top:10px;">
+          <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+          <h4>Maya</h4>
+          <img src="https://images.squarespace-cdn.com/content/v1/6047d405b02148755fb6e601/42c604a2-9471-4d64-a922-c72b94d17a12/ver-centroamerica-guatemala-ruinas-tikal-04.jpg?format=2500w" alt="Maya ruins at Tikal (Guatemala)" />
+          <p>Jungle region with stone cities and temples.</p>
+        </div>
+      `,
+      nextTask: `Worksheet: For the <b>Maya</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Then add <b>one sentence</b> explaining how geography affects life.`,
+      hint: `Use the caption: jungle + stone cities + temples. Think: farming, travel, building materials, weather.`
+    },
+    {
+      tag: "Slide 5",
+      skill: "Picture analysis",
+      title: "Picture Analysis: Aztec",
+      body: `
+        <p><b>Look at the picture.</b> On your worksheet, write <b>one challenge</b> and <b>one unique thing</b> about life in this place.</p>
+        <div class="img-card" style="margin-top:10px;">
+          <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+          <h4>Aztec</h4>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Painting_of_Tenochtitlan-Tlatelolco_on_Lake_Texcoco_%289755215791%29.jpg" alt="Painting of Tenochtitlan-Tlatelolco on Lake Texcoco" />
+          <p>Capital city built on water with causeways and canals.</p>
+        </div>
+      `,
+      nextTask: `Worksheet: For the <b>Aztec</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Then add <b>one sentence</b> explaining how geography affects life.`,
+      hint: `Use the caption: city on water + causeways + canals. Think: food, fresh water, travel, defense.`
+    },
+    {
+      tag: "Slide 6",
+      skill: "Picture analysis",
+      title: "Picture Analysis: Inca",
+      body: `
+        <p><b>Look at the picture.</b> On your worksheet, write <b>one challenge</b> and <b>one unique thing</b> about life in this place.</p>
+        <div class="img-card" style="margin-top:10px;">
+          <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+          <h4>Inca</h4>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Pisac%2C_Cuzco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_99.JPG" alt="Inca terraces near Pisac, Peru" />
+          <p>Mountain empire with roads and high-altitude cities.</p>
+        </div>
+      `,
+      nextTask: `Worksheet: For the <b>Inca</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Then add <b>one sentence</b> explaining how geography affects life.`,
+      hint: `Use the caption: mountains + roads + high altitude. Think: farming, travel, building, communication.`
+    }
+  ];
+
+  // --- Early finisher quiz bank ---
+  const FINISHER_QUIZ = [
+    {
+      q: "Mesoamerica means…",
+      correct: "A region in southern Mexico and Central America",
+      wrong: ["A mountain range in South America", "An island in a lake"]
+    },
+    {
+      q: "Andes are…",
+      correct: "A mountain range in South America",
+      wrong: ["Floating gardens", "A city built on water"]
+    },
+    {
+      q: "Causeway is…",
+      correct: "A raised road that connects land over water",
+      wrong: ["A temple pyramid", "A knotted cord for records"]
+    },
+    {
+      q: "Aqueduct is…",
+      correct: "A structure that carries water",
+      wrong: ["A city-state government", "A farming terrace"]
+    },
+    {
+      q: "City-state means…",
+      correct: "A city that acts like its own country",
+      wrong: ["A city built in the mountains", "A tax paid in goods"]
+    }
+  ];
+
+  // --- UI State ---
+  let idx = 0;
+
+  const elTitle = document.getElementById("chunkTitle");
+  const elBody  = document.getElementById("chunkBody");
+  const elProgress = document.getElementById("progressText");
+  const elChunkTag = document.getElementById("chunkTag");
+  const elSkillTag = document.getElementById("skillTag");
+  const elNextTaskText = document.getElementById("nextTaskText");
+  const elHintsBox = document.getElementById("hintsBox");
+  const elHintsText = document.getElementById("hintsText");
+
+  const btnPrev = document.getElementById("btnPrev");
+  const btnNext = document.getElementById("btnNext");
+  const btnHint = document.getElementById("btnHint");
+  const btnVocab = document.getElementById("btnVocab");
+  const btnFontSm = document.getElementById("btnFontSm");
+  const btnFontMd = document.getElementById("btnFontMd");
+  const btnFontLg = document.getElementById("btnFontLg");
+  const btnFontXl = document.getElementById("btnFontXl");
+
+  // Early finisher elements
+  const finisherWrap = document.getElementById("finisherWrap");
+  const btnFinisherToggle = document.getElementById("btnFinisherToggle");
+  const finisherTabs = document.getElementById("finisherTabs");
+  const finisherQuiz = document.getElementById("finisherQuiz");
+  const pictureAnalysisBox = document.getElementById("pictureAnalysisBox");
+
+  // Modal
+  const backdrop = document.getElementById("modalBackdrop");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText  = document.getElementById("modalText");
+  const modalClose = document.getElementById("modalClose");
+
+  function render(){
+    const c = CHUNKS[idx];
+    elTitle.textContent = c.title;
+    elBody.innerHTML = c.body;
+    elProgress.textContent = `Slide ${idx+1} of ${CHUNKS.length}`;
+    elChunkTag.textContent = c.tag;
+    elSkillTag.textContent = `Skill: ${c.skill}`;
+    elNextTaskText.innerHTML = c.nextTask;
+
+    // Hide hints by default each chunk
+    elHintsBox.style.display = "none";
+    elHintsText.textContent = c.hint || "";
+
+    // Buttons
+    btnPrev.disabled = (idx === 0);
+    btnNext.disabled = (idx === CHUNKS.length - 1);
+
+    // Show early finisher ONLY on final slide
+    const isFinal = idx === CHUNKS.length - 1;
+    finisherWrap.style.display = isFinal ? "block" : "none";
+
+    // Picture analysis happens AFTER the reading (slides 4–6)
+    if (pictureAnalysisBox) {
+      const isPictureSlide = idx >= 3 && idx <= 5;
+      pictureAnalysisBox.style.display = isPictureSlide ? "block" : "none";
+
+      // Map slide index 3/4/5 to picture card 0/1/2
+      const activePicIndex = idx - 3;
+      pictureAnalysisBox.querySelectorAll("[data-picture]").forEach(card => {
+        const cardIdx = Number(card.getAttribute("data-picture"));
+        card.style.display = (cardIdx === activePicIndex) ? "block" : "none";
+      });
+    }
+
+    // If final chunk, ensure quiz is rendered once
+    if (isFinal) {
+      renderFinisherQuiz();
+    }
+
+    // Attach vocab click listeners
+    document.querySelectorAll(".vocab").forEach(span=>{
+      span.setAttribute("tabindex", "0");
+      span.setAttribute("role", "button");
+      span.setAttribute("aria-pressed", "false");
+      const spanKey = (span.getAttribute("data-vocab") || "").toLowerCase();
+      if (VOCAB[spanKey]) span.setAttribute("title", VOCAB[spanKey]);
+
+      const activate = ()=>{
+        document.querySelectorAll(".vocab.vocab-active").forEach(el=>el.classList.remove("vocab-active"));
+        document.querySelectorAll(".vocab.vocab-selected").forEach(el=>{
+          el.classList.remove("vocab-selected");
+          el.setAttribute("aria-pressed", "false");
+        });
+        span.classList.add("vocab-active");
+        span.classList.add("vocab-selected");
+        span.setAttribute("aria-pressed", "true");
+        setTimeout(()=> span.classList.remove("vocab-active"), 650);
+
+        const key = (span.getAttribute("data-vocab") || "").toLowerCase();
+        showVocab(key, span.textContent);
+      };
+
+      span.addEventListener("click", activate);
+      span.addEventListener("keydown", (e)=>{
+        if(e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          activate();
+        }
+      });
+    });
+
+    // Bind image expand/close for slide content + side panels
+    bindImageCardInteractions(document);
+  }
+
+  // --- Reading font size controls (LEFT reading only) ---
+  const SIZE_CLASS = { sm: "reading-sm", md: "reading-md", lg: "reading-lg", xl: "reading-xl" };
+
+  function setReadingSize(size){
+    const chunkEl = document.querySelector("section.card.chunk");
+    if(!chunkEl) return;
+    Object.values(SIZE_CLASS).forEach(cls => chunkEl.classList.remove(cls));
+    const cls = SIZE_CLASS[size] || SIZE_CLASS.md;
+    chunkEl.classList.add(cls);
+    try { localStorage.setItem("eaIntroReadingSize", size); } catch(e) {}
+  }
+
+  function loadReadingSize(){
+    let size = "md";
+    try { size = localStorage.getItem("eaIntroReadingSize") || "md"; } catch(e) {}
+    setReadingSize(size);
+  }
+
+  function showVocab(key, displayWord){
+    const def = VOCAB[key] || VOCAB[displayWord.toLowerCase()] || "Definition not found.";
+    modalTitle.textContent = displayWord;
+    modalText.innerHTML = `<div class="vocab-def"><strong>${displayWord}</strong><div class="muted">${def}</div></div>`;
+    modalText.style.whiteSpace = "normal";
+    backdrop.style.display = "flex";
+  }
+
+  function closeModal(){ backdrop.style.display = "none"; }
+
+  btnPrev.addEventListener("click", ()=>{ if(idx>0){ idx--; render(); } });
+  btnNext.addEventListener("click", ()=>{ if(idx<CHUNKS.length-1){ idx++; render(); } });
+
+  btnHint.addEventListener("click", ()=>{
+    const c = CHUNKS[idx];
+    elHintsText.textContent = c.hint || "Re-read the chunk and look for key vocabulary words.";
+    elHintsBox.style.display = (elHintsBox.style.display === "none") ? "block" : "none";
+  });
+
+  btnVocab.addEventListener("click", ()=>{
+    modalTitle.textContent = "Vocab List";
+    const entries = Object.entries(VOCAB).sort((a,b)=>a[0].localeCompare(b[0]));
+    const listHtml = entries.map(([k])=>(
+      `<button type="button" class="vocab-item" data-vocab="${k}">${k.toUpperCase()}</button>`
+    )).join("");
+    const first = entries[0];
+    modalText.innerHTML = `
+      <div class="vocab-list">
+        <div class="vocab-items" id="vocabItems">${listHtml}</div>
+        <div class="vocab-def" id="vocabDef">
+          <strong>${first ? first[0].toUpperCase() : "Term"}</strong>
+          <div class="muted">${first ? first[1] : "Definition not found."}</div>
+        </div>
+      </div>
+    `;
+    const items = modalText.querySelectorAll(".vocab-item");
+    items.forEach((btn, i)=>{
+      if (i === 0) btn.classList.add("active");
+      btn.addEventListener("click", ()=>{
+        items.forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        const key = (btn.getAttribute("data-vocab") || "").toLowerCase();
+        const def = VOCAB[key] || "Definition not found.";
+        const defBox = modalText.querySelector("#vocabDef");
+        if (defBox) {
+          defBox.innerHTML = `<strong>${key.toUpperCase()}</strong><div class="muted">${def}</div>`;
+        }
+      });
+    });
+    modalText.style.whiteSpace = "normal";
+    backdrop.style.display = "flex";
+  });
+
+  btnFontSm.addEventListener("click", ()=> setReadingSize("sm"));
+  btnFontMd.addEventListener("click", ()=> setReadingSize("md"));
+  btnFontLg.addEventListener("click", ()=> setReadingSize("lg"));
+  btnFontXl.addEventListener("click", ()=> setReadingSize("xl"));
+
+  backdrop.addEventListener("click", (e)=>{ if(e.target === backdrop) closeModal(); });
+  modalClose.addEventListener("click", closeModal);
+  window.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+
+  // --- Early finisher logic ---
+  let finisherOpen = false;
+
+  function setFinisherOpen(open){
+    finisherOpen = open;
+    const panelsVisible = open ? "block" : "none";
+    finisherTabs.style.display = panelsVisible;
+    document.querySelectorAll('[data-finisher-panel]').forEach(p=>{
+      // keep current panel active but respect open state
+      p.style.display = open ? (p.classList.contains('active') ? 'block' : 'none') : 'none';
+    });
+    btnFinisherToggle.textContent = open ? "Close Choice Board" : "Open Choice Board";
+  }
+
+  btnFinisherToggle.addEventListener("click", ()=>{
+    setFinisherOpen(!finisherOpen);
+  });
+
+  // Default: closed until student opens
+  setFinisherOpen(false);
+
+  // Picture analysis: expand/collapse images (bind after render too)
+  function collapsePictureCards(except){
+    document.querySelectorAll(".img-card.expanded").forEach(card=>{
+      if (card !== except) card.classList.remove("expanded");
+    });
+  }
+
+  function bindImageCardInteractions(root = document){
+    root.querySelectorAll(".img-card img").forEach(img=>{
+      if (img.dataset.zoomBound === "1") return;
+      img.dataset.zoomBound = "1";
+      img.addEventListener("click", ()=>{
+        const card = img.closest(".img-card");
+        if (!card) return;
+        if (card.classList.contains("expanded")) {
+          card.classList.remove("expanded");
+          return;
+        }
+        collapsePictureCards(card);
+        card.classList.add("expanded");
+      });
+    });
+
+    root.querySelectorAll(".img-card .img-close").forEach(btn=>{
+      if (btn.dataset.zoomBound === "1") return;
+      btn.dataset.zoomBound = "1";
+      btn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const card = btn.closest(".img-card");
+        if (card) card.classList.remove("expanded");
+      });
+    });
+  }
+
+  document.querySelectorAll('[data-finisher-tab]').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('[data-finisher-tab]').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      const key = tab.getAttribute('data-finisher-tab');
+      document.querySelectorAll('[data-finisher-panel]').forEach(p=>{
+        p.classList.remove('active');
+        p.style.display = 'none';
+      });
+      const panel = document.querySelector(`[data-finisher-panel="${key}"]`);
+      if (panel) {
+        panel.classList.add('active');
+        if (finisherOpen) panel.style.display = 'block';
+      }
+    });
+  });
+
+  function shuffle(arr){
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function renderFinisherQuiz(){
+    // Build self-checking MC items
+    finisherQuiz.innerHTML = FINISHER_QUIZ.map((item, i)=>{
+      const opts = shuffle([item.correct, ...item.wrong]);
+      return `
+        <div class="quiz-q" data-q-index="${i}">
+          <div class="q">${i+1}) ${item.q}</div>
+          <div class="quiz-opts">
+            ${opts.map(opt=>{
+              const safe = opt.replace(/"/g,'&quot;');
+              return `<div class="quiz-opt" data-answer="${safe}">${opt}</div>`;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Bind clicks
+    finisherQuiz.querySelectorAll('.quiz-q').forEach((qEl)=>{
+      const qIndex = Number(qEl.getAttribute('data-q-index'));
+      const item = FINISHER_QUIZ[qIndex];
+      qEl.querySelectorAll('.quiz-opt').forEach((optEl)=>{
+        optEl.addEventListener('click', ()=>{
+          // lock this question after first click
+          if (qEl.getAttribute('data-locked') === 'true') return;
+          qEl.setAttribute('data-locked', 'true');
+
+          const chosen = optEl.textContent;
+          const correct = chosen === item.correct;
+          optEl.classList.add(correct ? 'correct' : 'wrong');
+
+          // also reveal the correct one
+          qEl.querySelectorAll('.quiz-opt').forEach((el)=>{
+            if (el.textContent === item.correct) el.classList.add('correct');
+          });
+        });
+      });
+    });
+  }
+
+  // Initial render
+  render();
+  loadReadingSize();
+</script>
+</body>
+</html>
