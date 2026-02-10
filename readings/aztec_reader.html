@@ -1,0 +1,1692 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aztec — Say Something Reader</title>
+  <style>
+    @font-face {
+      font-family: "Apercu Light";
+      src: local("Apercu Light"), local("Apercu-Light"), local("Apercu Pro Light"), local("ApercuPro-Light");
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --ink: #e5e7eb;
+      --muted: #cbd5e1;
+      --accent: #38bdf8;
+      --accent2: #a78bfa;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --bad: #fb7185;
+      --line: rgba(255, 255, 255, .12);
+    }
+
+    body[data-theme="light"] {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #334155;
+      --accent: #0284c7;
+      --accent2: #6d28d9;
+      --good: #059669;
+      --warn: #b45309;
+      --bad: #be123c;
+      --line: rgba(15, 23, 42, .16);
+    }
+
+    body[data-theme="light"] {
+      background: radial-gradient(1100px 700px at 15% 10%, rgba(2, 132, 199, .12), transparent 60%),
+        radial-gradient(1100px 700px at 85% 20%, rgba(109, 40, 217, .10), transparent 55%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    body[data-theme="light"] .card {
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, .10);
+    }
+
+    body[data-theme="light"] button {
+      background: rgba(15, 23, 42, .04);
+    }
+
+    body[data-theme="light"] button:hover {
+      background: rgba(15, 23, 42, .07);
+    }
+
+    body[data-theme="light"] .box {
+      background: rgba(15, 23, 42, .03);
+    }
+
+    body[data-theme="light"] .vocab {
+      border-bottom: 1px dotted rgba(2, 132, 199, .7);
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1100px 700px at 15% 10%, rgba(56, 189, 248, .14), transparent 60%),
+        radial-gradient(1100px 700px at 85% 20%, rgba(167, 139, 250, .14), transparent 55%),
+        var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    header {
+      padding: 18px 18px 10px;
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.45rem;
+      letter-spacing: .2px;
+    }
+
+    header .sub {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 12px 18px 26px;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, .86);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+      padding: 16px;
+    }
+
+    .chunk-title {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: .82rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .04);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .pill.accent {
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, .35);
+    }
+
+    .pill.violet {
+      color: var(--accent2);
+      border-color: rgba(167, 139, 250, .35);
+    }
+
+    .pill.good {
+      color: var(--good);
+      border-color: rgba(52, 211, 153, .35);
+    }
+
+    .pill.warn {
+      color: var(--warn);
+      border-color: rgba(251, 191, 36, .35);
+    }
+
+    .chunk h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .chunk p {
+      margin: 10px 0 0;
+      font-size: 1.03rem;
+    }
+
+    .reader-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .reader-card {
+      text-align: left;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .05);
+      border-radius: 14px;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .reader-card:hover {
+      background: rgba(56, 189, 248, .12);
+      border-color: rgba(56, 189, 248, .45);
+      transform: translateY(-1px);
+    }
+
+    .reader-card::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 16px;
+      padding: 2px;
+      background: conic-gradient(from 0deg,
+          rgba(56, 189, 248, .0),
+          rgba(56, 189, 248, .55),
+          rgba(167, 139, 250, .0),
+          rgba(52, 211, 153, .5),
+          rgba(56, 189, 248, .0));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: .35;
+      filter: blur(.6px);
+      animation: sparkle-spin 6s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .reader-card::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 18px;
+      background:
+        radial-gradient(6px 6px at 12% 18%, rgba(251, 191, 36, .85), rgba(251, 191, 36, 0) 60%),
+        radial-gradient(5px 5px at 82% 16%, rgba(56, 189, 248, .75), rgba(56, 189, 248, 0) 60%),
+        radial-gradient(4px 4px at 18% 84%, rgba(167, 139, 250, .7), rgba(167, 139, 250, 0) 60%),
+        radial-gradient(5px 5px at 86% 76%, rgba(52, 211, 153, .75), rgba(52, 211, 153, 0) 60%);
+      opacity: .2;
+      animation: sparkle-twinkle 2.8s ease-in-out infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .reader-code {
+      font-size: .78rem;
+      color: var(--muted);
+      letter-spacing: .35px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .reader-card h3 {
+      margin: 6px 0 6px;
+      font-size: 1.05rem;
+    }
+
+    .reader-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .reader-card p + p {
+      margin-top: 6px;
+    }
+
+    .reader-emphasis {
+      font-size: calc(1em + 8px);
+      font-weight: 750;
+      color: var(--ink);
+    }
+
+    @keyframes sparkle-spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes sparkle-twinkle {
+      0%,
+      100% {
+        opacity: .15;
+        filter: blur(0px);
+      }
+      50% {
+        opacity: .5;
+        filter: blur(.5px);
+      }
+    }
+
+    .reader-card:hover::before {
+      opacity: .7;
+    }
+
+    .reader-card:hover::after {
+      opacity: .55;
+    }
+
+    #chunkBody p {
+      font-family: "Apercu Light", "Apercu", "Aperchu Light", "Aperchu", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-weight: 300;
+    }
+
+    /* Reading font size (LEFT card only) */
+    .chunk.reading-sm #chunkBody {
+      font-size: 0.98rem;
+    }
+
+    .chunk.reading-md #chunkBody {
+      font-size: 1.05rem;
+    }
+
+    .chunk.reading-lg #chunkBody {
+      font-size: 1.15rem;
+    }
+
+    .chunk.reading-xl #chunkBody {
+      font-size: 1.28rem;
+    }
+
+    .chunk.reading-sm #chunkBody p,
+    .chunk.reading-sm #chunkBody li {
+      font-size: 0.98rem;
+    }
+
+    .chunk.reading-md #chunkBody p,
+    .chunk.reading-md #chunkBody li {
+      font-size: 1.05rem;
+    }
+
+    .chunk.reading-lg #chunkBody p,
+    .chunk.reading-lg #chunkBody li {
+      font-size: 1.15rem;
+    }
+
+    .chunk.reading-xl #chunkBody p,
+    .chunk.reading-xl #chunkBody li {
+      font-size: 1.28rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .06);
+      color: var(--ink);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 650;
+      letter-spacing: .2px;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, .09);
+      border-color: rgba(255, 255, 255, .22);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      border-color: rgba(56, 189, 248, .35);
+      background: rgba(56, 189, 248, .12);
+    }
+
+    .btn-primary:hover {
+      background: rgba(56, 189, 248, .16);
+    }
+
+    .btn-secondary {
+      border-color: rgba(167, 139, 250, .35);
+      background: rgba(167, 139, 250, .12);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(167, 139, 250, .16);
+    }
+
+    .btn-hint {
+      border-color: rgba(251, 191, 36, .35);
+      background: rgba(251, 191, 36, .10);
+    }
+
+    .btn-hint:hover {
+      background: rgba(251, 191, 36, .14);
+    }
+
+    .progress {
+      font-size: .92rem;
+      color: var(--muted);
+    }
+
+    .say-popover {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      width: min(360px, 90vw);
+      background: rgba(17, 24, 39, .98);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 18px 30px rgba(0, 0, 0, .35);
+      display: none;
+      z-index: 5;
+    }
+
+    .say-popover.show {
+      display: block;
+      animation: say-pop .16s ease;
+    }
+
+    .say-popover::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      right: 26px;
+      border: 10px solid transparent;
+      border-bottom-color: rgba(17, 24, 39, .98);
+    }
+
+    .say-title {
+      font-weight: 800;
+      margin-bottom: 6px;
+      font-size: 1.5em;
+    }
+
+    .say-stems {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      display: grid;
+      gap: 6px;
+    }
+
+    .say-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    body[data-theme="light"] .say-popover {
+      background: rgba(255, 255, 255, .98);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, .15);
+    }
+
+    body[data-theme="light"] .say-popover::before {
+      border-bottom-color: rgba(255, 255, 255, .98);
+    }
+
+    @keyframes say-pop {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Right side */
+    .panel h3 {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+    }
+
+    .chunk-title .pill {
+      font-size: .86rem;
+    }
+
+    .chunk-title {
+      margin-bottom: 10px;
+    }
+
+    .box {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .next-task {
+      border-left: 4px solid rgba(56, 189, 248, .6);
+    }
+
+    .next-task strong {
+      color: var(--accent);
+    }
+
+    .hints {
+      border-left: 4px solid rgba(251, 191, 36, .7);
+      display: none;
+    }
+
+    .hints strong {
+      color: var(--warn);
+    }
+
+    .rules {
+      border-left: 4px solid rgba(52, 211, 153, .6);
+    }
+
+    .rules strong {
+      color: var(--good);
+    }
+
+    /* Vocab */
+    .vocab {
+      color: var(--accent);
+      font-weight: 750;
+      cursor: pointer;
+      border-bottom: 1px dotted rgba(56, 189, 248, .7);
+      padding: 0 2px;
+      border-radius: 6px;
+      transition: background .15s ease, box-shadow .15s ease, transform .05s ease;
+    }
+
+    .vocab:hover {
+      background: rgba(56, 189, 248, .12);
+    }
+
+    .vocab:active {
+      transform: translateY(1px);
+    }
+
+    .vocab:focus {
+      outline: none;
+    }
+
+    .vocab:focus-visible {
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, .4);
+    }
+
+    .vocab.vocab-active {
+      background: rgba(56, 189, 248, .18);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, .35);
+    }
+
+    .vocab.vocab-selected {
+      background: rgba(56, 189, 248, .22);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, .55);
+    }
+
+    .vocab-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .vocab-items {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      max-height: 320px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+
+    .vocab-item {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, .05);
+      color: var(--ink);
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .vocab-item:hover {
+      background: rgba(56, 189, 248, .12);
+    }
+
+    .vocab-item.active {
+      border-color: rgba(56, 189, 248, .6);
+      background: rgba(56, 189, 248, .18);
+    }
+
+    .vocab-def {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(255, 255, 255, .03);
+      min-height: 120px;
+    }
+
+    .vocab-def strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .vocab-def .muted {
+      color: var(--muted);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 16px;
+      z-index: 50;
+    }
+
+    .modal {
+      max-width: 640px;
+      width: 100%;
+      max-height: calc(100vh - 48px);
+      display: flex;
+      flex-direction: column;
+      background: rgba(17, 24, 39, .96);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+      padding: 16px 16px 12px;
+    }
+
+    .modal h4 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+    }
+
+    .modal p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+
+    .modal .row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .modal-body {
+      overflow: auto;
+      min-height: 0;
+      padding-right: 4px;
+    }
+
+    /* Early finisher */
+    .finisher-wrap {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      display: none;
+    }
+
+    .finisher-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .finisher-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+
+    .finisher-tab {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .05);
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .finisher-tab.active {
+      color: var(--ink);
+      border-color: rgba(56, 189, 248, .35);
+      background: rgba(56, 189, 248, .12);
+    }
+
+    .finisher-panel {
+      display: none;
+    }
+
+    .finisher-panel.active {
+      display: block;
+    }
+
+    .img-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .img-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .03);
+      padding: 10px;
+      position: relative;
+    }
+
+    .img-card h4 {
+      margin: 0 0 6px;
+      font-size: .98rem;
+    }
+
+    .img-card img {
+      width: 100%;
+      max-height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .03);
+      cursor: zoom-in;
+      transition: max-height .2s ease, transform .2s ease;
+    }
+
+    .img-card.expanded img {
+      max-height: 260px;
+      transform: scale(1.01);
+      cursor: zoom-out;
+    }
+
+    .img-card .img-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, .5);
+      color: var(--ink);
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .img-card.expanded .img-close {
+      display: inline-flex;
+    }
+
+    .img-card p {
+      margin: 8px 0 8px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .line-fill {
+      margin-top: 6px;
+      color: var(--muted);
+    }
+
+    .blank {
+      display: inline-block;
+      min-width: 160px;
+      border-bottom: 2px solid rgba(255, 255, 255, .22);
+      transform: translateY(-1px);
+    }
+
+    .quiz-q {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(255, 255, 255, .03);
+      margin-top: 10px;
+    }
+
+    .quiz-q .q {
+      font-weight: 800;
+    }
+
+    .quiz-opts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .quiz-opt {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, .05);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .quiz-opt:hover {
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .quiz-opt.correct {
+      border-color: rgba(52, 211, 153, .55);
+      background: rgba(52, 211, 153, .16);
+    }
+
+    .quiz-opt.wrong {
+      border-color: rgba(251, 113, 133, .55);
+      background: rgba(251, 113, 133, .14);
+    }
+
+    @media (max-width: 940px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .img-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .reader-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div>
+      <h1 id="headerTitle">Aztec Reader — Say Something</h1>
+      <div class="sub" id="headerSub">Aztec Politics Say Something — <span class="reader-emphasis">Aztec Life - Social Structure</span></div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button id="btnTheme" type="button" class="btn-secondary" aria-label="Toggle light/dark mode">Bright Mode</button>
+      <div class="progress" id="progressText">Slide 1 of 8</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- LEFT: Reading chunk -->
+    <section class="card chunk reading-md" aria-live="polite">
+      <div class="chunk-title">
+        <span class="pill accent" id="unitTag">Civilization: The Aztec</span>
+        <span class="pill violet" id="chunkTag">Paragraph 1</span>
+        <span class="pill" id="skillTag">Say Something</span>
+        <span class="pill good" id="sourceTag">Info Source: Aztec Politics + Social Structure</span>
+      </div>
+
+      <h2 id="chunkTitle">Loading...</h2>
+      <div id="chunkBody"></div>
+
+      <div class="controls">
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn-secondary" id="btnPrev" type="button">← Back</button>
+          <button class="btn-primary" id="btnNext" type="button">Next →</button>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button class="btn-hint" id="btnHint" type="button">Hint</button>
+          <button id="btnVocab" type="button">Vocab List</button>
+          <button id="btnSpanish" type="button" class="btn-secondary">Spanish Helper (ELL)</button>
+          <span style="width:1px; height:22px; background: var(--line); display:inline-block;"></span>
+          <span style="color:var(--muted); font-size:.92rem;">Reading size:</span>
+          <button id="btnFontSm" type="button" aria-label="Smaller reading text">A-</button>
+          <button id="btnFontMd" type="button" aria-label="Default reading text">A</button>
+          <button id="btnFontLg" type="button" aria-label="Larger reading text">A+</button>
+          <button id="btnFontXl" type="button" aria-label="Extra large reading text">A++</button>
+        </div>
+        <div class="say-popover" id="sayPopover" aria-hidden="true" role="dialog">
+          <div class="say-title">Before you go... <em>say something to your partner!</em></div>
+          <div style="color:var(--muted); font-size:.92rem;">Try one of these stems:</div>
+          <ul class="say-stems" id="sayStems"></ul>
+          <div class="say-actions">
+            <button type="button" id="sayLater">Not yet</button>
+            <button type="button" id="sayContinue" class="btn-primary">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Early finisher: only appears on final chunk -->
+      <div class="finisher-wrap" id="finisherWrap">
+        <div class="finisher-head">
+          <div>
+            <span class="pill warn">Early Finisher (Optional)</span>
+            <span class="pill">Pick ONE</span>
+          </div>
+          <button id="btnFinisherToggle" type="button" class="btn-secondary">Open Choice Board</button>
+        </div>
+
+        <div class="finisher-tabs" id="finisherTabs">
+          <div class="finisher-tab active" data-finisher-tab="match">Vocab Quick Match</div>
+          <div class="finisher-tab" data-finisher-tab="compare">1‑Min Compare</div>
+        </div>
+
+        <div class="finisher-panel active" data-finisher-panel="match">
+          <div style="color:var(--muted); margin-top:6px;">Tap an answer. It will check itself.</div>
+          <div id="finisherQuiz"></div>
+        </div>
+
+        <div class="finisher-panel" data-finisher-panel="compare">
+          <div class="quiz-q" style="margin-top:10px;">
+            <div class="q">Pick TWO ideas from your reader. Write one key detail for each, then explain why it mattered.</div>
+            <div style="margin-top:10px; color:var(--muted);">
+              Key detail #1: <span class="blank" style="min-width: 260px;"></span>
+            </div>
+            <div style="margin-top:10px; color:var(--muted);">
+              Key detail #2: <span class="blank" style="min-width: 300px;"></span>
+            </div>
+            <div style="margin-top:10px; color:var(--muted);">
+              Why it mattered: <span class="blank" style="min-width: 320px;"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT: worksheet directions + hints -->
+    <aside class="card panel">
+      <h3>Worksheet Checkpoint</h3>
+
+      <div class="box rules">
+        <strong>Rules</strong>
+        <div style="color:var(--muted); margin-top:6px;">
+          <div>✅ Every answer should match the reading.</div>
+          <div>✅ Use <b>evidence</b> when the worksheet asks for it (copy 4–6 words from the slide).</div>
+          <div>✅ If stuck: re-read → ask partner → raise hand.</div>
+        </div>
+      </div>
+
+      <div class="box next-task" id="nextTaskBox">
+        <strong>After reading, do this now:</strong>
+        <div id="nextTaskText" style="color:var(--muted); margin-top:6px;">
+          Before you click Next, use a Say Something stem with your partner.
+        </div>
+      </div>
+
+      <div class="box hints" id="hintsBox">
+        <strong>Hint</strong>
+        <div id="hintsText" style="color:var(--muted); margin-top:6px;"></div>
+      </div>
+
+      <div class="box">
+        <strong>Reading Targets</strong>
+        <div style="color:var(--muted); margin-top:6px;">
+          <div>• The Aztec built <b>Tenochtitlan</b> on <b>Lake Texcoco</b> and it became a major trade center.</div>
+          <div>• Emperors claimed divine descent and were chosen by a council of priests, nobles, and warriors.</div>
+          <div>• The Aztec Empire fell when the Spanish captured Tenochtitlan in <b>1521</b>.</div>
+          <div>• Society had four classes: nobles, commoners, unskilled workers, and enslaved people.</div>
+          <div>• Priests preserved history and used <b>260-day</b> and <b>365-day</b> calendars for ceremonies and farming.</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Modal for vocab -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-label="Vocabulary definition">
+    <div class="modal">
+      <h4 id="modalTitle">Vocabulary</h4>
+      <div id="modalText" class="modal-body"></div>
+      <div class="row">
+        <button id="modalClose" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Vocab bank (clickable words) ---
+    const VOCAB = {
+      "aztec": "A powerful civilization in central Mexico.",
+      "empire": "A large region ruled by one leader or government.",
+      "emperor": "The main ruler of an empire.",
+      "council": "A group that advises or chooses leaders.",
+      "city-states": "Independent cities with their own rulers and rules.",
+      "tenochtitlan": "The Aztec capital city, built on an island in Lake Texcoco.",
+      "lake texcoco": "The lake where the Aztec built their capital.",
+      "trade routes": "Paths used to move goods between places.",
+      "commoners": "Ordinary people without noble titles.",
+      "tlatoani": "The Aztec ruler or emperor.",
+      "tribute": "A tax of goods paid to a stronger power.",
+      "nobles": "Upper-class people with wealth and power.",
+      "warriors": "Soldiers who fought for the empire.",
+      "priests": "Religious leaders who led ceremonies.",
+      "merchants": "People who trade goods.",
+      "artisans": "Skilled workers who make goods by hand.",
+      "farmers": "People who grow food.",
+      "enslaved people": "People forced to work with few rights.",
+      "conquistador": "A Spanish soldier and explorer who conquered lands.",
+      "afterlife": "Life after death, according to a belief.",
+      "irrigating": "Adding water to land to help crops grow.",
+      "fertilizing": "Adding nutrients to soil to help crops grow.",
+      "quetzalcoatl": "An Aztec god known as the feathered serpent.",
+      "feathered serpent": "A symbol for the god Quetzalcoatl.",
+      "temples": "Buildings used for worship.",
+      "palaces": "Large homes of rulers and nobles.",
+      "mesoamerica": "A region in southern Mexico and Central America.",
+      "calendar": "A system for tracking time and ceremonies.",
+      "human sacrifice": "A religious ceremony where a person was offered to the gods.",
+      "human sacrifices": "Religious ceremonies where people were offered to the gods.",
+      "social classes": "Groups of people with different levels of power and wealth.",
+      "pyramid": "A shape used to show levels, from top (few) to bottom (many).",
+      "descendant": "Someone in a family line (child, grandchild, etc.).",
+      "sun god": "A powerful god many Aztecs connected to their ruler.",
+      "ceremony": "A formal event done for religious reasons."
+    };
+
+    function vocabify(text) {
+      const keys = Object.keys(VOCAB).sort((a, b) => b.length - a.length);
+      let out = text;
+      keys.forEach(k => {
+        const safe = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp(`\\b${safe}\\b`, "gi");
+        out = out.replace(re, (match) => `<span class="vocab" data-vocab="${k.toLowerCase()}">${match}</span>`);
+      });
+      return out;
+    }
+
+    // --- Spanish Helper (ELL scaffold) ---
+    const SPANISH_HELP = {
+      intro: {
+        enTitle: "Spanish Helper (ELL Support)",
+        en: [
+          "You do NOT need to translate everything.",
+          "Read one sentence at a time. Circle key words.",
+          "Use the stems to write in English, then check the Spanish hint if stuck.",
+          "Best study move: say the answer out loud, then write it."
+        ],
+        es: [
+          "No necesitas traducir todo.",
+          "Lee una oración a la vez. Encierra palabras clave.",
+          "Usa los marcos de oración en inglés, y revisa la pista en español si te atoras.",
+          "Mejor forma de estudiar: di la respuesta en voz alta y luego escríbela."
+        ]
+      },
+      starters: {
+        enTitle: "Sentence Starters (English → Spanish hint)",
+        items: [
+          { en: "The Aztec built their capital in…", es: "Los aztecas construyeron su capital en…" },
+          { en: "The emperor was chosen by…", es: "El emperador fue elegido por…" },
+          { en: "Aztec society had four classes…", es: "La sociedad azteca tenía cuatro clases…" },
+          { en: "Priests were important because…", es: "Los sacerdotes eran importantes porque…" },
+          { en: "The Aztec Empire ended when…", es: "El Imperio azteca terminó cuando…" }
+        ]
+      },
+      keyWords: {
+        enTitle: "Key Words (Don’t translate the whole paragraph)",
+        items: [
+          { en: "capital", es: "capital" },
+          { en: "empire", es: "imperio" },
+          { en: "emperor", es: "emperador" },
+          { en: "council", es: "consejo" },
+          { en: "conquered", es: "conquistado" },
+          { en: "classes", es: "clases sociales" },
+          { en: "priests", es: "sacerdotes" },
+          { en: "calendar", es: "calendario" },
+          { en: "trade", es: "comercio" },
+          { en: "tribute", es: "tributo / impuesto" },
+          { en: "enslaved people", es: "personas esclavizadas" }
+        ]
+      },
+      studyTips: {
+        enTitle: "Study Tips (English + Social Studies)",
+        tips: [
+          { en: "Find where the capital was built.", es: "Encuentra dónde se construyó la capital." },
+          { en: "Find who chose the emperor.", es: "Encuentra quién eligió al emperador." },
+          { en: "Look for social groups (top → bottom).", es: "Busca los grupos sociales (arriba → abajo)." },
+          { en: "Find the detail about how the empire ended.", es: "Encuentra el detalle de cómo terminó el imperio." }
+        ]
+      }
+    };
+    const READING_META = {
+      title: "Aztec Politics Say Something",
+      subtitle: "Aztec Life - Social Structure",
+      source: "Aztec Politics + Social Structure"
+    };
+
+    const CHUNKS = [
+      {
+        tag: "Paragraph 1",
+        skill: "Origins + City",
+        title: "From Migration to Tenochtitlan",
+        body: `
+            <p>${vocabify(
+              "The early Aztecs were hunters and warriors. For many years, they searched for a home they believed had been promised to them by their sun god. The Aztec priests declared that their gods demanded they build a great city on a swampy island in Lake Texcoco. For the next 100 years, Aztec workers built the wondrous city of Tenochtitlan. They built temples, palaces, and homes. This city eventually became the largest city in Mesoamerica. It was the center of a web of trade routes that reached throughout Mexico."
+            )}</p>
+          `,
+        sayStems: [
+          "I notice the Aztecs built Tenochtitlan on ____. ",
+          "One detail that stands out is ____ because ____. ",
+          "Why do you think they chose a swampy island for their city?"
+        ]
+      },
+      {
+        tag: "Paragraph 2",
+        skill: "Leadership + Empire",
+        title: "Emperors and Expansion",
+        body: `
+            <p>${vocabify(
+              "The Aztecs relied on strong emperors who claimed to be descended from the gods. A council of priests, nobles, and warriors usually named a new emperor from the ruling family. Council members wanted someone skilled in warfare who could lead troops into battle. Aztec armies with strong warriors conquered much of what is today Mexico. The new empire was a collection of territories that were governed by local leaders that were loyal to the emperor."
+            )}</p>
+          `,
+        sayStems: [
+          "The emperor was chosen by ____. ",
+          "This paragraph shows power came from ____. ",
+          "How did warfare help the Aztecs control territory?"
+        ]
+      },
+      {
+        tag: "Paragraph 3",
+        skill: "Conquest",
+        title: "The Spanish Conquest",
+        body: `
+            <p>${vocabify(
+              "Despite the Aztecs' strength and strong army, they were eventually conquered by the Spanish. Invaders led by the Spanish conquistador Hernan Cortes overthrew the Aztec Empire by force and captured Tenochtitlan in 1521, bringing an end to Mesoamerica's last great native civilization."
+            )}</p>
+          `,
+        sayStems: [
+          "Even with a strong army, the Aztecs were defeated by ____. ",
+          "I wonder how the Spanish captured Tenochtitlan in 1521. ",
+          "This makes me think about what happens when ____."
+        ]
+      },
+      {
+        tag: "Paragraph 4",
+        skill: "Social Classes",
+        title: "Aztec Social Structure",
+        body: `
+            <p>${vocabify(
+              "The emperor was at the top of Aztec society. There were four classes of people under the emperor. These were nobles, commoners, unskilled workers, and enslaved people. Most of the Aztecs were commoners, who worked as farmers, artisans, or merchants."
+            )}</p>
+          `,
+        sayStems: [
+          "The four classes were ____. ",
+          "Most Aztecs were ____ who worked as ____. ",
+          "Why do you think societies create social classes?"
+        ]
+      },
+      {
+        tag: "Paragraph 5",
+        skill: "Gender Roles",
+        title: "Roles of Men and Women",
+        body: `
+            <p>${vocabify(
+              "From an early age, boys in Aztec society were taught to be warriors. Girls were trained to work at home, weave cloth, and prepare for motherhood. Although not equal to men, Aztec women could own and inherit property."
+            )}</p>
+          `,
+        sayStems: [
+          "Boys were trained to ____ while girls were trained to ____. ",
+          "It stands out that Aztec women could ____. ",
+          "What might be the effects of these roles on daily life?"
+        ]
+      },
+      {
+        tag: "Paragraph 6",
+        skill: "Religion + Sacrifice",
+        title: "Priests and Sacrifice",
+        body: `
+            <p>${vocabify(
+              "Priests played an important role in Aztec society. Some sacrificed captives to please the gods. Death was considered honorable. The Aztec believed that those sacrificed would be rewarded in the afterlife."
+            )}</p>
+          `,
+        sayStems: [
+          "Priests were important because ____. ",
+          "I notice the Aztecs believed sacrifice was ____. ",
+          "Why would people accept sacrifice as honorable?"
+        ]
+      },
+      {
+        tag: "Paragraph 7",
+        skill: "Calendars + Records",
+        title: "Calendars and Record-Keeping",
+        body: `
+            <p>${vocabify(
+              "Aztec priests also worked to preserve the religion, history, and literature of their people. Priests recorded these in books that historians still refer to today. Like the Maya, the Aztec developed two different calendars. They used a religious calendar with 260 days to keep track of important ceremonies and festivals. They also had a 365-day calendar for everyday use and for marking the time for planting and harvesting crops."
+            )}</p>
+          `,
+        sayStems: [
+          "Priests kept records and calendars to ____. ",
+          "I notice there were two calendars: ____ and ____. ",
+          "How might calendars help a society organize time?"
+        ]
+      },
+      {
+        tag: "Paragraph 8",
+        skill: "Farming + Trade",
+        title: "Farming, Trade, and Wealth",
+        body: `
+            <p>${vocabify(
+              "Much of Mexico was not suited for farming. The Aztec overcame this difficulty by irrigating and fertilizing the land. Aztec crafts, as well as fruit, vegetables, and grain from Aztec farms, passed through markets and along trade routes. The trade in these goods and the tribute from conquered peoples helped make the Aztec Empire wealthy."
+            )}</p>
+          `,
+        sayStems: [
+          "The Aztecs overcame farming challenges by ____. ",
+          "Trade and tribute helped make the empire ____. ",
+          "Why are trade routes important for an empire?"
+        ]
+      }
+    ];
+
+    const DEFAULT_NEXT_TASK = "Before you click Next, use a Say Something stem with your partner.";
+
+    // --- Early finisher quiz bank ---
+// --- Early finisher quiz bank ---
+    const FINISHER_QUIZ = [
+      {
+        q: "Tenochtitlan was…",
+        correct: "A city built on an island in Lake Texcoco",
+        wrong: ["A small farming village", "A city in South America"]
+      },
+      {
+        q: "Aztec emperors were chosen by…",
+        correct: "A council of priests, nobles, and warriors",
+        wrong: ["Foreign kings", "A group of merchants"]
+      },
+      {
+        q: "The Aztec Empire ended when…",
+        correct: "The Spanish captured Tenochtitlan in 1521",
+        wrong: ["The Aztec abandoned their capital", "A drought destroyed the city"]
+      },
+      {
+        q: "Aztec society had four classes:",
+        correct: "Nobles, commoners, unskilled workers, and enslaved people",
+        wrong: ["Only nobles and priests", "Warriors, farmers, merchants, and kings"]
+      },
+      {
+        q: "Aztec priests used two calendars:",
+        correct: "A 260-day religious calendar and a 365-day calendar",
+        wrong: ["A 100-day calendar and a 200-day calendar", "Only a 365-day calendar"]
+      }
+    ];
+
+    // --- UI State ---
+    let idx = 0;
+
+    const elTitle = document.getElementById("chunkTitle");
+    const elBody = document.getElementById("chunkBody");
+    const elProgress = document.getElementById("progressText");
+    const elChunkTag = document.getElementById("chunkTag");
+    const elSkillTag = document.getElementById("skillTag");
+    const elNextTaskText = document.getElementById("nextTaskText");
+    const elHintsBox = document.getElementById("hintsBox");
+    const elHintsText = document.getElementById("hintsText");
+    const elUnitTag = document.getElementById("unitTag");
+    const elSourceTag = document.getElementById("sourceTag");
+    const elHeaderSub = document.getElementById("headerSub");
+
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnHint = document.getElementById("btnHint");
+    const btnVocab = document.getElementById("btnVocab");
+    const btnSpanish = document.getElementById("btnSpanish");
+    const btnFontSm = document.getElementById("btnFontSm");
+    const btnFontMd = document.getElementById("btnFontMd");
+    const btnFontLg = document.getElementById("btnFontLg");
+    const btnFontXl = document.getElementById("btnFontXl");
+    const sayPopover = document.getElementById("sayPopover");
+    const sayStems = document.getElementById("sayStems");
+    const sayContinue = document.getElementById("sayContinue");
+    const sayLater = document.getElementById("sayLater");
+
+    // Early finisher elements
+    const finisherWrap = document.getElementById("finisherWrap");
+    const btnFinisherToggle = document.getElementById("btnFinisherToggle");
+    const finisherTabs = document.getElementById("finisherTabs");
+    const finisherQuiz = document.getElementById("finisherQuiz");
+
+    // Modal
+    const backdrop = document.getElementById("modalBackdrop");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+    const modalClose = document.getElementById("modalClose");
+
+    // Theme toggle (dark/light)
+    const btnTheme = document.getElementById("btnTheme");
+
+    function applyTheme(theme) {
+      const t = theme === "light" ? "light" : "dark";
+      document.body.setAttribute("data-theme", t);
+      if (btnTheme) btnTheme.textContent = (t === "light") ? "Dark Mode" : "Bright Mode";
+      try { localStorage.setItem("eaIntroTheme", t); } catch (e) {}
+    }
+
+    function loadTheme() {
+      let saved = "dark";
+      try { saved = localStorage.getItem("eaIntroTheme") || "dark"; } catch (e) {}
+      applyTheme(saved);
+    }
+
+    function applyReadingMeta() {
+      if (elUnitTag) elUnitTag.textContent = "Civilization: The Aztec";
+      if (elHeaderSub) elHeaderSub.innerHTML = `${READING_META.title} — <span class="reader-emphasis">${READING_META.subtitle}</span>`;
+      if (elSourceTag) elSourceTag.textContent = `Info Source: ${READING_META.source}`;
+    }
+
+    function buildSayStems(stems) {
+      if (!sayStems) return;
+      const items = (stems && stems.length) ? stems : [
+        "I notice ____.",
+        "I wonder ____.",
+        "This makes me think ____."
+      ];
+      sayStems.innerHTML = items.map(item => `<li>${item}</li>`).join("");
+    }
+
+    function openSayPopover() {
+      if (!sayPopover) return;
+      sayPopover.classList.add("show");
+      sayPopover.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSayPopover() {
+      if (!sayPopover) return;
+      sayPopover.classList.remove("show");
+      sayPopover.setAttribute("aria-hidden", "true");
+    }
+
+    function render() {
+      const c = CHUNKS[idx];
+      if (!c) return;
+
+      applyReadingMeta();
+      elTitle.textContent = c.title;
+      elBody.innerHTML = c.body;
+      elProgress.textContent = `Slide ${idx + 1} of ${CHUNKS.length}`;
+      elChunkTag.textContent = c.tag || `Paragraph ${idx + 1}`;
+      elSkillTag.textContent = `Focus: ${c.skill}`;
+      elNextTaskText.innerHTML = DEFAULT_NEXT_TASK;
+
+      // Hide hints by default each chunk
+      elHintsBox.style.display = "none";
+      elHintsText.textContent = c.hint || "";
+
+      // Buttons
+      btnPrev.disabled = (idx === 0);
+      btnNext.disabled = (idx === CHUNKS.length - 1);
+      if (btnHint) btnHint.disabled = false;
+      if (btnVocab) btnVocab.disabled = false;
+      if (btnSpanish) btnSpanish.disabled = false;
+      if (btnFontSm) btnFontSm.disabled = false;
+      if (btnFontMd) btnFontMd.disabled = false;
+      if (btnFontLg) btnFontLg.disabled = false;
+      if (btnFontXl) btnFontXl.disabled = false;
+      if (sayContinue) sayContinue.disabled = (idx === CHUNKS.length - 1);
+
+      // Say Something stems
+      buildSayStems(c.sayStems);
+      closeSayPopover();
+
+      // Show early finisher ONLY on final slide
+      const isFinal = idx === CHUNKS.length - 1;
+      const hasFinisher = FINISHER_QUIZ.length > 0;
+      if (finisherWrap) finisherWrap.style.display = (isFinal && hasFinisher) ? "block" : "none";
+
+      // If final chunk, ensure quiz is rendered once
+      if (isFinal && hasFinisher) {
+        renderFinisherQuiz();
+      }
+
+      // Attach vocab click listeners
+      document.querySelectorAll(".vocab").forEach(span => {
+        span.setAttribute("tabindex", "0");
+        span.setAttribute("role", "button");
+        span.setAttribute("aria-pressed", "false");
+        const spanKey = (span.getAttribute("data-vocab") || "").toLowerCase();
+        if (VOCAB[spanKey]) span.setAttribute("title", VOCAB[spanKey]);
+
+        const activate = () => {
+          document.querySelectorAll(".vocab.vocab-active").forEach(el => el.classList.remove("vocab-active"));
+          document.querySelectorAll(".vocab.vocab-selected").forEach(el => {
+            el.classList.remove("vocab-selected");
+            el.setAttribute("aria-pressed", "false");
+          });
+          span.classList.add("vocab-active");
+          span.classList.add("vocab-selected");
+          span.setAttribute("aria-pressed", "true");
+          setTimeout(() => span.classList.remove("vocab-active"), 650);
+
+          const key = (span.getAttribute("data-vocab") || "").toLowerCase();
+          showVocab(key, span.textContent);
+        };
+
+        span.addEventListener("click", activate);
+        span.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            activate();
+          }
+        });
+      });
+
+      // Bind image expand/close for any slide content that includes images
+      bindImageCardInteractions(document);
+    }
+
+    // --- Reading font size controls (LEFT reading only) ---
+    const SIZE_CLASS = { sm: "reading-sm", md: "reading-md", lg: "reading-lg", xl: "reading-xl" };
+
+    function setReadingSize(size) {
+      const chunkEl = document.querySelector("section.card.chunk");
+      if (!chunkEl) return;
+      Object.values(SIZE_CLASS).forEach(cls => chunkEl.classList.remove(cls));
+      const cls = SIZE_CLASS[size] || SIZE_CLASS.md;
+      chunkEl.classList.add(cls);
+      try { localStorage.setItem("eaIntroReadingSize", size); } catch (e) { }
+    }
+
+    function loadReadingSize() {
+      let size = "md";
+      try { size = localStorage.getItem("eaIntroReadingSize") || "md"; } catch (e) { }
+      setReadingSize(size);
+    }
+
+    function showVocab(key, displayWord) {
+      const def = VOCAB[key] || VOCAB[displayWord.toLowerCase()] || "Definition not found.";
+      modalTitle.textContent = displayWord;
+      modalText.innerHTML = `<div class="vocab-def"><strong>${displayWord}</strong><div class="muted">${def}</div></div>`;
+      modalText.style.whiteSpace = "normal";
+      backdrop.style.display = "flex";
+    }
+
+    function closeModal() { backdrop.style.display = "none"; }
+
+    btnPrev.addEventListener("click", () => {
+      if (idx > 0) {
+        idx--;
+        render();
+      }
+    });
+    btnNext.addEventListener("click", () => {
+      if (idx >= CHUNKS.length - 1) return;
+      openSayPopover();
+    });
+
+    if (sayContinue) {
+      sayContinue.addEventListener("click", () => {
+        if (idx >= CHUNKS.length - 1) {
+          closeSayPopover();
+          return;
+        }
+        closeSayPopover();
+        idx++;
+        render();
+      });
+    }
+
+    if (sayLater) {
+      sayLater.addEventListener("click", closeSayPopover);
+    }
+
+    btnHint.addEventListener("click", () => {
+      const c = CHUNKS[idx];
+      elHintsText.textContent = c.hint || "Re-read the chunk and look for key vocabulary words.";
+      elHintsBox.style.display = (elHintsBox.style.display === "none") ? "block" : "none";
+    });
+
+    btnVocab.addEventListener("click", () => {
+      modalTitle.textContent = "Vocab List";
+      const entries = Object.entries(VOCAB).sort((a, b) => a[0].localeCompare(b[0]));
+      const listHtml = entries.map(([k]) => (
+        `<button type="button" class="vocab-item" data-vocab="${k}">${k.toUpperCase()}</button>`
+      )).join("");
+      const first = entries[0];
+      modalText.innerHTML = `
+      <div class="vocab-list">
+        <div class="vocab-items" id="vocabItems">${listHtml}</div>
+        <div class="vocab-def" id="vocabDef">
+          <strong>${first ? first[0].toUpperCase() : "Term"}</strong>
+          <div class="muted">${first ? first[1] : "Definition not found."}</div>
+        </div>
+      </div>
+    `;
+      const items = modalText.querySelectorAll(".vocab-item");
+      items.forEach((btn, i) => {
+        if (i === 0) btn.classList.add("active");
+        btn.addEventListener("click", () => {
+          items.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          const key = (btn.getAttribute("data-vocab") || "").toLowerCase();
+          const def = VOCAB[key] || "Definition not found.";
+          const defBox = modalText.querySelector("#vocabDef");
+          if (defBox) {
+            defBox.innerHTML = `<strong>${key.toUpperCase()}</strong><div class="muted">${def}</div>`;
+          }
+        });
+      });
+      modalText.style.whiteSpace = "normal";
+      backdrop.style.display = "flex";
+    });
+
+    btnFontSm.addEventListener("click", () => setReadingSize("sm"));
+    btnFontMd.addEventListener("click", () => setReadingSize("md"));
+    btnFontLg.addEventListener("click", () => setReadingSize("lg"));
+    btnFontXl.addEventListener("click", () => setReadingSize("xl"));
+
+    if (btnSpanish) {
+      btnSpanish.addEventListener("click", () => {
+        modalTitle.textContent = SPANISH_HELP.intro.enTitle;
+
+        const introEn = SPANISH_HELP.intro.en.map(t => `<li>${t}</li>`).join("");
+        const introEs = SPANISH_HELP.intro.es.map(t => `<li>${t}</li>`).join("");
+
+        const starters = SPANISH_HELP.starters.items
+          .map(s => `<div style="margin:8px 0;"><b>${s.en}</b><div class="muted">${s.es}</div></div>`)
+          .join("");
+
+        const words = SPANISH_HELP.keyWords.items
+          .map(w => `<div style=\"display:flex; justify-content:space-between; gap:12px; padding:6px 0; border-bottom:1px solid var(--line);\"><span><b>${w.en}</b></span><span class=\"muted\">${w.es}</span></div>`)
+          .join("");
+
+        const tips = SPANISH_HELP.studyTips.tips
+          .map(t => `<div style="margin:8px 0;"><b>${t.en}</b><div class="muted">${t.es}</div></div>`)
+          .join("");
+
+        modalText.innerHTML = `
+          <div class="vocab-def" style="min-height:auto;">
+            <strong>Quick help (English)</strong>
+            <ul style="margin:8px 0 10px; padding-left:18px;">${introEn}</ul>
+            <strong>Ayuda rápida (Español)</strong>
+            <ul style="margin:8px 0 0; padding-left:18px;">${introEs}</ul>
+          </div>
+
+          <div class="vocab-def" style="min-height:auto; margin-top:12px;">
+            <strong>${SPANISH_HELP.starters.enTitle}</strong>
+            <div class="muted" style="margin-top:6px;">Use the English sentence starter, then check the Spanish hint.</div>
+            ${starters}
+          </div>
+
+          <div class="vocab-def" style="min-height:auto; margin-top:12px;">
+            <strong>${SPANISH_HELP.keyWords.enTitle}</strong>
+            <div class="muted" style="margin-top:6px;">Look for these words first. Then read the sentence again.</div>
+            ${words}
+          </div>
+
+          <div class="vocab-def" style="min-height:auto; margin-top:12px;">
+            <strong>${SPANISH_HELP.studyTips.enTitle}</strong>
+            ${tips}
+          </div>
+        `;
+
+        modalText.style.whiteSpace = "normal";
+        backdrop.style.display = "flex";
+      });
+    }
+
+    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeModal(); });
+    modalClose.addEventListener("click", closeModal);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+        closeSayPopover();
+      }
+    });
+
+    if (btnTheme) {
+      btnTheme.addEventListener("click", () => {
+        const current = document.body.getAttribute("data-theme") || "dark";
+        applyTheme(current === "light" ? "dark" : "light");
+      });
+    }
+
+    // --- Early finisher logic ---
+    let finisherOpen = false;
+
+    function setFinisherOpen(open) {
+      finisherOpen = open;
+      const panelsVisible = open ? "block" : "none";
+      finisherTabs.style.display = panelsVisible;
+      document.querySelectorAll('[data-finisher-panel]').forEach(p => {
+        // keep current panel active but respect open state
+        p.style.display = open ? (p.classList.contains('active') ? 'block' : 'none') : 'none';
+      });
+      btnFinisherToggle.textContent = open ? "Close Choice Board" : "Open Choice Board";
+    }
+
+    btnFinisherToggle.addEventListener("click", () => {
+      setFinisherOpen(!finisherOpen);
+    });
+
+    // Default: closed until student opens
+    setFinisherOpen(false);
+
+    // Picture analysis: expand/collapse images (bind after render too)
+    function collapsePictureCards(except) {
+      document.querySelectorAll(".img-card.expanded").forEach(card => {
+        if (card !== except) card.classList.remove("expanded");
+      });
+    }
+
+    function bindImageCardInteractions(root = document) {
+      root.querySelectorAll(".img-card img").forEach(img => {
+        if (img.dataset.zoomBound === "1") return;
+        img.dataset.zoomBound = "1";
+        img.addEventListener("click", () => {
+          const card = img.closest(".img-card");
+          if (!card) return;
+          if (card.classList.contains("expanded")) {
+            card.classList.remove("expanded");
+            return;
+          }
+          collapsePictureCards(card);
+          card.classList.add("expanded");
+        });
+      });
+
+      root.querySelectorAll(".img-card .img-close").forEach(btn => {
+        if (btn.dataset.zoomBound === "1") return;
+        btn.dataset.zoomBound = "1";
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const card = btn.closest(".img-card");
+          if (card) card.classList.remove("expanded");
+        });
+      });
+    }
+
+    document.querySelectorAll('[data-finisher-tab]').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('[data-finisher-tab]').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const key = tab.getAttribute('data-finisher-tab');
+        document.querySelectorAll('[data-finisher-panel]').forEach(p => {
+          p.classList.remove('active');
+          p.style.display = 'none';
+        });
+        const panel = document.querySelector(`[data-finisher-panel="${key}"]`);
+        if (panel) {
+          panel.classList.add('active');
+          if (finisherOpen) panel.style.display = 'block';
+        }
+      });
+    });
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function renderFinisherQuiz() {
+      // Build self-checking MC items
+      finisherQuiz.innerHTML = FINISHER_QUIZ.map((item, i) => {
+        const opts = shuffle([item.correct, ...item.wrong]);
+        return `
+        <div class="quiz-q" data-q-index="${i}">
+          <div class="q">${i + 1}) ${item.q}</div>
+          <div class="quiz-opts">
+            ${opts.map(opt => {
+          const safe = opt.replace(/"/g, '&quot;');
+          return `<div class="quiz-opt" data-answer="${safe}">${opt}</div>`;
+        }).join('')}
+          </div>
+        </div>
+      `;
+      }).join('');
+
+      // Bind clicks
+      finisherQuiz.querySelectorAll('.quiz-q').forEach((qEl) => {
+        const qIndex = Number(qEl.getAttribute('data-q-index'));
+        const item = FINISHER_QUIZ[qIndex];
+        qEl.querySelectorAll('.quiz-opt').forEach((optEl) => {
+          optEl.addEventListener('click', () => {
+            // lock this question after first click
+            if (qEl.getAttribute('data-locked') === 'true') return;
+            qEl.setAttribute('data-locked', 'true');
+
+            const chosen = optEl.textContent;
+            const correct = chosen === item.correct;
+            optEl.classList.add(correct ? 'correct' : 'wrong');
+
+            // also reveal the correct one
+            qEl.querySelectorAll('.quiz-opt').forEach((el) => {
+              if (el.textContent === item.correct) el.classList.add('correct');
+            });
+          });
+        });
+      });
+    }
+
+    // Initial render
+    loadTheme();
+    render();
+    loadReadingSize();
+  </script>
+</body>
+
+</html>
