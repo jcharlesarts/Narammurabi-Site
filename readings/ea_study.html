@@ -341,7 +341,7 @@
       <div class="box">
         <strong>Flip cards</strong>
         <div class="muted" style="margin-top:6px;">
-          Tap a card to reveal the test-ready answer. Tap again to hide.
+          Tap a card to reveal a clue or test-ready reminder. Tap again to hide.
         </div>
         <div class="mini">
           <div class="muted">Goal: flip all cards once.</div>
@@ -370,12 +370,10 @@
         </div>
       </div>
 
-      <div class="qcard" id="qCard">
-        <!-- injected -->
-      </div>
+      <div class="qcard" id="qCard"></div>
 
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center;">
-        <button id="btnKey" type="button">Show Answer Key (optional)</button>
+        <button id="btnKey" type="button">Show Hint / Key (optional)</button>
         <div class="muted">Score: <b id="scoreText">0</b> / <b id="scoreTotal">0</b></div>
       </div>
 
@@ -396,17 +394,17 @@
       <div class="muted" style="margin-top:6px; display:grid; gap:8px;">
         <div><b>1)</b> Read Test Targets once.</div>
         <div><b>2)</b> Flip Cards until you can say the answer without looking.</div>
-        <div><b>3)</b> Timed Practice: aim for 10/13 correct (or better).</div>
+        <div><b>3)</b> Timed Practice: aim for 10/12 correct (or better).</div>
       </div>
     </div>
 
     <div class="box">
       <strong>Quick “don’t-miss” reminders</strong>
       <div class="muted" style="margin-top:6px; display:grid; gap:8px;">
-        <div>• <b>Aztec</b> capital clue: Lake Texcoco -> swampy island -> name the capital city.</div>
-        <div>• <b>Inca</b> clue: mountains -> roads -> empire built on war -> mandatory service.</div>
-        <div>• <b>Maya</b> clue: sinkholes -> water -> priests -> calendars/sky.</div>
-        <div>• Agriculture matching is a “trap” — slow down and match carefully.</div>
+        <div>• <b>Aztec</b> clue: lake/island capital + trade city + divine emperor.</div>
+        <div>• <b>Inca</b> clue: mountains → roads → terraces → state/military duty.</div>
+        <div>• <b>Maya</b> clue: cenotes → water → priests → calendars/sky.</div>
+        <div>• Agriculture matching is a “trap” — slow down and match by environment.</div>
       </div>
     </div>
 
@@ -454,162 +452,165 @@
     setTab(k);
   }
 
-  // ------------------ Data ------------------
+  // ------------------ Data (PATCHED) ------------------
   const FLASHCARDS = [
-    { tag:"AZTEC", front:"Aztec origin: describe the promised home.", back:"a swampy island (Lake Texcoco)" },
-    { tag:"AZTEC", front:"Aztec emperor's power based on divine descent?", back:"True" },
-    { tag:"AZTEC", front:"Aztec training: boys prepared to be...", back:"warriors" },
-    { tag:"AZTEC", front:"Aztec training: girls prepared to work in the...", back:"home" },
-    { tag:"AZTEC", front:"Aztec decline: main cause + year", back:"conquered by the Spanish (Cortés); 1521" },
+    // --- AZTEC ---
+    { tag:"AZTEC", front:"Aztec settlement clue: What kind of place did they choose for their capital?", back:"Think: water + island + difficult farmland → they still built a major city." },
+    { tag:"AZTEC", front:"Aztec capital name check: What was the capital city called?", back:"Starts with “Teno-” (capital built on a lake island)." },
+    { tag:"AZTEC", front:"Aztec rulers: Why did people see the emperor as legitimate?", back:"Legitimacy came from religion: rulers claimed a divine connection." },
+    { tag:"AZTEC", front:"Aztec roles: What training was expected for boys?", back:"Focused on fighting/defense and serving the empire." },
+    { tag:"AZTEC", front:"Aztec roles: What training was expected for girls?", back:"Focused on household work and family life (daily-life skills)." },
+    { tag:"AZTEC", front:"Aztec collapse: What outside force ended the empire?", back:"European invaders + conquest; think: Spain and a captured capital city." },
 
-    { tag:"INCA", front:"Inca heartland landscape...", back:"mountains and valleys" },
-    { tag:"INCA", front:"Inca solved travel barriers with...", back:"roads" },
-    { tag:"INCA", front:"Inca social order: below emperor were...", back:"priests and leading commanders of the army" },
-    { tag:"INCA", front:"Inca expansion built on...", back:"war (conquest)" },
-    { tag:"INCA", front:"Inca requirement for all boys...", back:"military service" },
+    // --- INCA ---
+    { tag:"INCA", front:"Inca geography snapshot: Which landscape shaped daily life and travel?", back:"Think: steep terrain + high elevation + narrow spaces between peaks." },
+    { tag:"INCA", front:"Inca problem/solution: What did they build to connect far places?", back:"A transportation network that connects the empire (not boats)." },
+    { tag:"INCA", front:"Inca social structure clue: Who sits right under the emperor (power group)?", back:"Religious leaders + top military leadership." },
+    { tag:"INCA", front:"Inca expansion: What did they use to grow their empire?", back:"Conquest/war was a major driver (not just trade marriages)." },
+    { tag:"INCA", front:"Inca expectations: What service did boys owe the state?", back:"State duty connected to defense and empire control." },
 
-    { tag:"MAYA", front:"Maya water source year-round...", back:"sinkholes (cenotes)" },
-    { tag:"MAYA", front:"Maya religion included human sacrifice?", back:"True" },
-    { tag:"MAYA", front:"Maya women formed ___ through marriage (effect?)", back:"alliances -> increased trade" },
+    // --- MAYA ---
+    { tag:"MAYA", front:"Maya environment clue: What natural feature gave reliable water?", back:"Also called “cenotes” — a natural water source." },
+    { tag:"MAYA", front:"Maya religion: What was one intense way priests tried to please gods?", back:"Offerings could include human sacrifice in some ceremonies." },
+    { tag:"MAYA", front:"Maya society: How did marriages between families help the city-states?", back:"They built alliances that improved relationships and exchange." },
+    { tag:"MAYA", front:"Maya achievement: Pick one: writing, calendars, or astronomy — what did it help them do?", back:"Organize time, record history, or track the sky for planning." },
 
-    { tag:"AG", front:"Match: Aztec farming method?", back:"chinampa" },
-    { tag:"AG", front:"Match: Maya farming method?", back:"slash-and-burn" },
-    { tag:"AG", front:"Match: Inca farming method?", back:"terrace farming" },
+    // --- AGRICULTURE ---
+    { tag:"AG", front:"Match farming: Which method fits the Aztec (water + gardens)?", back:"Floating-garden style farming." },
+    { tag:"AG", front:"Match farming: Which method fits the Inca (steep slopes)?", back:"Step-like fields cut into mountains." },
+    { tag:"AG", front:"Match farming: Which method fits the Maya (clearing fields)?", back:"Clearing/burning land to plant crops." },
 
-    { tag:"KINGS", front:"All-powerful kings: what belief supported this?", back:"seen as descendants of the sun god" },
+    // --- KINGS (ALL 3) ---
+    { tag:"KINGS", front:"Big idea: Why were kings seen as “all powerful” in these civilizations?", back:"Religion: rulers were tied to gods/the sun (divine authority)." },
 
-    { tag:"MIX", front:"Clue chain: mountains -> roads -> terrace farming -> mandatory service. Civilization?", back:"Inca" },
-    { tag:"MIX", front:"Clue chain: sinkholes -> water -> priests -> calendars. Civilization?", back:"Maya" },
-    { tag:"MIX", front:"Clue chain: swampy island -> Lake Texcoco -> capital city. Civilization?", back:"Aztec (Tenochtitlan)" },
-    { tag:"MIX", front:"Which farming method best fits steep mountain slopes?", back:"terrace farming (Inca)" },
-    { tag:"MIX", front:"Which farming method best fits a swampy lake setting?", back:"chinampa (Aztec)" }
+    // --- MIX / “Don’t get tricked” ---
+    { tag:"MIX", front:"Civilization ID: Lake island capital + big trade city = ?", back:"Aztec (capital built on a lake island)." },
+    { tag:"MIX", front:"Civilization ID: Mountains + road network + terrace fields = ?", back:"Inca." },
+    { tag:"MIX", front:"Civilization ID: Cenotes + astronomy + calendars = ?", back:"Maya." },
   ];
 
   const QUIZ = [
     {
       type:"mc",
-      q:"1) Aztec origin story: which description best fits the promised home they searched for?",
+      q:"1) Aztec settlement: Which option best matches the setting where they built their major capital?",
       opts:[
-        "a swampy island in Lake Texcoco",
-        "high mountain terraces in the Andes",
-        "sinkholes (cenotes) providing water year-round",
-        "a broad desert plateau with little water"
+        "an island site connected to a lake environment",
+        "a flat grassland far from major water sources",
+        "a cold tundra region with permafrost",
+        "a high mountain plateau with terrace fields"
       ],
-      answer:"a swampy island in Lake Texcoco",
-      key:"Aztec origin clue -> swampy island in Lake Texcoco."
+      answer:"an island site connected to a lake environment",
+      key:"Look for: island + lake environment (Aztec capital location)."
     },
     {
       type:"mc",
-      q:"2) Which statement best explains why the Aztec emperor's authority was seen as unquestionable?",
+      q:"2) Divine authority: Why did many people accept the Aztec emperor’s power?",
       opts:[
-        "He was believed to be descended from gods.",
-        "He was elected by city-state councils.",
-        "He won a public contest to claim power.",
-        "He ruled only during wartime."
+        "He claimed a religious/divine connection to the gods",
+        "He was elected by popular vote every year",
+        "He earned the title by winning sports competitions",
+        "He was chosen by foreign kings from Europe"
       ],
-      answer:"He was believed to be descended from gods.",
-      key:"Divine descent gave the emperor authority."
+      answer:"He claimed a religious/divine connection to the gods",
+      key:"Divine authority = religious legitimacy."
     },
     {
       type:"mc",
-      q:"3) In Aztec society, which pairing is most accurate?",
+      q:"3) Aztec expectations: Which pairing best matches typical training roles?",
       opts:[
-        "boys -> warriors; girls -> home",
-        "boys -> farmers; girls -> warriors",
-        "boys -> priests; girls -> merchants",
-        "boys -> scribes; girls -> builders"
+        "boys trained for warfare; girls trained for home life",
+        "boys trained to be priests; girls trained to be soldiers",
+        "boys trained for astronomy; girls trained for road building",
+        "boys trained for fishing; girls trained for temple guarding"
       ],
-      answer:"boys -> warriors; girls -> home",
-      key:"Aztec training: boys warriors; girls home."
+      answer:"boys trained for warfare; girls trained for home life",
+      key:"Gender roles: boys warfare / girls home responsibilities."
     },
     {
       type:"mc",
-      q:"3b) Which activity would be most expected of Aztec girls?",
-      opts:["household work","military service","road building","astronomy research"],
-      answer:"household work",
-      key:"Girls trained to work in the home."
-    },
-    {
-      type:"mc",
-      q:"4) Which combination best explains the Aztec decline?",
+      q:"4) Aztec decline: Which option best explains what ended the Aztec Empire?",
       opts:[
-        "Spanish conquest, including the fall of Tenochtitlan (1521)",
-        "volcanic eruption and migration",
-        "peaceful union with the Maya",
-        "loss of terrace farms in the Andes"
+        "European conquest captured the capital city",
+        "a volcanic eruption destroyed all major cities",
+        "a peaceful merger with the Inca formed a new empire",
+        "a drought immediately forced everyone to leave"
       ],
-      answer:"Spanish conquest, including the fall of Tenochtitlan (1521)",
-      key:"Spanish conquest; Tenochtitlan fell in 1521."
+      answer:"European conquest captured the capital city",
+      key:"Spanish conquest ended the empire by taking the capital."
     },
+
     {
       type:"mc",
-      q:"5) The Inca heartland was shaped by which landscape?",
-      opts:["mountains and valleys","swampy lake islands","lowland rainforests","flat river plains"],
+      q:"5) Inca geography: Which landscape best matches where the Inca built their empire?",
+      opts:[
+        "mountains and valleys",
+        "swampy islands and canals",
+        "open desert dunes",
+        "flat river deltas"
+      ],
       answer:"mountains and valleys",
-      key:"Inca -> mountains/valleys."
+      key:"Inca heartland = Andes terrain (mountains/valleys)."
     },
     {
       type:"mc",
-      q:"6) To connect their empire across difficult terrain, the Inca built...",
-      opts:["roads","floating gardens","glyph-writing schools","large canals"],
-      answer:"roads",
-      key:"Inca road network."
-    },
-    {
-      type:"mc",
-      q:"7) In the Inca social structure, below the emperor were...",
+      q:"6) Inca solution: What helped the Inca move people and supplies across difficult terrain?",
       opts:[
-        "priests and leading commanders of the army",
-        "farmers and merchants",
-        "artisans and traders",
-        "elected councils"
+        "a road network connecting the empire",
+        "large ocean-going ships",
+        "floating garden farms",
+        "written laws carved into stone pillars"
       ],
-      answer:"priests and leading commanders of the army",
-      key:"Priests + leading commanders."
+      answer:"a road network connecting the empire",
+      key:"Roads = key Inca infrastructure."
     },
     {
       type:"mc",
-      q:"7b) Like the Aztec, the Inca expanded their empire mainly through...",
-      opts:["war and conquest","astronomy and calendars","peaceful trade alliances","marriage alliances only"],
-      answer:"war and conquest",
-      key:"Built on conquest/war."
+      q:"7) Inca social structure: Who held major power just under the emperor?",
+      opts:[
+        "priests and top military leaders",
+        "only farmers and artisans",
+        "merchants elected by city councils",
+        "artists and musicians from royal schools"
+      ],
+      answer:"priests and top military leaders",
+      key:"Power group: religion + military leadership."
     },
     {
       type:"mc",
-      q:"7c) In Inca society, all boys were required to serve in the...",
-      opts:["military","temple","government","merchant guilds"],
-      answer:"military",
-      key:"Military service."
-    },
-    {
-      type:"mc",
-      q:"8) A natural feature gave the Maya a year-round water source. What was it?",
-      opts:["sinkholes (cenotes)","glaciers","ocean tides","artificial reservoirs only"],
+      q:"8) Maya water source: Which natural feature gave reliable water in many Maya areas?",
+      opts:[
+        "sinkholes (cenotes)",
+        "glaciers",
+        "ocean tides",
+        "artificial dams only"
+      ],
       answer:"sinkholes (cenotes)",
-      key:"Sinkholes/cenotes."
+      key:"Cenotes = natural water source."
     },
     {
       type:"tf",
-      q:"9) Maya priests sometimes performed human sacrifices as part of religion.",
+      q:"9) Maya religion included ceremonies that could involve human sacrifice.",
       opts:["True","False"],
       answer:"True",
-      key:"True."
+      key:"True (in some ceremonies)."
     },
+
     {
       type:"mc",
-      q:"11) Complete the idea: Women played a role in Mayan ___ because they formed ___ through marriage, increasing ___.",
+      q:"10) Maya society: What was one effect of marriage between important families?",
       opts:[
-        "city-states / alliances / trade",
-        "military / alliances / trade",
-        "city-states / governments / war",
-        "harvesting / agriculture / farming"
+        "it built alliances between groups",
+        "it eliminated trade completely",
+        "it created terrace farms in the mountains",
+        "it ended the need for calendars"
       ],
-      answer:"city-states / alliances / trade",
-      key:"city-states + alliances + trade."
+      answer:"it built alliances between groups",
+      key:"Marriage alliances = stronger ties between city-states/groups."
     },
+
     {
       type:"mc",
-      q:"12) Agriculture matching — Which set is correct?",
+      q:"11) Agriculture matching: Which set matches the correct method to each civilization?",
       opts:[
         "Aztec=chinampa, Maya=slash-and-burn, Inca=terrace farming",
         "Aztec=terrace farming, Maya=chinampa, Inca=slash-and-burn",
@@ -617,19 +618,20 @@
         "Aztec=chinampa, Maya=terrace farming, Inca=slash-and-burn"
       ],
       answer:"Aztec=chinampa, Maya=slash-and-burn, Inca=terrace farming",
-      key:"Aztec chinampa / Maya slash-and-burn / Inca terrace farming."
+      key:"Match by environment: water gardens / forest clearing / mountain steps."
     },
+
     {
       type:"mc",
-      q:"13) Why were the kings of the Inca, Maya, and Aztec considered all-powerful?",
+      q:"12) Big idea: Why were kings often seen as all-powerful in the Maya, Inca, and Aztec?",
       opts:[
-        "They were seen as descendants of the sun god.",
-        "They were elected by citizens.",
-        "They ruled only during festivals.",
-        "They won a contest every year."
+        "People believed rulers had divine ties to gods/the sun",
+        "Rulers were chosen by random lottery",
+        "Rulers were always the best merchants",
+        "Rulers were only symbolic with no power"
       ],
-      answer:"They were seen as descendants of the sun god.",
-      key:"Descendants of the sun god."
+      answer:"People believed rulers had divine ties to gods/the sun",
+      key:"Divine authority = ruler connected to gods/sun."
     }
   ];
 
@@ -712,10 +714,10 @@
     btnPrevQ.disabled = qIdx === 0;
     btnNextQ.disabled = qIdx === QUIZ.length - 1;
 
-    // update key
+    // --- key/hint (optional) ---
     answerKey.innerHTML = `
-      <div style="font-weight:900; margin-bottom:6px;">Answer Key (for this question)</div>
-      <div><b>Correct:</b> ${escapeHtml(item.answer)}</div>
+      <div style="font-weight:900; margin-bottom:6px;">Hint / Key (for this question)</div>
+      <div><b>Correct choice:</b> ${escapeHtml(item.answer)}</div>
       <div class="muted" style="margin-top:6px;">${escapeHtml(item.key || "")}</div>
     `;
   }
@@ -806,8 +808,8 @@
   btnKey.addEventListener("click", () => {
     answerKey.classList.toggle("show");
     btnKey.textContent = answerKey.classList.contains("show")
-      ? "Hide Answer Key"
-      : "Show Answer Key (optional)";
+      ? "Hide Hint / Key"
+      : "Show Hint / Key (optional)";
   });
 
   // ------------------ Reset ------------------
@@ -826,7 +828,7 @@
 
     // hide key
     answerKey.classList.remove("show");
-    btnKey.textContent = "Show Answer Key (optional)";
+    btnKey.textContent = "Show Hint / Key (optional)";
 
     // back to targets tab
     setTab("targets");
