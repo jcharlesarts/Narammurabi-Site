@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Early Americas Unit Hub</title>
+  <link id="appStyles" rel="stylesheet" href="styles.css" />
+  <script>
+    (function () {
+      const v = Date.now();
+      const style = document.getElementById("appStyles");
+      if (style) style.href = `styles.css?v=${v}`;
+    })();
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-title">Early Americas Unit Hub</div>
+      <div class="brand-subtitle">Day 1 • Explore • Learn • Organize</div>
+    </div>
+    <nav class="tabs" aria-label="Main">
+      <button class="tab active" data-target="home">Home</button>
+      <button class="tab" data-target="map">Map</button>
+      <button class="tab" data-target="civilizations">Civilizations</button>
+      <button class="tab" data-target="vocab">Vocab</button>
+      <button class="tab" data-target="gallery">Gallery</button>
+      <button class="tab" data-target="reading">Reading</button>
+      <button class="tab" data-target="exam-study">Exam Study</button>
+      <button class="tab" data-target="progress">Progress</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="page active">
+      <div class="hero">
+        <div class="hero-copy">
+          <h1>Day 1: Getting Oriented</h1>
+          <p>
+            Welcome to our Early Americas unit. This site helps you learn about the Maya, Aztec,
+            and Inca. Start with the map so you can connect <strong>place</strong> with
+            <strong>culture</strong>. Then use the civilization pages for quick mini-lessons,
+            activities, and organizer help.
+          </p>
+          <button class="primary" id="startMap">Start with the Map</button>
+        </div>
+        <div class="hero-card">
+          <h2>Today’s Goals</h2>
+          <ul>
+            <li>Locate the Maya, Aztec, and Inca regions</li>
+            <li>Learn what geography (terrain) shaped each civilization</li>
+            <li>Build your compare organizer across the week</li>
+            <li>Practice key vocabulary</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="map" class="page">
+      <div class="page-header">
+        <div>
+          <h1>Interactive Map</h1>
+          <p>Tap a region to open its civilization page. Use the toggle or swipe to change views.</p>
+        </div>
+        <div class="map-controls">
+          <label class="toggle">
+            <input type="checkbox" id="mapToggle" />
+            <span>Show Political View</span>
+          </label>
+          <div class="view-label" id="viewLabel">Geographic View</div>
+        </div>
+      </div>
+
+      <div class="map-shell" id="mapShell">
+        <img id="mapImage" src="assets/map_geo.png" alt="Base map" />
+        <svg id="mapOverlay" viewBox="0 0 812 1024" preserveAspectRatio="xMidYMid meet" aria-label="Clickable map regions">
+          <polygon data-civ="maya" points="288,373 353,363 378,403 338,438 288,418" />
+          <polygon data-civ="aztec" points="215,356 280,346 305,386 265,421 215,401" />
+          <polygon data-civ="inca" points="421,563 506,578 531,653 511,773 470,823 447,703 435,640" />
+        </svg>
+        <div class="map-hint">Swipe left/right to change views</div>
+      </div>
+      <div id="mapCredit" class="map-credit" hidden></div>
+
+      <div class="map-legend">
+        <div><span class="legend-swatch maya"></span>Maya</div>
+        <div><span class="legend-swatch aztec"></span>Aztec</div>
+        <div><span class="legend-swatch inca"></span>Inca</div>
+      </div>
+    </section>
+
+    <section id="civilizations" class="page">
+      <div class="page-header">
+        <div>
+          <h1>Civilizations</h1>
+          <p>Select a civilization to view its research page.</p>
+        </div>
+        <div class="pill-group" id="civPills"></div>
+      </div>
+      <div id="civDetail" class="civ-detail"></div>
+    </section>
+
+    <section id="vocab" class="page">
+      <div class="page-header">
+        <div>
+          <h1>Vocabulary Studio</h1>
+          <p>Practice words with flashcards, matching, and quick quizzes.</p>
+        </div>
+        <div class="pill-group">
+          <button class="pill active" data-vocab-tab="flashcards">Flashcards</button>
+          <button class="pill" data-vocab-tab="matching">Matching</button>
+          <button class="pill" data-vocab-tab="quiz">Quiz</button>
+          <button class="pill" data-vocab-tab="glossary">Glossary</button>
+        </div>
+      </div>
+
+      <div class="teacher-mode">
+        <label class="toggle">
+          <input type="checkbox" id="teacherMode" />
+          <span>Teacher Mode</span>
+        </label>
+        <div class="teacher-note">Larger text, simplified UI, saving off.</div>
+      </div>
+
+      <div id="vocabPanels">
+        <section class="vocab-panel active" data-panel="flashcards">
+          <div class="flashcard" id="flashcard">
+            <div class="flash-front" id="flashFront"></div>
+            <div class="flash-back" id="flashBack"></div>
+          </div>
+          <div class="flash-controls">
+            <button class="secondary" id="prevCard">Back</button>
+            <button class="primary" id="flipCard">Flip</button>
+            <button class="secondary" id="nextCard">Next</button>
+          </div>
+        </section>
+
+        <section class="vocab-panel" data-panel="matching">
+          <div class="matching-grid" id="matchingGrid"></div>
+          <button class="secondary" id="resetMatching">Reset Matching</button>
+        </section>
+
+        <section class="vocab-panel" data-panel="quiz">
+          <div class="quiz-box" id="quizBox"></div>
+          <button class="secondary" id="nextQuiz">Next Question</button>
+        </section>
+
+        <section class="vocab-panel" data-panel="glossary">
+          <div class="glossary" id="glossary"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="gallery" class="page">
+      <div class="page-header">
+        <div>
+          <h1>Civilization Gallery</h1>
+          <p>Tap a civilization to explore its image set.</p>
+        </div>
+        <div class="pill-group" id="galleryPills"></div>
+      </div>
+      <div class="card civ-visual" id="galleryVisual">
+        <h3>Visual Snapshot</h3>
+        <div class="civ-thumb-row" id="civThumbs"></div>
+        <div class="civ-image-wrap">
+          <img id="civImage" class="civ-image" src="" alt="Civilization image" />
+          <div class="civ-teach">
+            <div id="civTeachCaption" class="civ-teach-caption"></div>
+            <div id="civTeachQ" class="civ-teach-q"></div>
+          </div>
+        </div>
+        <div id="civCredit" class="civ-credit" hidden></div>
+      </div>
+    </section>
+
+    <section id="reading" class="page">
+      <div class="page-header">
+        <div>
+          <h1>Reading</h1>
+          <p>Chunked readings for each civilization. (Placeholder content)</p>
+        </div>
+      </div>
+
+      <div class="reading-wrap">
+        <div class="card reading-card">
+          <div class="reading-kicker">Inca Civilization — Chunked Reading</div>
+          <h2>Scene + Overview (Placeholder)</h2>
+          <p>
+            This is a placeholder reading for the Inca. We’ll add the full text tomorrow.
+            Use this space to chunk the reading into short, student-friendly sections.
+          </p>
+          <div class="reading-chunk">
+            <div class="reading-pill">Chunk 1</div>
+            <p>Inca overview text goes here.</p>
+          </div>
+          <div class="reading-chunk">
+            <div class="reading-pill">Chunk 2</div>
+            <p>Terrace farming + quinoa details go here.</p>
+          </div>
+          <div class="reading-chunk">
+            <div class="reading-pill">Chunk 3</div>
+            <p>Roads, runners, and quipu details go here.</p>
+          </div>
+        </div>
+        <div class="card reading-card">
+          <h3>Reading Tools</h3>
+          <p class="reading-muted">We’ll add checks and vocabulary supports tomorrow.</p>
+          <div class="reading-box">
+            <strong>Next task</strong>
+            <p>Add the finalized Inca reading text and question prompts.</p>
+          </div>
+          <div class="reading-box">
+            <strong>Vocabulary</strong>
+            <p>Key terms will appear here as quick reminders.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="exam-study" class="page">
+      <div class="page-header">
+        <div>
+          <h1>Exam Study</h1>
+          <p>All three civilizations in one place with 5 study modes.</p>
+        </div>
+        <div class="pill-group">
+          <button class="pill active" data-exam-mode="flash">1) Focus Flash</button>
+          <button class="pill" data-exam-mode="civ-match">2) Civ Match</button>
+          <button class="pill" data-exam-mode="agri-match">3) Agri Match</button>
+          <button class="pill" data-exam-mode="sun-check">4) Sun Check</button>
+          <button class="pill" data-exam-mode="mixed-quiz">5) Mixed Quiz</button>
+        </div>
+      </div>
+      <div class="card exam-study-shell" id="examModeHost"></div>
+    </section>
+
+    <section id="progress" class="page">
+      <div class="page-header">
+        <div>
+          <h1>Progress Tracker</h1>
+          <p>Keep an eye on your vocabulary practice and civilization notes.</p>
+        </div>
+      </div>
+      <div class="progress-grid">
+        <div class="progress-card">
+          <h2>Vocab Progress</h2>
+          <div id="vocabProgress">No progress yet.</div>
+        </div>
+        <div class="progress-card">
+          <h2>Civilization Checklist</h2>
+          <div id="civProgress">Pick a civilization to track your checklist.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const v = Date.now();
+      const sources = [
+        "data/maps.js",
+        "data/civs.js",
+        "data/vocab.js",
+        "app.js",
+      ];
+      sources.forEach((src) => {
+        const script = document.createElement("script");
+        script.src = `${src}?v=${v}`;
+        script.async = false;
+        document.body.appendChild(script);
+      });
+    })();
+  </script>
+</body>
+</html>
