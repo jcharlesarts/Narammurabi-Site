@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Early Americas — Test Study Helper</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#111b2e;
+      --card2:#0f172a;
+      --ink:#e5e7eb;
+      --muted:#a7b0c0;
+      --line:rgba(255,255,255,.12);
+      --accent:#38bdf8;
+      --accent2:#a78bfa;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+    }
+    body[data-theme="light"]{
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --card2:#ffffff;
+      --ink:#0f172a;
+      --muted:#334155;
+      --line:rgba(15,23,42,.15);
+      --accent:#0284c7;
+      --accent2:#6d28d9;
+      --good:#059669;
+      --warn:#b45309;
+      --bad:#be123c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 12% 8%, rgba(56,189,248,.16), transparent 60%),
+        radial-gradient(1000px 700px at 88% 18%, rgba(167,139,250,.14), transparent 55%),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.35;
+    }
+    header{
+      max-width:1100px;
+      margin:0 auto;
+      padding:16px 16px 10px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+      justify-content:space-between;
+    }
+    h1{
+      margin:0;
+      font-size:1.35rem;
+      letter-spacing:.2px;
+    }
+    .sub{color:var(--muted); margin-top:4px; font-size:.95rem}
+    .top-actions{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    }
+    button{
+      appearance:none;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--ink);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      letter-spacing:.2px;
+      transition:transform .05s ease, background .15s ease, border-color .15s ease;
+    }
+    button:hover{background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.22)}
+    button:active{transform:translateY(1px)}
+    .btn-primary{border-color:rgba(56,189,248,.35); background:rgba(56,189,248,.14)}
+    .btn-secondary{border-color:rgba(167,139,250,.35); background:rgba(167,139,250,.14)}
+    .btn-warn{border-color:rgba(251,191,36,.35); background:rgba(251,191,36,.10)}
+    .btn-good{border-color:rgba(52,211,153,.35); background:rgba(52,211,153,.10)}
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:10px 16px 26px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
+    .card{
+      background:rgba(17,27,46,.86);
+      border:1px solid var(--line);
+      border-radius:16px;
+      box-shadow:0 14px 36px rgba(0,0,0,.25);
+      padding:14px;
+    }
+    body[data-theme="light"] .card{
+      background:rgba(255,255,255,.92);
+      box-shadow:0 10px 24px rgba(15,23,42,.10);
+    }
+    .pillrow{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+    .pill{
+      font-size:.82rem;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .pill.accent{color:var(--accent); border-color:rgba(56,189,248,.35)}
+    .pill.violet{color:var(--accent2); border-color:rgba(167,139,250,.35)}
+    .pill.good{color:var(--good); border-color:rgba(52,211,153,.35)}
+    .pill.warn{color:var(--warn); border-color:rgba(251,191,36,.35)}
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 0}
+    .tab{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      color:var(--muted);
+      user-select:none;
+    }
+    .tab.active{
+      color:var(--ink);
+      border-color:rgba(56,189,248,.35);
+      background:rgba(56,189,248,.12);
+    }
+    .panel{display:none}
+    .panel.active{display:block}
+    .box{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      margin-top:10px;
+    }
+    .box strong{color:var(--accent)}
+    .muted{color:var(--muted)}
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width: 720px){ .grid2{grid-template-columns:1fr} }
+    .target-list{display:grid; gap:8px; margin-top:10px}
+    .target{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background:rgba(255,255,255,.03);
+    }
+    .target b{color:var(--accent)}
+    .flash-grid{display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px}
+    @media (max-width: 720px){ .flash-grid{grid-template-columns:1fr} }
+
+    .flip{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      background:rgba(255,255,255,.03);
+      cursor:pointer;
+      position:relative;
+      overflow:hidden;
+      min-height:92px;
+    }
+    .flip .k{font-weight:900; margin-bottom:6px}
+    .flip .v{color:var(--muted)}
+    .flip .badge{
+      position:absolute; top:10px; right:10px;
+      font-size:.78rem; padding:4px 8px;
+      border-radius:999px; border:1px solid var(--line);
+      color:var(--muted);
+      background:rgba(255,255,255,.04);
+    }
+    .flip.revealed{
+      border-color:rgba(52,211,153,.35);
+      background:rgba(52,211,153,.10);
+    }
+    .flip.revealed .v{color:var(--ink)}
+    .mini{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      margin-top:10px;
+    }
+    .timer{
+      font-weight:900;
+      letter-spacing:.3px;
+      color:var(--warn);
+    }
+    .qcard{
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      background:rgba(255,255,255,.03);
+    }
+    .qtitle{font-weight:900; font-size:1.02rem}
+    .opts{display:grid; gap:8px; margin-top:10px}
+    .opt{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      cursor:pointer;
+      background:rgba(255,255,255,.05);
+      font-weight:800;
+    }
+    .opt:hover{background:rgba(255,255,255,.08)}
+    .opt.correct{border-color:rgba(52,211,153,.55); background:rgba(52,211,153,.16)}
+    .opt.wrong{border-color:rgba(251,113,133,.55); background:rgba(251,113,133,.14)}
+    .kbd{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:.85rem;
+      padding:2px 6px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      color:var(--muted);
+    }
+    .answerKey{
+      display:none;
+      margin-top:10px;
+      border:1px dashed rgba(56,189,248,.45);
+      border-radius:14px;
+      padding:10px;
+      background:rgba(56,189,248,.08);
+    }
+    .answerKey.show{display:block}
+    .inlineBlank{
+      display:inline-block;
+      min-width:180px;
+      border-bottom:2px solid rgba(255,255,255,.22);
+      transform:translateY(-2px);
+    }
+    body[data-theme="light"] .inlineBlank{
+      border-bottom-color:rgba(15,23,42,.25);
+    }
+    .footer-note{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div>
+    <h1>Early Americas — Test Study Helper</h1>
+    <div class="sub">Quick review + flip cards + timed practice for tomorrow’s test.</div>
+  </div>
+  <div class="top-actions">
+    <button id="btnTheme" class="btn-secondary" type="button">Bright Mode</button>
+    <button id="btnReset" class="btn-warn" type="button">Reset</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- LEFT -->
+  <section class="card">
+    <div class="pillrow">
+      <span class="pill accent">Study Mode</span>
+      <span class="pill violet">Flip Cards</span>
+      <span class="pill good">Timed Practice</span>
+      <span class="pill warn">Answer Key Optional</span>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="targets">Test Targets</div>
+      <div class="tab" data-tab="cards">Vocab / Facts Flip</div>
+      <div class="tab" data-tab="timed">Timed Practice</div>
+    </div>
+
+    <!-- TARGETS -->
+    <div class="panel active" data-panel="targets">
+      <div class="box">
+        <strong>Simple reminders</strong>
+        <div class="muted" style="margin-top:6px; display:grid; gap:6px;">
+          <div>✅ Read the question carefully (civilization name matters).</div>
+          <div>✅ If it’s asking “why,” use <b>because</b> + 1 reason.</div>
+          <div>✅ Short answer: write <b>one complete sentence</b>.</div>
+          <div>✅ Best strategy: say it out loud → then click your answer.</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="box">
+          <strong>Aztec — must know</strong>
+          <div class="target-list">
+            <div class="target">Promised home location: <b>a swampy island</b> (Lake Texcoco)</div>
+            <div class="target">Emperor descended from gods: <b>True</b></div>
+            <div class="target">Boys trained to be: <b>warriors</b> / Girls trained to work in the: <b>home</b></div>
+            <div class="target">Decline: <b>conquered by the Spanish</b> (Cortés) / captured Tenochtitlan in <b>1521</b></div>
+          </div>
+        </div>
+
+        <div class="box">
+          <strong>Inca — must know</strong>
+          <div class="target-list">
+            <div class="target">Geography: <b>mountains and valleys</b></div>
+            <div class="target">Built to overcome barriers: <b>roads</b></div>
+            <div class="target">Below emperor: priests and <b>leading commanders of the army</b></div>
+            <div class="target">Empire built on: <b>war</b> (conquest)</div>
+            <div class="target">All boys served in the: <b>military</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="box">
+          <strong>Maya — must know</strong>
+          <div class="target-list">
+            <div class="target">Year-round water source: <b>sinkholes</b></div>
+            <div class="target">Priests performed human sacrifices: <b>True</b></div>
+            <div class="target">Women formed <b>alliances</b> through marriage → increased <b>trade</b></div>
+            <div class="target">
+              Achievement sentence starters (pick 1):
+              <div class="muted" style="margin-top:6px; display:grid; gap:6px;">
+                <div>• One significant achievement of the Maya was <b>their calendar system</b>, which helped organize farming and ceremonies.</div>
+                <div>• One significant achievement of the Maya was <b>their writing system</b>, which used glyphs to record information.</div>
+                <div>• One significant achievement of the Maya was <b>their astronomy</b>, which helped them track events in the sky.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <strong>Agriculture matching + kings</strong>
+          <div class="target-list">
+            <div class="target"><b>Aztec</b> = chinampa</div>
+            <div class="target"><b>Maya</b> = slash-and-burn</div>
+            <div class="target"><b>Inca</b> = terrace farming</div>
+            <div class="target">All 3 kings all-powerful because: <b>descendants of the sun god</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        Teacher move if needed: “Point to the civilization name first. Then answer.”
+      </div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="panel" data-panel="cards">
+      <div class="box">
+        <strong>Flip cards</strong>
+        <div class="muted" style="margin-top:6px;">
+          Tap a card to reveal the test-ready answer. Tap again to hide.
+        </div>
+        <div class="mini">
+          <div class="muted">Goal: flip all cards once.</div>
+          <div><span class="kbd">Tip</span> Say it out loud first.</div>
+        </div>
+      </div>
+
+      <div class="flash-grid" id="flashGrid"></div>
+    </div>
+
+    <!-- TIMED -->
+    <div class="panel" data-panel="timed">
+      <div class="box">
+        <strong>Timed practice</strong>
+        <div class="muted" style="margin-top:6px;">
+          You have <b>12 seconds</b> per question. Try to answer before the timer hits 0.
+        </div>
+        <div class="mini">
+          <div class="timer" id="timerText">Timer: 12</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-secondary" id="btnPrevQ" type="button">← Back</button>
+            <button class="btn-primary" id="btnNextQ" type="button">Next →</button>
+            <button class="btn-good" id="btnStart" type="button">Start</button>
+            <button class="btn-warn" id="btnPause" type="button">Pause</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="qcard" id="qCard">
+        <!-- injected -->
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center;">
+        <button id="btnKey" type="button">Show Answer Key (optional)</button>
+        <div class="muted">Score: <b id="scoreText">0</b> / <b id="scoreTotal">0</b></div>
+      </div>
+
+      <div class="answerKey" id="answerKey"></div>
+    </div>
+
+  </section>
+
+  <!-- RIGHT -->
+  <aside class="card">
+    <div class="pillrow">
+      <span class="pill accent">What to do</span>
+      <span class="pill">2 minutes</span>
+    </div>
+
+    <div class="box">
+      <strong>Fast routine</strong>
+      <div class="muted" style="margin-top:6px; display:grid; gap:8px;">
+        <div><b>1)</b> Read Test Targets once.</div>
+        <div><b>2)</b> Flip Cards until you can say the answer without looking.</div>
+        <div><b>3)</b> Timed Practice: aim for 10/13 correct (or better).</div>
+      </div>
+    </div>
+
+    <div class="box">
+      <strong>Quick “don’t-miss” reminders</strong>
+      <div class="muted" style="margin-top:6px; display:grid; gap:8px;">
+        <div>• <b>Aztec</b> capital clue: Lake Texcoco → swampy island → Tenochtitlan.</div>
+        <div>• <b>Inca</b> clue: mountains → roads → empire built on war → military service.</div>
+        <div>• <b>Maya</b> clue: sinkholes → water → priests → calendars/sky.</div>
+        <div>• Agriculture matching is a “trap” — slow down and match carefully.</div>
+      </div>
+    </div>
+
+    <div class="box">
+      <strong>Short answer sentence frame</strong>
+      <div class="muted" style="margin-top:6px;">
+        One significant achievement of the Maya was <span class="inlineBlank"></span> because <span class="inlineBlank" style="min-width:220px;"></span>.
+      </div>
+    </div>
+
+  </aside>
+</main>
+
+<script>
+  // ------------------ Theme ------------------
+  const btnTheme = document.getElementById("btnTheme");
+  function applyTheme(theme){
+    const t = theme === "light" ? "light" : "dark";
+    document.body.setAttribute("data-theme", t);
+    btnTheme.textContent = (t === "light") ? "Dark Mode" : "Bright Mode";
+    try { localStorage.setItem("eaStudyTheme", t); } catch(e){}
+  }
+  function loadTheme(){
+    let t = "dark";
+    try { t = localStorage.getItem("eaStudyTheme") || "dark"; } catch(e){}
+    applyTheme(t);
+  }
+  btnTheme.addEventListener("click", () => {
+    const current = document.body.getAttribute("data-theme") || "dark";
+    applyTheme(current === "light" ? "dark" : "light");
+  });
+
+  // ------------------ Tabs ------------------
+  const tabs = document.querySelectorAll(".tab");
+  const panels = document.querySelectorAll("[data-panel]");
+  function setTab(key){
+    tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === key));
+    panels.forEach(p => p.classList.toggle("active", p.dataset.panel === key));
+    try { localStorage.setItem("eaStudyTab", key); } catch(e){}
+  }
+  tabs.forEach(t => t.addEventListener("click", () => setTab(t.dataset.tab)));
+  function loadTab(){
+    let k = "targets";
+    try { k = localStorage.getItem("eaStudyTab") || "targets"; } catch(e){}
+    setTab(k);
+  }
+
+  // ------------------ Data ------------------
+  const FLASHCARDS = [
+    { tag:"AZTEC", front:"Promised home location was…", back:"a swampy island (Lake Texcoco)" },
+    { tag:"AZTEC", front:"Aztec emperor descended from gods?", back:"True" },
+    { tag:"AZTEC", front:"Aztec boys trained to be…", back:"warriors" },
+    { tag:"AZTEC", front:"Aztec girls trained to work in the…", back:"home" },
+    { tag:"AZTEC", front:"Aztec decline caused by…", back:"conquered by the Spanish (Cortés); 1521" },
+
+    { tag:"INCA", front:"Inca geography like…", back:"mountains and valleys" },
+    { tag:"INCA", front:"Inca overcame barriers by building…", back:"roads" },
+    { tag:"INCA", front:"Below emperor: priests and…", back:"leading commanders of the army" },
+    { tag:"INCA", front:"Inca Empire built on…", back:"war (conquest)" },
+    { tag:"INCA", front:"All Incan boys served in the…", back:"military" },
+
+    { tag:"MAYA", front:"Maya year-round water source…", back:"sinkholes" },
+    { tag:"MAYA", front:"Mayan priests performed human sacrifices?", back:"True" },
+    { tag:"MAYA", front:"Maya women helped form… through marriage", back:"alliances → increased trade" },
+
+    { tag:"AG", front:"Agriculture: Aztec = ?", back:"chinampa" },
+    { tag:"AG", front:"Agriculture: Maya = ?", back:"slash-and-burn" },
+    { tag:"AG", front:"Agriculture: Inca = ?", back:"terrace farming" },
+
+    { tag:"KINGS", front:"Why were kings considered all-powerful?", back:"seen as descendants of the sun god" }
+  ];
+
+  const QUIZ = [
+    {
+      type:"mc",
+      q:"1) The Aztecs searched for a promised home. What was it like?",
+      opts:["a barren desert","a swampy island","mountains and valleys","tundra"],
+      answer:"a swampy island",
+      key:"Aztec → swampy island (Lake Texcoco)."
+    },
+    {
+      type:"tf",
+      q:"2) The Aztec emperor was believed to be a descendent from the Gods.",
+      opts:["True","False"],
+      answer:"True",
+      key:"True."
+    },
+    {
+      type:"mc",
+      q:"3) From an early age Aztec boys were taught to be ______.",
+      opts:["kings","warriors","merchants"],
+      answer:"warriors",
+      key:"Boys → warriors."
+    },
+    {
+      type:"mc",
+      q:"3b) Aztec girls were taught to work in the ______.",
+      opts:["home","temple","government"],
+      answer:"home",
+      key:"Girls → home."
+    },
+    {
+      type:"mc",
+      q:"4) What caused the decline of the Aztec civilization?",
+      opts:["drought","conquered by the Spanish","pandemic","historians do not know"],
+      answer:"conquered by the Spanish",
+      key:"Spanish conquest; captured Tenochtitlan in 1521."
+    },
+    {
+      type:"mc",
+      q:"5) What was the geography like for the Inca?",
+      opts:["valleys and mountains","swampy marshs","islands","cold tundra"],
+      answer:"valleys and mountains",
+      key:"Inca → mountains/valleys."
+    },
+    {
+      type:"mc",
+      q:"6) What did the Inca build to overcome geographical barriers?",
+      opts:["temples","boats","homes made of stone","roads"],
+      answer:"roads",
+      key:"Inca → roads."
+    },
+    {
+      type:"mc",
+      q:"7) In the Inca social structure, below the emperor were priests and…",
+      opts:["leading commanders of the army","farmers","skilled workers"],
+      answer:"leading commanders of the army",
+      key:"Priests + leading commanders."
+    },
+    {
+      type:"mc",
+      q:"7b) Like the Aztec Empire, the Inca Empire was built on…",
+      opts:["mountains","war","mathematics"],
+      answer:"war",
+      key:"Built on conquest/war."
+    },
+    {
+      type:"mc",
+      q:"7c) All Incan boys were required to serve in the…",
+      opts:["military","government","temple"],
+      answer:"military",
+      key:"Military."
+    },
+    {
+      type:"mc",
+      q:"8) What gave the Maya a year-round source of water?",
+      opts:["sinkholes","wells","oceans","lakes"],
+      answer:"sinkholes",
+      key:"Sinkholes (cenotes)."
+    },
+    {
+      type:"tf",
+      q:"9) Mayan priests sometimes performed human sacrifices to please their gods.",
+      opts:["True","False"],
+      answer:"True",
+      key:"True."
+    },
+    {
+      type:"mc",
+      q:"11) Women played an important role in Mayan ___ because they helped form ___ through marriage. This increased ___.",
+      opts:[
+        "military / alliances / trade",
+        "city-states / alliances / trade",
+        "city-states / governments / war",
+        "harvesting / agriculture / farming"
+      ],
+      answer:"city-states / alliances / trade",
+      key:"city-states + alliances + trade."
+    },
+    {
+      type:"mc",
+      q:"12) Agriculture matching — Which set is correct?",
+      opts:[
+        "Aztec=chinampa, Maya=slash-and-burn, Inca=terrace farming",
+        "Aztec=terrace farming, Maya=chinampa, Inca=slash-and-burn",
+        "Aztec=slash-and-burn, Maya=terrace farming, Inca=chinampa"
+      ],
+      answer:"Aztec=chinampa, Maya=slash-and-burn, Inca=terrace farming",
+      key:"Aztec chinampa / Maya slash-and-burn / Inca terrace farming."
+    },
+    {
+      type:"mc",
+      q:"13) Why were the kings for the Inca, Maya, and Aztec considered all powerful?",
+      opts:[
+        "The kings were seen as descendants of the sun god.",
+        "The kings were part of a dynasty.",
+        "The kings battled to win the right to rule.",
+        "The kings were elected into that position through a vote."
+      ],
+      answer:"The kings were seen as descendants of the sun god.",
+      key:"Descendants of the sun god."
+    }
+  ];
+
+  // ------------------ Flip cards ------------------
+  const flashGrid = document.getElementById("flashGrid");
+
+  function renderCards(){
+    flashGrid.innerHTML = FLASHCARDS.map((c, i) => `
+      <div class="flip" data-i="${i}" role="button" tabindex="0" aria-label="Flip card">
+        <div class="badge">${c.tag}</div>
+        <div class="k">${escapeHtml(c.front)}</div>
+        <div class="v">${escapeHtml("Tap to reveal")}</div>
+      </div>
+    `).join("");
+
+    flashGrid.querySelectorAll(".flip").forEach(el => {
+      const i = Number(el.dataset.i);
+      const card = FLASHCARDS[i];
+      const toggle = () => {
+        const revealed = el.classList.toggle("revealed");
+        el.querySelector(".v").textContent = revealed ? card.back : "Tap to reveal";
+      };
+      el.addEventListener("click", toggle);
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+      });
+    });
+  }
+
+  // ------------------ Timed quiz ------------------
+  const timerText = document.getElementById("timerText");
+  const qCard = document.getElementById("qCard");
+  const btnPrevQ = document.getElementById("btnPrevQ");
+  const btnNextQ = document.getElementById("btnNextQ");
+  const btnStart = document.getElementById("btnStart");
+  const btnPause = document.getElementById("btnPause");
+  const btnKey = document.getElementById("btnKey");
+  const answerKey = document.getElementById("answerKey");
+  const scoreText = document.getElementById("scoreText");
+  const scoreTotal = document.getElementById("scoreTotal");
+
+  let qIdx = 0;
+  let locked = false;
+  let timer = 12;
+  let interval = null;
+  let score = 0;
+
+  const answered = new Array(QUIZ.length).fill(null); // store chosen
+  scoreTotal.textContent = String(QUIZ.length);
+
+  function renderQuestion(){
+    const item = QUIZ[qIdx];
+    locked = false;
+
+    qCard.innerHTML = `
+      <div class="qtitle">${escapeHtml(item.q)}</div>
+      <div class="opts">
+        ${item.opts.map(opt => `<div class="opt" data-opt="${escapeAttr(opt)}">${escapeHtml(opt)}</div>`).join("")}
+      </div>
+      <div class="muted" style="margin-top:10px;">
+        Question ${qIdx + 1} of ${QUIZ.length}
+      </div>
+    `;
+
+    // apply previous choice state if exists
+    const prior = answered[qIdx];
+    if (prior !== null){
+      locked = true;
+      qCard.querySelectorAll(".opt").forEach(el => {
+        const text = el.textContent;
+        if (text === item.answer) el.classList.add("correct");
+        if (text === prior && prior !== item.answer) el.classList.add("wrong");
+      });
+    }
+
+    qCard.querySelectorAll(".opt").forEach(el => {
+      el.addEventListener("click", () => choose(el.textContent));
+    });
+
+    btnPrevQ.disabled = qIdx === 0;
+    btnNextQ.disabled = qIdx === QUIZ.length - 1;
+
+    // update key
+    answerKey.innerHTML = `
+      <div style="font-weight:900; margin-bottom:6px;">Answer Key (for this question)</div>
+      <div><b>Correct:</b> ${escapeHtml(item.answer)}</div>
+      <div class="muted" style="margin-top:6px;">${escapeHtml(item.key || "")}</div>
+    `;
+  }
+
+  function choose(choice){
+    if (locked) return;
+    locked = true;
+
+    const item = QUIZ[qIdx];
+    answered[qIdx] = choice;
+
+    // mark UI
+    qCard.querySelectorAll(".opt").forEach(el => {
+      const text = el.textContent;
+      if (text === item.answer) el.classList.add("correct");
+      if (text === choice && choice !== item.answer) el.classList.add("wrong");
+    });
+
+    // score update (only first-time correct)
+    if (choice === item.answer) score++;
+    scoreText.textContent = String(score);
+
+    // auto-advance after short delay (if timer running)
+    setTimeout(() => {
+      if (qIdx < QUIZ.length - 1) {
+        qIdx++;
+        resetTimer();
+        renderQuestion();
+      }
+    }, 550);
+  }
+
+  function resetTimer(){
+    timer = 12;
+    timerText.textContent = `Timer: ${timer}`;
+  }
+
+  function tick(){
+    timer--;
+    timerText.textContent = `Timer: ${timer}`;
+    if (timer <= 0){
+      // auto-lock with no score change if not answered
+      if (answered[qIdx] === null){
+        answered[qIdx] = "(no answer)";
+        locked = true;
+        // reveal correct
+        const item = QUIZ[qIdx];
+        qCard.querySelectorAll(".opt").forEach(el => {
+          if (el.textContent === item.answer) el.classList.add("correct");
+        });
+      }
+      // advance
+      if (qIdx < QUIZ.length - 1){
+        qIdx++;
+        resetTimer();
+        renderQuestion();
+      } else {
+        pause();
+      }
+    }
+  }
+
+  function start(){
+    if (interval) return;
+    interval = setInterval(tick, 1000);
+  }
+  function pause(){
+    if (!interval) return;
+    clearInterval(interval);
+    interval = null;
+  }
+
+  btnPrevQ.addEventListener("click", () => {
+    if (qIdx === 0) return;
+    qIdx--;
+    resetTimer();
+    renderQuestion();
+  });
+  btnNextQ.addEventListener("click", () => {
+    if (qIdx >= QUIZ.length - 1) return;
+    qIdx++;
+    resetTimer();
+    renderQuestion();
+  });
+  btnStart.addEventListener("click", start);
+  btnPause.addEventListener("click", pause);
+
+  btnKey.addEventListener("click", () => {
+    answerKey.classList.toggle("show");
+    btnKey.textContent = answerKey.classList.contains("show")
+      ? "Hide Answer Key"
+      : "Show Answer Key (optional)";
+  });
+
+  // ------------------ Reset ------------------
+  document.getElementById("btnReset").addEventListener("click", () => {
+    // reset answered + score + timer
+    pause();
+    for (let i=0;i<answered.length;i++) answered[i] = null;
+    score = 0;
+    scoreText.textContent = "0";
+    qIdx = 0;
+    resetTimer();
+    renderQuestion();
+
+    // reset cards
+    renderCards();
+
+    // hide key
+    answerKey.classList.remove("show");
+    btnKey.textContent = "Show Answer Key (optional)";
+
+    // back to targets tab
+    setTab("targets");
+  });
+
+  // ------------------ Helpers ------------------
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, s => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[s]));
+  }
+  function escapeAttr(str){
+    return String(str).replace(/"/g, "&quot;");
+  }
+
+  // ------------------ Init ------------------
+  loadTheme();
+  loadTab();
+  renderCards();
+  resetTimer();
+  renderQuestion();
+</script>
+</body>
+</html>
