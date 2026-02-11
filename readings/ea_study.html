@@ -284,21 +284,21 @@
         <div class="box">
           <strong>Aztec — must know</strong>
           <div class="target-list">
-            <div class="target">Promised home location: <b>a swampy island</b> (Lake Texcoco)</div>
-            <div class="target">Emperor descended from gods: <b>True</b></div>
-            <div class="target">Boys trained to be: <b>warriors</b> / Girls trained to work in the: <b>home</b></div>
-            <div class="target">Decline: <b>conquered by the Spanish</b> (Cortés) / captured Tenochtitlan in <b>1521</b></div>
+            <div class="target">Promised home location: describe the setting + name the lake. <span class="muted">(Hint: water + island)</span></div>
+            <div class="target">Emperor descended from gods: True/False + one reason that mattered.</div>
+            <div class="target">Boys trained to be: ______ / Girls trained to work in the: ______.</div>
+            <div class="target">Decline: identify who conquered them + the key city/year.</div>
           </div>
         </div>
 
         <div class="box">
           <strong>Inca — must know</strong>
           <div class="target-list">
-            <div class="target">Geography: <b>mountains and valleys</b></div>
-            <div class="target">Built to overcome barriers: <b>roads</b></div>
-            <div class="target">Below emperor: priests and <b>leading commanders of the army</b></div>
-            <div class="target">Empire built on: <b>war</b> (conquest)</div>
-            <div class="target">All boys served in the: <b>military</b></div>
+            <div class="target">Geography: describe the landscape in two words.</div>
+            <div class="target">Built to overcome barriers: name the network they built.</div>
+            <div class="target">Below emperor: priests and ______.</div>
+            <div class="target">Empire built on: one-word cause of expansion.</div>
+            <div class="target">All boys served in the: ______.</div>
           </div>
         </div>
       </div>
@@ -307,15 +307,15 @@
         <div class="box">
           <strong>Maya — must know</strong>
           <div class="target-list">
-            <div class="target">Year-round water source: <b>sinkholes</b></div>
-            <div class="target">Priests performed human sacrifices: <b>True</b></div>
-            <div class="target">Women formed <b>alliances</b> through marriage → increased <b>trade</b></div>
+            <div class="target">Year-round water source: name the natural feature (also called cenotes).</div>
+            <div class="target">Priests performed human sacrifices: True/False + why it mattered.</div>
+            <div class="target">Women formed ______ through marriage → increased ______.</div>
             <div class="target">
-              Achievement sentence starters (pick 1):
+              Achievement sentence starters (pick 1 + add a reason):
               <div class="muted" style="margin-top:6px; display:grid; gap:6px;">
-                <div>• One significant achievement of the Maya was <b>their calendar system</b>, which helped organize farming and ceremonies.</div>
-                <div>• One significant achievement of the Maya was <b>their writing system</b>, which used glyphs to record information.</div>
-                <div>• One significant achievement of the Maya was <b>their astronomy</b>, which helped them track events in the sky.</div>
+                <div>• calendar system</div>
+                <div>• writing system (glyphs)</div>
+                <div>• astronomy</div>
               </div>
             </div>
           </div>
@@ -324,10 +324,9 @@
         <div class="box">
           <strong>Agriculture matching + kings</strong>
           <div class="target-list">
-            <div class="target"><b>Aztec</b> = chinampa</div>
-            <div class="target"><b>Maya</b> = slash-and-burn</div>
-            <div class="target"><b>Inca</b> = terrace farming</div>
-            <div class="target">All 3 kings all-powerful because: <b>descendants of the sun god</b></div>
+            <div class="target">Match each civilization to its farming method: Aztec, Maya, Inca.</div>
+            <div class="target">Methods to use: chinampa, slash-and-burn, terrace farming.</div>
+            <div class="target">All 3 kings all-powerful because: explain the belief (sun god connection).</div>
           </div>
         </div>
       </div>
@@ -404,9 +403,9 @@
     <div class="box">
       <strong>Quick “don’t-miss” reminders</strong>
       <div class="muted" style="margin-top:6px; display:grid; gap:8px;">
-        <div>• <b>Aztec</b> capital clue: Lake Texcoco → swampy island → Tenochtitlan.</div>
-        <div>• <b>Inca</b> clue: mountains → roads → empire built on war → military service.</div>
-        <div>• <b>Maya</b> clue: sinkholes → water → priests → calendars/sky.</div>
+        <div>• <b>Aztec</b> capital clue: Lake Texcoco -> swampy island -> name the capital city.</div>
+        <div>• <b>Inca</b> clue: mountains -> roads -> empire built on war -> mandatory service.</div>
+        <div>• <b>Maya</b> clue: sinkholes -> water -> priests -> calendars/sky.</div>
         <div>• Agriculture matching is a “trap” — slow down and match carefully.</div>
       </div>
     </div>
@@ -457,120 +456,151 @@
 
   // ------------------ Data ------------------
   const FLASHCARDS = [
-    { tag:"AZTEC", front:"Promised home location was…", back:"a swampy island (Lake Texcoco)" },
-    { tag:"AZTEC", front:"Aztec emperor descended from gods?", back:"True" },
-    { tag:"AZTEC", front:"Aztec boys trained to be…", back:"warriors" },
-    { tag:"AZTEC", front:"Aztec girls trained to work in the…", back:"home" },
-    { tag:"AZTEC", front:"Aztec decline caused by…", back:"conquered by the Spanish (Cortés); 1521" },
+    { tag:"AZTEC", front:"Aztec origin: describe the promised home.", back:"a swampy island (Lake Texcoco)" },
+    { tag:"AZTEC", front:"Aztec emperor's power based on divine descent?", back:"True" },
+    { tag:"AZTEC", front:"Aztec training: boys prepared to be...", back:"warriors" },
+    { tag:"AZTEC", front:"Aztec training: girls prepared to work in the...", back:"home" },
+    { tag:"AZTEC", front:"Aztec decline: main cause + year", back:"conquered by the Spanish (Cortés); 1521" },
 
-    { tag:"INCA", front:"Inca geography like…", back:"mountains and valleys" },
-    { tag:"INCA", front:"Inca overcame barriers by building…", back:"roads" },
-    { tag:"INCA", front:"Below emperor: priests and…", back:"leading commanders of the army" },
-    { tag:"INCA", front:"Inca Empire built on…", back:"war (conquest)" },
-    { tag:"INCA", front:"All Incan boys served in the…", back:"military" },
+    { tag:"INCA", front:"Inca heartland landscape...", back:"mountains and valleys" },
+    { tag:"INCA", front:"Inca solved travel barriers with...", back:"roads" },
+    { tag:"INCA", front:"Inca social order: below emperor were...", back:"priests and leading commanders of the army" },
+    { tag:"INCA", front:"Inca expansion built on...", back:"war (conquest)" },
+    { tag:"INCA", front:"Inca requirement for all boys...", back:"military service" },
 
-    { tag:"MAYA", front:"Maya year-round water source…", back:"sinkholes" },
-    { tag:"MAYA", front:"Mayan priests performed human sacrifices?", back:"True" },
-    { tag:"MAYA", front:"Maya women helped form… through marriage", back:"alliances → increased trade" },
+    { tag:"MAYA", front:"Maya water source year-round...", back:"sinkholes (cenotes)" },
+    { tag:"MAYA", front:"Maya religion included human sacrifice?", back:"True" },
+    { tag:"MAYA", front:"Maya women formed ___ through marriage (effect?)", back:"alliances -> increased trade" },
 
-    { tag:"AG", front:"Agriculture: Aztec = ?", back:"chinampa" },
-    { tag:"AG", front:"Agriculture: Maya = ?", back:"slash-and-burn" },
-    { tag:"AG", front:"Agriculture: Inca = ?", back:"terrace farming" },
+    { tag:"AG", front:"Match: Aztec farming method?", back:"chinampa" },
+    { tag:"AG", front:"Match: Maya farming method?", back:"slash-and-burn" },
+    { tag:"AG", front:"Match: Inca farming method?", back:"terrace farming" },
 
-    { tag:"KINGS", front:"Why were kings considered all-powerful?", back:"seen as descendants of the sun god" }
+    { tag:"KINGS", front:"All-powerful kings: what belief supported this?", back:"seen as descendants of the sun god" },
+
+    { tag:"MIX", front:"Clue chain: mountains -> roads -> terrace farming -> mandatory service. Civilization?", back:"Inca" },
+    { tag:"MIX", front:"Clue chain: sinkholes -> water -> priests -> calendars. Civilization?", back:"Maya" },
+    { tag:"MIX", front:"Clue chain: swampy island -> Lake Texcoco -> capital city. Civilization?", back:"Aztec (Tenochtitlan)" },
+    { tag:"MIX", front:"Which farming method best fits steep mountain slopes?", back:"terrace farming (Inca)" },
+    { tag:"MIX", front:"Which farming method best fits a swampy lake setting?", back:"chinampa (Aztec)" }
   ];
 
   const QUIZ = [
     {
       type:"mc",
-      q:"1) The Aztecs searched for a promised home. What was it like?",
-      opts:["a barren desert","a swampy island","mountains and valleys","tundra"],
-      answer:"a swampy island",
-      key:"Aztec → swampy island (Lake Texcoco)."
-    },
-    {
-      type:"tf",
-      q:"2) The Aztec emperor was believed to be a descendent from the Gods.",
-      opts:["True","False"],
-      answer:"True",
-      key:"True."
-    },
-    {
-      type:"mc",
-      q:"3) From an early age Aztec boys were taught to be ______.",
-      opts:["kings","warriors","merchants"],
-      answer:"warriors",
-      key:"Boys → warriors."
+      q:"1) Aztec origin story: which description best fits the promised home they searched for?",
+      opts:[
+        "a swampy island in Lake Texcoco",
+        "high mountain terraces in the Andes",
+        "sinkholes (cenotes) providing water year-round",
+        "a broad desert plateau with little water"
+      ],
+      answer:"a swampy island in Lake Texcoco",
+      key:"Aztec origin clue -> swampy island in Lake Texcoco."
     },
     {
       type:"mc",
-      q:"3b) Aztec girls were taught to work in the ______.",
-      opts:["home","temple","government"],
-      answer:"home",
-      key:"Girls → home."
+      q:"2) Which statement best explains why the Aztec emperor's authority was seen as unquestionable?",
+      opts:[
+        "He was believed to be descended from gods.",
+        "He was elected by city-state councils.",
+        "He won a public contest to claim power.",
+        "He ruled only during wartime."
+      ],
+      answer:"He was believed to be descended from gods.",
+      key:"Divine descent gave the emperor authority."
     },
     {
       type:"mc",
-      q:"4) What caused the decline of the Aztec civilization?",
-      opts:["drought","conquered by the Spanish","pandemic","historians do not know"],
-      answer:"conquered by the Spanish",
-      key:"Spanish conquest; captured Tenochtitlan in 1521."
+      q:"3) In Aztec society, which pairing is most accurate?",
+      opts:[
+        "boys -> warriors; girls -> home",
+        "boys -> farmers; girls -> warriors",
+        "boys -> priests; girls -> merchants",
+        "boys -> scribes; girls -> builders"
+      ],
+      answer:"boys -> warriors; girls -> home",
+      key:"Aztec training: boys warriors; girls home."
     },
     {
       type:"mc",
-      q:"5) What was the geography like for the Inca?",
-      opts:["valleys and mountains","swampy marshs","islands","cold tundra"],
-      answer:"valleys and mountains",
-      key:"Inca → mountains/valleys."
+      q:"3b) Which activity would be most expected of Aztec girls?",
+      opts:["household work","military service","road building","astronomy research"],
+      answer:"household work",
+      key:"Girls trained to work in the home."
     },
     {
       type:"mc",
-      q:"6) What did the Inca build to overcome geographical barriers?",
-      opts:["temples","boats","homes made of stone","roads"],
+      q:"4) Which combination best explains the Aztec decline?",
+      opts:[
+        "Spanish conquest, including the fall of Tenochtitlan (1521)",
+        "volcanic eruption and migration",
+        "peaceful union with the Maya",
+        "loss of terrace farms in the Andes"
+      ],
+      answer:"Spanish conquest, including the fall of Tenochtitlan (1521)",
+      key:"Spanish conquest; Tenochtitlan fell in 1521."
+    },
+    {
+      type:"mc",
+      q:"5) The Inca heartland was shaped by which landscape?",
+      opts:["mountains and valleys","swampy lake islands","lowland rainforests","flat river plains"],
+      answer:"mountains and valleys",
+      key:"Inca -> mountains/valleys."
+    },
+    {
+      type:"mc",
+      q:"6) To connect their empire across difficult terrain, the Inca built...",
+      opts:["roads","floating gardens","glyph-writing schools","large canals"],
       answer:"roads",
-      key:"Inca → roads."
+      key:"Inca road network."
     },
     {
       type:"mc",
-      q:"7) In the Inca social structure, below the emperor were priests and…",
-      opts:["leading commanders of the army","farmers","skilled workers"],
-      answer:"leading commanders of the army",
+      q:"7) In the Inca social structure, below the emperor were...",
+      opts:[
+        "priests and leading commanders of the army",
+        "farmers and merchants",
+        "artisans and traders",
+        "elected councils"
+      ],
+      answer:"priests and leading commanders of the army",
       key:"Priests + leading commanders."
     },
     {
       type:"mc",
-      q:"7b) Like the Aztec Empire, the Inca Empire was built on…",
-      opts:["mountains","war","mathematics"],
-      answer:"war",
+      q:"7b) Like the Aztec, the Inca expanded their empire mainly through...",
+      opts:["war and conquest","astronomy and calendars","peaceful trade alliances","marriage alliances only"],
+      answer:"war and conquest",
       key:"Built on conquest/war."
     },
     {
       type:"mc",
-      q:"7c) All Incan boys were required to serve in the…",
-      opts:["military","government","temple"],
+      q:"7c) In Inca society, all boys were required to serve in the...",
+      opts:["military","temple","government","merchant guilds"],
       answer:"military",
-      key:"Military."
+      key:"Military service."
     },
     {
       type:"mc",
-      q:"8) What gave the Maya a year-round source of water?",
-      opts:["sinkholes","wells","oceans","lakes"],
-      answer:"sinkholes",
-      key:"Sinkholes (cenotes)."
+      q:"8) A natural feature gave the Maya a year-round water source. What was it?",
+      opts:["sinkholes (cenotes)","glaciers","ocean tides","artificial reservoirs only"],
+      answer:"sinkholes (cenotes)",
+      key:"Sinkholes/cenotes."
     },
     {
       type:"tf",
-      q:"9) Mayan priests sometimes performed human sacrifices to please their gods.",
+      q:"9) Maya priests sometimes performed human sacrifices as part of religion.",
       opts:["True","False"],
       answer:"True",
       key:"True."
     },
     {
       type:"mc",
-      q:"11) Women played an important role in Mayan ___ because they helped form ___ through marriage. This increased ___.",
+      q:"11) Complete the idea: Women played a role in Mayan ___ because they formed ___ through marriage, increasing ___.",
       opts:[
-        "military / alliances / trade",
         "city-states / alliances / trade",
+        "military / alliances / trade",
         "city-states / governments / war",
         "harvesting / agriculture / farming"
       ],
@@ -583,21 +613,22 @@
       opts:[
         "Aztec=chinampa, Maya=slash-and-burn, Inca=terrace farming",
         "Aztec=terrace farming, Maya=chinampa, Inca=slash-and-burn",
-        "Aztec=slash-and-burn, Maya=terrace farming, Inca=chinampa"
+        "Aztec=slash-and-burn, Maya=terrace farming, Inca=chinampa",
+        "Aztec=chinampa, Maya=terrace farming, Inca=slash-and-burn"
       ],
       answer:"Aztec=chinampa, Maya=slash-and-burn, Inca=terrace farming",
       key:"Aztec chinampa / Maya slash-and-burn / Inca terrace farming."
     },
     {
       type:"mc",
-      q:"13) Why were the kings for the Inca, Maya, and Aztec considered all powerful?",
+      q:"13) Why were the kings of the Inca, Maya, and Aztec considered all-powerful?",
       opts:[
-        "The kings were seen as descendants of the sun god.",
-        "The kings were part of a dynasty.",
-        "The kings battled to win the right to rule.",
-        "The kings were elected into that position through a vote."
+        "They were seen as descendants of the sun god.",
+        "They were elected by citizens.",
+        "They ruled only during festivals.",
+        "They won a contest every year."
       ],
-      answer:"The kings were seen as descendants of the sun god.",
+      answer:"They were seen as descendants of the sun god.",
       key:"Descendants of the sun god."
     }
   ];
