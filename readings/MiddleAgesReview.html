@@ -1,3 +1,19 @@
+<!-- ====== KILL SWITCH (REMOVE TO RE-ENABLE) ====== -->
+<script>
+  (function () {
+    // Hard stop: wipe the page and prevent the rest of the scripts from running.
+    document.documentElement.innerHTML =
+      '<head><title>Temporarily Disabled</title></head>' +
+      '<body style="font-family:system-ui;padding:24px;line-height:1.4">' +
+      '<h2>This page is temporarily disabled.</h2>' +
+      '<p>Please check back soon.</p>' +
+      '</body>';
+
+    // Stop any further JS execution on this page
+    throw new Error("Page disabled (remove kill switch to re-enable).");
+  })();
+</script>
+<!-- ====== END KILL SWITCH ====== -->
 <!doctype html>
 <html lang="en">
 <head>
