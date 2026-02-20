@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Medieval Europe — Test Review (Aligned + Not Copy/Paste)</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#111b2e;
+      --card2:#0f172a;
+      --ink:#f1f5f9;
+      --muted:#c1c8d6;
+      --line:rgba(255,255,255,.14);
+      --accent:#38bdf8;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+    }
+    body[data-theme="light"]{
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --card2:#ffffff;
+      --ink:#0f172a;
+      --muted:#475569;
+      --line:rgba(2,6,23,.14);
+      --accent:#0284c7;
+      --good:#16a34a;
+      --warn:#d97706;
+      --bad:#e11d48;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-size:16px;
+      line-height:1.5;
+      text-rendering:optimizeLegibility;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(56,189,248,.18), transparent 50%),
+                  radial-gradient(900px 500px at 90% 0%, rgba(52,211,153,.14), transparent 45%),
+                  var(--bg);
+      color:var(--ink);
+    }
+    header{
+      padding:16px 16px 12px;
+      border-bottom:1px solid var(--line);
+      position:sticky;
+      top:0;
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(10px);
+      z-index:10;
+    }
+    h1{font-size:22px; line-height:1.2; margin:0 0 6px;}
+    .sub{color:var(--muted); font-size:14px; line-height:1.4; margin:0;}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;}
+    .controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+    button, select, input[type="text"]{
+      background: var(--card);
+      border:1px solid var(--line);
+      color:var(--ink);
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:15px;
+      line-height:1.2;
+      cursor:pointer;
+    }
+    button:hover{border-color: color-mix(in srgb, var(--accent) 55%, var(--line));}
+    button.primary{background: color-mix(in srgb, var(--accent) 16%, var(--card)); border-color: color-mix(in srgb, var(--accent) 45%, var(--line));}
+    button.ghost{background:transparent}
+    main{max-width:1040px; margin:0 auto; padding:14px 16px 70px;}
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 0;}
+    .tab{padding:10px 12px; border-radius:999px; border:1px solid var(--line); background: color-mix(in srgb, var(--card) 90%, transparent); color:var(--muted);}
+    .tab.active{color: color-mix(in srgb, var(--accent) 90%, var(--ink)); border-color: color-mix(in srgb, var(--accent) 45%, var(--line));}
+    .panel{display:none; margin-top:14px;}
+    .panel.active{display:block;}
+    .grid{display:grid; grid-template-columns:1fr; gap:12px;}
+    .card{
+      background: linear-gradient(180deg, color-mix(in srgb, var(--card) 92%, transparent), var(--card2));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.10);
+    }
+    .meta{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;}
+    .tag{
+      font-size:12px; padding:4px 8px; border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--muted);
+      background: color-mix(in srgb, var(--card) 85%, transparent);
+    }
+    .tag.test{border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); color: color-mix(in srgb, var(--accent) 85%, var(--ink));}
+    .tag.related{border-color: color-mix(in srgb, var(--warn) 55%, var(--line)); color: color-mix(in srgb, var(--warn) 90%, var(--ink));}
+    .tag.day{border-color: color-mix(in srgb, rgba(255,255,255,.35) 40%, var(--line));}
+    .qtext{font-size:16px; line-height:1.5; margin:0 0 10px;}
+    .choices{display:grid; gap:8px; margin:8px 0 10px;}
+    label.choice{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px 10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background: color-mix(in srgb, var(--card) 90%, transparent);
+      cursor:pointer;
+      font-size:15px;
+      line-height:1.45;
+    }
+    label.choice:hover{border-color: color-mix(in srgb, var(--accent) 35%, var(--line));}
+    input[type="radio"], input[type="checkbox"]{margin-top:2px;}
+    .actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px;}
+    .feedback{font-size:14px; margin-top:8px;}
+    .good{color:var(--good)}
+    .bad{color:var(--bad)}
+    .muted{color:var(--muted)}
+    .answer{
+      margin-top:10px;
+      padding:10px;
+      border-radius:12px;
+      border:1px dashed color-mix(in srgb, var(--accent) 45%, var(--line));
+      background: color-mix(in srgb, var(--accent) 10%, var(--card));
+      display:none;
+      font-size:14px;
+      line-height:1.45;
+    }
+    .answer strong{color: color-mix(in srgb, var(--accent) 85%, var(--ink));}
+    .divider{height:1px; background:var(--line); margin:12px 0;}
+    .progress{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 88%, transparent);
+      margin-top:10px;
+      font-size:14px;
+      color:var(--muted);
+    }
+    .bar{flex:1; min-width:180px; height:10px; border-radius:999px; background: color-mix(in srgb, var(--line) 85%, transparent); overflow:hidden;}
+    .fill{height:100%; width:0%; background: var(--accent);}
+    .note{font-size:13px; color:var(--muted); margin-top:6px;}
+    .twoCol{display:grid; grid-template-columns:1fr; gap:10px;}
+    @media (min-width: 900px){ .twoCol{grid-template-columns:1fr 1fr;} }
+    .mini{
+      padding:10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      font-size:14px;
+    }
+    .mini h3{margin:0 0 8px; font-size:13px; color:var(--muted); font-weight:600;}
+    .mini ul{margin:0; padding-left:18px;}
+    .mini li{margin:6px 0;}
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size:12px; padding:2px 6px; border:1px solid var(--line); border-radius:8px; background: color-mix(in srgb, var(--card) 85%, transparent); color:var(--muted);}
+    /* flashcards */
+    .flashbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;}
+    .flashgrid{display:grid; grid-template-columns:1fr; gap:12px;}
+    @media (min-width: 900px){ .flashgrid{grid-template-columns:1fr 1fr;} }
+    .flash{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--card) 92%, transparent), var(--card2));
+      cursor:pointer;
+      position:relative;
+      min-height:120px;
+    }
+    .flash .front{font-size:17px; font-weight:700;}
+    .flash .back{display:none; margin-top:10px; font-size:14px; color:var(--ink); line-height:1.45;}
+    .flash.revealed .back{display:block;}
+    .flash.revealed .front{color: color-mix(in srgb, var(--accent) 85%, var(--ink));}
+    .small{font-size:13px; color:var(--muted);}
+    /* short answer */
+    textarea{
+      width:100%;
+      min-height:100px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 95%, transparent);
+      color:var(--ink);
+      font-size:15px;
+      line-height:1.45;
+    }
+    .rubric{
+      margin-top:10px;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 90%, transparent);
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <div>
+      <h1>Medieval Europe — Test Review (Aligned)</h1>
+      <p class="sub">Built from your real test topics, but rewritten so it’s not a copy. Includes <strong>vocab flashcards</strong> + <strong>practice</strong> + <strong>short answer</strong>.</p>
+    </div>
+    <div class="controls">
+      <select id="filter">
+        <option value="all">Show: All questions</option>
+        <option value="test">Show: Test-style only</option>
+        <option value="related">Show: Related only</option>
+        <option value="missed">Show: I missed</option>
+      </select>
+      <button class="ghost" id="toggleTheme">Theme</button>
+      <button class="ghost" id="resetAll">Reset</button>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab active" data-tab="flashcards" type="button">Vocab Flashcards</button>
+    <button class="tab" data-tab="practice" type="button">Practice Quiz</button>
+    <button class="tab" data-tab="shortanswer" type="button">Short Answer Practice</button>
+  </div>
+
+  <div class="progress" id="progressBox">
+    <span id="progText">0 checked • 0 correct</span>
+    <div class="bar" aria-label="progress"><div class="fill" id="progFill"></div></div>
+    <span id="missedText">Missed: 0</span>
+  </div>
+  <div class="note">Tip: Use <span class="kbd">Hint</span> first, then <span class="kbd">Show answer</span>. Filter to “I missed” for quick reteach.</div>
+</header>
+
+<main>
+  <!-- FLASHCARDS -->
+  <section class="panel active" id="panel_flashcards">
+    <div class="twoCol">
+      <div class="mini">
+        <h3>How to use flashcards</h3>
+        <ul>
+          <li>Tap/click a card to flip (show meaning + example).</li>
+          <li>Say the definition out loud before you flip.</li>
+          <li>Try: “Use it in a Middle Ages sentence.”</li>
+        </ul>
+      </div>
+      <div class="mini">
+        <h3>Study order (fast)</h3>
+        <ul>
+          <li><strong>Day 2:</strong> Vikings / Muslim / Magyar / missionary / pope / concordat</li>
+          <li><strong>Day 3:</strong> feudalism / lord / vassal / knight / fief / serf / guild</li>
+          <li><strong>Day 4:</strong> crusade / Magna Carta / Parliament</li>
+          <li><strong>Day 5:</strong> plague / Great Schism / friar</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="flashbar">
+      <button class="primary" id="revealAll" type="button">Reveal all</button>
+      <button id="hideAll" type="button">Hide all</button>
+      <select id="flashFilter">
+        <option value="all">Flashcards: All</option>
+        <option value="day1">Day 1 (Geo)</option>
+        <option value="day2">Day 2 (Invaders + Church)</option>
+        <option value="day3">Day 3 (Feudalism + Towns)</option>
+        <option value="day4">Day 4 (Crusades + Magna Carta)</option>
+        <option value="day5">Day 5 (Church + Plague)</option>
+      </select>
+    </div>
+
+    <div class="flashgrid" id="flashWrap"></div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="panel" id="panel_practice">
+    <div class="twoCol">
+      <div class="mini">
+        <h3>What this matches on your test</h3>
+        <ul>
+          <li><strong>Matching vocab:</strong> concordat / missionary / feudalism / knight</li>
+          <li><strong>Map skills:</strong> Magyars location; who traveled by sea; invasion impacts</li>
+          <li><strong>Feudalism effects:</strong> safer + population grows</li>
+          <li><strong>Magna Carta:</strong> limits king</li>
+          <li><strong>Crusades:</strong> cause + effect (complete sentence)</li>
+          <li><strong>Monks vs friars</strong>, Church reform, Great Schism, plague effects</li>
+        </ul>
+      </div>
+      <div class="mini">
+        <h3>Heads up</h3>
+        <ul>
+          <li>Wording is different on purpose, but the targets are the same.</li>
+          <li>Most questions are “related,” not exact copies.</li>
+          <li>Some questions ask you to apply the idea (not just recall).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <section class="grid" id="questions"></section>
+  </section>
+
+  <!-- SHORT ANSWER -->
+  <section class="panel" id="panel_shortanswer">
+    <div class="card">
+      <div class="meta">
+        <span class="tag test">test-style</span>
+        <span class="tag">Crusades</span>
+      </div>
+      <p class="qtext"><strong>Write 1 complete sentence:</strong> Describe <em>one</em> effect (positive or negative) of the Crusades.</p>
+      <div class="small">Sentence starter options (pick one):</div>
+      <ul class="small">
+        <li>One effect of the Crusades was ______, which mattered because ______.</li>
+        <li>The Crusades led to ______ in Europe/the Middle East because ______.</li>
+      </ul>
+      <textarea id="sa1" placeholder="Type your sentence here..."></textarea>
+      <div class="rubric">
+        <strong>Quick checklist:</strong>
+        <ul>
+          <li>✅ Names an effect (trade/knowledge/tension/strife/weakened feudalism, etc.)</li>
+          <li>✅ Explains why it mattered (cause → effect)</li>
+          <li>✅ One complete sentence (subject + verb)</li>
+        </ul>
+        <details>
+          <summary>Show example answers</summary>
+          <ul>
+            <li><strong>Example (positive):</strong> The Crusades increased contact and trade between regions, which mattered because Europeans gained new goods and ideas.</li>
+            <li><strong>Example (negative):</strong> The Crusades increased conflict between Christian Western Europe and Islam, which mattered because it created long-term distrust and violence.</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="meta">
+        <span class="tag related">related</span>
+        <span class="tag">Magna Carta / Parliament</span>
+      </div>
+      <p class="qtext"><strong>Write 2–3 sentences:</strong> How did feudalism help lead to limits on the king in England (Magna Carta → Parliament)?</p>
+      <div class="small">Stems (choose):</div>
+      <ul class="small">
+        <li>In feudalism, nobles had power because ______.</li>
+        <li>They pushed back against the king when ______.</li>
+        <li>The Magna Carta mattered because ______.</li>
+      </ul>
+      <textarea id="sa2" placeholder="Type 2–3 sentences here..."></textarea>
+      <div class="rubric">
+        <details>
+          <summary>Show a strong sample</summary>
+          <p>In feudalism, nobles had land and soldiers, so they had power. When King John demanded too much, nobles forced him to accept limits. The Magna Carta mattered because it showed the king must follow rules, which helped lead to Parliament later.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/*
+  STATE + FILTERING
+*/
+const stateKey = "medieval_europe_review_state_v2";
+let STATE = loadState();
+
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(stateKey) || "{}") || {}; }
+  catch(e){ return {}; }
+}
+function saveState(){ localStorage.setItem(stateKey, JSON.stringify(STATE)); }
+
+function el(tag, attrs={}, children=[]){
+  const node = document.createElement(tag);
+  Object.entries(attrs).forEach(([k,v])=>{
+    if(k === "class") node.className = v;
+    else if(k === "html") node.innerHTML = v;
+    else node.setAttribute(k, v);
+  });
+  children.forEach(c=> node.appendChild(c));
+  return node;
+}
+
+/*
+  FLASHCARDS (includes your test vocab + unit vocab)
+*/
+const FLASHCARDS = [
+  {day:"day1", term:"peninsula", def:"Land surrounded by water on 3 sides.", ex:"Italy is a peninsula."},
+  {day:"day1", term:"natural barrier", def:"A physical feature that makes travel/invasion harder (mountains, deserts, seas).", ex:"Mountains can block armies."},
+  {day:"day1", term:"trade", def:"Buying, selling, and exchanging goods.", ex:"Rivers and seas helped trade grow."},
+
+  {day:"day2", term:"Vikings", def:"Seafaring raiders/traders from northern Europe (Scandinavia).", ex:"They traveled by sea and attacked coasts/rivers."},
+  {day:"day2", term:"Muslim", def:"A follower of Islam; in this unit, groups from North Africa/Southwest Asia who entered parts of Europe.", ex:"They moved into Spain/Western Europe from the south."},
+  {day:"day2", term:"Magyars", def:"Invaders who came from the east into Europe (later connected to Hungary).", ex:"They moved over land into central Europe."},
+  {day:"day2", term:"missionary", def:"A person sent by a religion to spread their faith.", ex:"Missionaries traveled to teach Christianity."},
+  {day:"day2", term:"pope", def:"Leader of the Roman Catholic Church in Western Europe.", ex:"Popes sometimes argued with kings over power."},
+  {day:"day2", term:"concordat", def:"An agreement between the pope and a country’s ruler.", ex:"A concordat could settle a power dispute."},
+
+  {day:"day3", term:"feudalism", def:"A system where people traded service/loyalty for land and protection.", ex:"A vassal served a lord for a fief."},
+  {day:"day3", term:"lord", def:"A powerful landowner who granted land to others in exchange for service.", ex:"A lord might give a knight a fief."},
+  {day:"day3", term:"vassal", def:"A person who swore loyalty/service to a lord.", ex:"A vassal promised to help the lord."},
+  {day:"day3", term:"knight", def:"A mounted warrior who served a lord.", ex:"Knights fought for their lord in exchange for land."},
+  {day:"day3", term:"fief", def:"Land granted to a vassal/knight for service.", ex:"A knight’s fief helped him make a living."},
+  {day:"day3", term:"serf", def:"A peasant tied to the land who owed labor to a lord.", ex:"Serfs worked the lord’s land."},
+  {day:"day3", term:"guild", def:"An organization of workers/craftspeople that controlled training, quality, and prices.", ex:"Guilds protected members in towns."},
+
+  {day:"day4", term:"crusade", def:"A religiously motivated military expedition.", ex:"The Crusades involved Christians and Muslims."},
+  {day:"day4", term:"Magna Carta", def:"A 1215 document that limited the king’s power in England.", ex:"It helped support the idea of rule of law."},
+  {day:"day4", term:"Parliament", def:"A lawmaking group; in England it developed over time as councils expanded.", ex:"Parliament grew as leaders needed consent/support."},
+
+  {day:"day5", term:"plague", def:"A deadly disease outbreak (Black Death) that killed many people in Europe.", ex:"It caused fear and major economic change."},
+  {day:"day5", term:"Great Schism", def:"A split in the Church that created conflict over leadership.", ex:"People argued about who the true leader was."},
+  {day:"day5", term:"friar", def:"A religious worker who traveled to preach/help (unlike many monks who stayed in monasteries).", ex:"Friars went out to spread Christianity."},
+  {day:"day5", term:"monk", def:"A man who lived in a monastery, focused on prayer/work/learning.", ex:"Monks preserved knowledge and served communities."}
+];
+
+function renderFlashcards(){
+  const wrap = document.getElementById("flashWrap");
+  wrap.innerHTML = "";
+  const f = document.getElementById("flashFilter").value;
+
+  FLASHCARDS
+    .filter(c => f === "all" ? true : c.day === f)
+    .forEach(c=>{
+      const card = el("div", {class:"flash", tabindex:"0", role:"button", "aria-label": `Flashcard: ${c.term}`});
+      card.appendChild(el("div", {class:"front", html: c.term}));
+      card.appendChild(el("div", {class:"back", html: `<strong>Meaning:</strong> ${c.def}<br><strong>Example:</strong> ${c.ex}`}));
+
+      const small = el("div", {class:"small", html: `Tag: ${c.day.replace("day","Day ")}`});
+      small.style.marginTop = "10px";
+      card.appendChild(small);
+
+      const toggle = ()=> card.classList.toggle("revealed");
+      card.addEventListener("click", toggle);
+      card.addEventListener("keydown", (e)=>{ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); toggle(); }});
+
+      wrap.appendChild(card);
+    });
+}
+
+/*
+  PRACTICE QUIZ
+  - Includes equivalents of your test items, but rewritten.
+  - Mix: some test-style + more related (you asked 1:2 earlier; we keep that spirit).
+*/
+const QUESTIONS = [
+  // ===== Matching vocab (rewritten) =====
+  {
+    id:"q_vocab_match",
+    tag:"test",
+    day:"Day 2–3",
+    topic:"Vocabulary",
+    type:"matching",
+    q:"Match each word to the best definition (not the exact wording from the test).",
+    pairs:[
+      {left:"concordat", right:"an agreement between the pope and a country’s ruler"},
+      {left:"missionary", right:"a person sent by a religion to spread their faith"},
+      {left:"feudalism", right:"a system trading land/protection for service/loyalty"},
+      {left:"knight", right:"a mounted warrior serving a lord"}
+    ],
+    distractors:[
+      "a deadly disease outbreak",
+      "a charter that limited the king",
+      "a traveling religious worker (often not in a monastery)"
+    ],
+    hint:"Two are Church words, two are feudalism words.",
+    explain:"These are the same four words from your test matching section, but definitions are rephrased."
+  },
+
+  // ===== Map-based skills (rewritten) =====
+  {
+    id:"q_map_magyar",
+    tag:"test",
+    day:"Day 2",
+    topic:"Invaders + Map",
+    q:"Based on what you learned about invader routes, which group is connected to the region that becomes Hungary?",
+    choices:["Vikings","Magyars","Muslims","Franks"],
+    correct:1,
+    hint:"Think: Magyars → Hungary.",
+    explain:"Magyars came from the east and are associated with the region later called Hungary."
+  },
+  {
+    id:"q_map_sea",
+    tag:"test",
+    day:"Day 2",
+    topic:"Invaders + Map",
+    type:"multiselect",
+    q:"Which invaders are best known for traveling by sea? (Select all that fit.)",
+    choices:["Magyars","Muslims","Vikings","Peasants"],
+    correctMulti:[2,1], // Vikings definitely; Muslims often by sea in Mediterranean context too, depending on how your map lesson frames it
+    hint:"One is obvious (ships). Another can use seas/coasts, too.",
+    explain:"Vikings used ships. Many Muslim forces also moved by sea/coastal routes in the Mediterranean world (depending on map/lesson framing)."
+  },
+  {
+    id:"q_invasions_impact",
+    tag:"test",
+    day:"Day 2",
+    topic:"Invaders",
+    q:"What is a realistic negative impact of repeated invasions on small kingdoms?",
+    choices:[
+      "Kingdoms became weaker and less stable",
+      "Farming always increased immediately",
+      "People stopped building roads forever",
+      "Everyone agreed on one religion"
+    ],
+    correct:0,
+    hint:"Think: stability and safety decrease.",
+    explain:"Invasions often weakened kingdoms by causing destruction, fear, and instability."
+  },
+
+  // ===== Feudalism effects (rewritten drop-down style) =====
+  {
+    id:"q_feudal_safer",
+    tag:"test",
+    day:"Day 3",
+    topic:"Feudalism",
+    q:"Choose the best words to complete the idea: Feudalism helped make many areas ______ because nobles offered protection and enforced order; Europe’s population ______ over time.",
+    choices:[
+      "more dangerous … stayed the same",
+      "safer … grew",
+      "poorer … declined",
+      "illegal … grew"
+    ],
+    correct:1,
+    hint:"Protection → safer; more food/order → population can grow.",
+    explain:"In simplified terms, feudalism created local order/protection, and Europe’s population increased over time."
+  },
+
+  // ===== Magna Carta (rewritten) =====
+  {
+    id:"q_magna_doc",
+    tag:"test",
+    day:"Day 4",
+    topic:"Magna Carta",
+    q:"Which document is most connected to limiting a king’s power in England?",
+    choices:["The Magna Carta","The Odyssey","The Analects","A medieval saga"],
+    correct:0,
+    hint:"1215 charter—limits the king.",
+    explain:"The Magna Carta limited the king and supported the idea that rulers must follow rules."
+  },
+
+  // ===== Cause of Crusades (rewritten) =====
+  {
+    id:"q_crusade_cause",
+    tag:"test",
+    day:"Day 4",
+    topic:"Crusades",
+    q:"Which is the strongest cause of the Crusades in your unit focus?",
+    choices:[
+      "Religious conflict between Christians and Muslims",
+      "A sudden new peninsula formed",
+      "A peace treaty ended all wars",
+      "Europe moved to the Caspian Sea for farming"
+    ],
+    correct:0,
+    hint:"Religion + power + holy places.",
+    explain:"Your unit frames the Crusades primarily as religious conflict between Christians and Muslims (plus power/land)."
+  },
+
+  // ===== Short-answer prep (scaffolded MC variant + SA section already) =====
+  {
+    id:"q_crusade_effect_pick",
+    tag:"related",
+    day:"Day 4",
+    topic:"Crusades",
+    q:"Pick an effect that you could explain in a complete sentence (then go to the Short Answer tab to write it).",
+    choices:[
+      "More trade and exchange of knowledge",
+      "Less contact between regions forever",
+      "Feudalism became stronger because more workers appeared",
+      "The plague ended immediately"
+    ],
+    correct:0,
+    hint:"Think: contact increased, ideas/goods moved.",
+    explain:"One commonly taught effect is increased trade and exchange of knowledge (along with increased tension)."
+  },
+
+  // ===== Monks vs friars (rewritten) =====
+  {
+    id:"q_monks_friars",
+    tag:"test",
+    day:"Day 5",
+    topic:"Church",
+    q:"Which sentence best shows the difference between monks and friars?",
+    choices:[
+      "Friars traveled to preach/help; monks usually stayed in monasteries.",
+      "Friars were kings; monks were serfs.",
+      "Monks were merchants; friars were knights.",
+      "Friars wrote the Magna Carta; monks started the Crusades."
+    ],
+    correct:0,
+    hint:"One group travels; one group stays.",
+    explain:"Friars were known for traveling to spread Christianity and serve people; monks typically lived in monasteries."
+  },
+
+  // ===== Church wealth → reform (rewritten) =====
+  {
+    id:"q_church_wealth_reform",
+    tag:"test",
+    day:"Day 5",
+    topic:"Church Reform",
+    q:"During the Middle Ages, the Catholic Church became very ______. Because of this, some Western Europeans pushed for ______.",
+    choices:[
+      "rich and powerful … reforms to return to early Christian values",
+      "poor and weak … kings to control the Church",
+      "illegal … no more universities",
+      "invisible … more crusades"
+    ],
+    correct:0,
+    hint:"Wealth/power → reform movements.",
+    explain:"As the Church gained wealth and power, some people wanted reforms to return to the foundations of Christianity."
+  },
+
+  // ===== Great Schism (rewritten) =====
+  {
+    id:"q_schism_conflict",
+    tag:"test",
+    day:"Day 5",
+    topic:"Great Schism",
+    q:"A major split in Church leadership caused ______, and the crisis ended when ______.",
+    choices:[
+      "peace … all popes were removed forever",
+      "conflict … one pope was recognized",
+      "celebration … Parliament ended",
+      "trade … knights stopped fighting"
+    ],
+    correct:1,
+    hint:"Split → rivalry; resolution → one leader recognized.",
+    explain:"A leadership split caused conflict and confusion; it ended when the Church settled on a single recognized pope."
+  },
+
+  // ===== Plague NOT effect (rewritten) =====
+  {
+    id:"q_plague_not_effect",
+    tag:"test",
+    day:"Day 5",
+    topic:"Black Death",
+    q:"Which option is NOT an effect of the plague?",
+    choices:[
+      "Trade slowed down in many places",
+      "Feudalism weakened as labor became scarce",
+      "Some prices and wages changed because workers were fewer",
+      "Religious and political groups unified into one team"
+    ],
+    correct:3,
+    hint:"The plague increased fear and conflict, not unity.",
+    explain:"The plague did not unify groups; it often increased fear, blame, and instability."
+  },
+
+  // ===== Extra RELATED (ratio support) =====
+  {
+    id:"q_geo_barrier",
+    tag:"related",
+    day:"Day 1–2",
+    topic:"Geography",
+    q:"Which is the best example of a natural barrier that can slow an invading army?",
+    choices:["A mountain range","A marketplace","A guild hall","A census list"],
+    correct:0,
+    hint:"A physical feature that blocks movement.",
+    explain:"Mountains are natural barriers that can make travel and invasion harder."
+  },
+  {
+    id:"q_invaders_why",
+    tag:"related",
+    day:"Day 2",
+    topic:"Invaders",
+    q:"Which reason best explains why invasions increased after strong centralized governments weakened?",
+    choices:[
+      "Local areas were easier targets without one strong defense",
+      "Europe suddenly had no rivers",
+      "Everyone agreed to stop trading",
+      "Knights refused to ride horses"
+    ],
+    correct:0,
+    hint:"Less defense + more vulnerability.",
+    explain:"When central power weakens, local regions are more vulnerable and easier to attack."
+  },
+  {
+    id:"q_magna_chain",
+    tag:"related",
+    day:"Day 4",
+    topic:"Magna Carta / Parliament",
+    q:"Which chain of ideas makes the most sense?",
+    choices:[
+      "Magna Carta → king gains unlimited power → Parliament disappears",
+      "Feudal nobles have power → pressure the king → Magna Carta limits king → councils grow → Parliament develops",
+      "Crusades → end feudalism overnight → no laws needed",
+      "Plague → makes kings immortal → no social changes"
+    ],
+    correct:1,
+    hint:"Limits on king → shared power grows.",
+    explain:"Nobles had power in feudal society, which helped them force limits on the king and support the development of Parliament."
+  }
+];
+
+function getSelected(name){
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : null;
+}
+function getSelectedMulti(name){
+  const els = document.querySelectorAll(`input[name="${name}"]:checked`);
+  return Array.from(els).map(e=> Number(e.value));
+}
+
+function renderPractice(){
+  const wrap = document.getElementById("questions");
+  wrap.innerHTML = "";
+  const filter = document.getElementById("filter").value;
+
+  QUESTIONS.forEach((q, idx)=>{
+    const saved = STATE[q.id] || {};
+    const missed = saved.checked && saved.lastCorrect === false;
+
+    if(filter === "test" && q.tag !== "test") return;
+    if(filter === "related" && q.tag !== "related") return;
+    if(filter === "missed" && !missed) return;
+
+    const card = el("div", {class:"card"});
+    const meta = el("div", {class:"meta"});
+    meta.appendChild(el("span", {class:`tag ${q.tag}`, html: q.tag === "test" ? "test-style" : "related"}));
+    meta.appendChild(el("span", {class:"tag day", html: q.day}));
+    meta.appendChild(el("span", {class:"tag", html: q.topic}));
+    meta.appendChild(el("span", {class:"tag", html: `Q${idx+1}`}));
+    card.appendChild(meta);
+
+    card.appendChild(el("p", {class:"qtext", html: q.q}));
+
+    // Matching type
+    if(q.type === "matching"){
+      const box = el("div", {class:"mini"});
+      const rights = [...q.pairs.map(p=>p.right), ...q.distractors].sort(()=>Math.random()-0.5);
+
+      const leftList = el("ol", {});
+      q.pairs.forEach((p, i)=>{
+        const line = el("li", {});
+        const sel = el("select", {name:`${q.id}_m_${i}`});
+        sel.appendChild(el("option", {value:"", html:"— choose —"}));
+        rights.forEach(r=> sel.appendChild(el("option", {value:r, html:r})));
+        if(saved.match && saved.match[i]) sel.value = saved.match[i];
+
+        line.appendChild(el("span", {html:`<strong>${p.left}</strong> → `}));
+        line.appendChild(sel);
+        leftList.appendChild(line);
+      });
+
+      box.appendChild(leftList);
+      card.appendChild(box);
+
+      const actions = el("div", {class:"actions"});
+      const btnCheck = el("button", {class:"primary", type:"button", html:"Check"});
+      const btnHint  = el("button", {type:"button", html:"Hint"});
+      const btnShow  = el("button", {type:"button", html:"Show answer"});
+      const btnClear = el("button", {type:"button", html:"Clear"});
+      const feedback = el("div", {class:"feedback muted", html: saved.checked ? (saved.lastCorrect ? `<span class="good">Correct ✅</span>` : `<span class="bad">Not yet ❌</span>`) : "Not checked yet."});
+      const answer = el("div", {class:"answer", html: `<strong>Answer key:</strong><br>${q.pairs.map(p=>`• ${p.left} → ${p.right}`).join("<br>")}<br><br><strong>Why:</strong> ${q.explain}`});
+      if(saved.showAnswer) answer.style.display="block";
+
+      btnCheck.addEventListener("click", ()=>{
+        const match = q.pairs.map((_, i)=> document.querySelector(`select[name="${q.id}_m_${i}"]`)?.value || "");
+        const allChosen = match.every(v=>v && v.trim().length>0);
+        if(!allChosen){
+          feedback.className = "feedback bad";
+          feedback.textContent = "Choose a definition for each word first.";
+          return;
+        }
+        const isCorrect = match.every((v, i)=> v === q.pairs[i].right);
+        feedback.className = "feedback " + (isCorrect ? "good" : "bad");
+        feedback.textContent = isCorrect ? "Correct ✅" : "Not yet ❌";
+        STATE[q.id] = {
+          ...STATE[q.id],
+          match,
+          checked:true,
+          lastCorrect:isCorrect,
+          tries:(STATE[q.id]?.tries || 0) + 1,
+          showAnswer: STATE[q.id]?.showAnswer || false
+        };
+        saveState();
+        updateProgress();
+      });
+
+      btnHint.addEventListener("click", ()=>{
+        feedback.className = "feedback muted";
+        feedback.textContent = "Hint: " + q.hint;
+        STATE[q.id] = {...STATE[q.id], hintSeen:true};
+        saveState();
+      });
+
+      btnShow.addEventListener("click", ()=>{
+        answer.style.display="block";
+        STATE[q.id] = {...STATE[q.id], showAnswer:true};
+        saveState();
+      });
+
+      btnClear.addEventListener("click", ()=>{
+        q.pairs.forEach((_, i)=>{
+          const sel = document.querySelector(`select[name="${q.id}_m_${i}"]`);
+          if(sel) sel.value = "";
+        });
+        feedback.className="feedback muted";
+        feedback.textContent="Not checked yet.";
+        answer.style.display="none";
+        delete STATE[q.id];
+        saveState();
+        updateProgress();
+      });
+
+      actions.appendChild(btnCheck);
+      actions.appendChild(btnHint);
+      actions.appendChild(btnShow);
+      actions.appendChild(btnClear);
+
+      card.appendChild(actions);
+      card.appendChild(feedback);
+      card.appendChild(answer);
+
+      wrap.appendChild(card);
+      return;
+    }
+
+    // Multi-select type
+    if(q.type === "multiselect"){
+      const choices = el("div", {class:"choices"});
+      q.choices.forEach((c, i)=>{
+        const id = `${q.id}_${i}`;
+        const cb = el("input", {type:"checkbox", name:q.id, id, value:i});
+        if(saved.selectedMulti && saved.selectedMulti.includes(i)) cb.checked = true;
+        const text = el("div", {html:c});
+        const lab = el("label", {class:"choice", for:id}, [cb, text]);
+        choices.appendChild(lab);
+      });
+      card.appendChild(choices);
+
+      const actions = el("div", {class:"actions"});
+      const btnCheck = el("button", {class:"primary", type:"button", html:"Check"});
+      const btnHint  = el("button", {type:"button", html:"Hint"});
+      const btnShow  = el("button", {type:"button", html:"Show answer"});
+      const btnClear = el("button", {type:"button", html:"Clear"});
+      const feedback = el("div", {class:"feedback muted", html: saved.checked ? (saved.lastCorrect ? `<span class="good">Correct ✅</span>` : `<span class="bad">Not yet ❌</span>`) : "Not checked yet."});
+      const ansChoices = q.correctMulti.map(i=>q.choices[i]).join(" + ");
+      const answer = el("div", {class:"answer", html: `<strong>Answer:</strong> ${ansChoices}<br><strong>Why:</strong> ${q.explain}`});
+      if(saved.showAnswer) answer.style.display="block";
+
+      btnCheck.addEventListener("click", ()=>{
+        const picked = getSelectedMulti(q.id);
+        if(picked.length === 0){
+          feedback.className="feedback bad";
+          feedback.textContent="Select at least one option first.";
+          return;
+        }
+        const correctSet = new Set(q.correctMulti);
+        const pickedSet = new Set(picked);
+        const isCorrect = picked.length === q.correctMulti.length && [...pickedSet].every(v=>correctSet.has(v));
+        feedback.className = "feedback " + (isCorrect ? "good" : "bad");
+        feedback.textContent = isCorrect ? "Correct ✅" : "Not yet ❌";
+        STATE[q.id] = {
+          ...STATE[q.id],
+          selectedMulti:picked,
+          checked:true,
+          lastCorrect:isCorrect,
+          tries:(STATE[q.id]?.tries || 0) + 1,
+          showAnswer: STATE[q.id]?.showAnswer || false
+        };
+        saveState();
+        updateProgress();
+      });
+
+      btnHint.addEventListener("click", ()=>{
+        feedback.className="feedback muted";
+        feedback.textContent="Hint: " + q.hint;
+        STATE[q.id] = {...STATE[q.id], hintSeen:true, selectedMulti:getSelectedMulti(q.id)};
+        saveState();
+      });
+
+      btnShow.addEventListener("click", ()=>{
+        answer.style.display="block";
+        STATE[q.id] = {...STATE[q.id], showAnswer:true, selectedMulti:getSelectedMulti(q.id)};
+        saveState();
+      });
+
+      btnClear.addEventListener("click", ()=>{
+        document.querySelectorAll(`input[name="${q.id}"]`).forEach(r=> r.checked=false);
+        feedback.className="feedback muted";
+        feedback.textContent="Not checked yet.";
+        answer.style.display="none";
+        delete STATE[q.id];
+        saveState();
+        updateProgress();
+      });
+
+      actions.appendChild(btnCheck);
+      actions.appendChild(btnHint);
+      actions.appendChild(btnShow);
+      actions.appendChild(btnClear);
+
+      card.appendChild(actions);
+      card.appendChild(feedback);
+      card.appendChild(answer);
+
+      wrap.appendChild(card);
+      return;
+    }
+
+    // Standard MC type
+    const choices = el("div", {class:"choices"});
+    q.choices.forEach((c, i)=>{
+      const id = `${q.id}_${i}`;
+      const radio = el("input", {type:"radio", name:q.id, id, value:i});
+      if(saved.selected !== undefined && Number(saved.selected) === i) radio.checked = true;
+      const text = el("div", {html:c});
+      const lab = el("label", {class:"choice", for:id}, [radio, text]);
+      choices.appendChild(lab);
+    });
+    card.appendChild(choices);
+
+    const actions = el("div", {class:"actions"});
+    const btnCheck = el("button", {class:"primary", type:"button", html:"Check"});
+    const btnHint  = el("button", {type:"button", html:"Hint"});
+    const btnShow  = el("button", {type:"button", html:"Show answer"});
+    const btnClear = el("button", {type:"button", html:"Clear"});
+    const feedback = el("div", {class:"feedback muted", html: saved.checked ? (saved.lastCorrect ? `<span class="good">Correct ✅</span>` : `<span class="bad">Not yet ❌</span>`) : "Not checked yet."});
+    const answer = el("div", {class:"answer", html: `<strong>Answer:</strong> ${q.choices[q.correct]}<br><strong>Why:</strong> ${q.explain}`});
+    if(saved.showAnswer) answer.style.display="block";
+
+    btnCheck.addEventListener("click", ()=>{
+      const selected = getSelected(q.id);
+      if(selected === null){
+        feedback.className="feedback bad";
+        feedback.textContent="Pick an answer first.";
+        return;
+      }
+      const isCorrect = Number(selected) === q.correct;
+      feedback.className = "feedback " + (isCorrect ? "good" : "bad");
+      feedback.textContent = isCorrect ? "Correct ✅" : "Not yet ❌";
+      STATE[q.id] = {
+        ...STATE[q.id],
+        selected,
+        checked:true,
+        lastCorrect:isCorrect,
+        tries:(STATE[q.id]?.tries || 0) + 1,
+        showAnswer: STATE[q.id]?.showAnswer || false
+      };
+      saveState();
+      updateProgress();
+    });
+
+    btnHint.addEventListener("click", ()=>{
+      feedback.className="feedback muted";
+      feedback.textContent="Hint: " + q.hint;
+      STATE[q.id] = {...STATE[q.id], selected:(getSelected(q.id) ?? STATE[q.id]?.selected), hintSeen:true};
+      saveState();
+    });
+
+    btnShow.addEventListener("click", ()=>{
+      answer.style.display="block";
+      STATE[q.id] = {...STATE[q.id], selected:(getSelected(q.id) ?? STATE[q.id]?.selected), showAnswer:true};
+      saveState();
+    });
+
+    btnClear.addEventListener("click", ()=>{
+      document.querySelectorAll(`input[name="${q.id}"]`).forEach(r=> r.checked=false);
+      feedback.className="feedback muted";
+      feedback.textContent="Not checked yet.";
+      answer.style.display="none";
+      delete STATE[q.id];
+      saveState();
+      updateProgress();
+    });
+
+    actions.appendChild(btnCheck);
+    actions.appendChild(btnHint);
+    actions.appendChild(btnShow);
+    actions.appendChild(btnClear);
+
+    card.appendChild(actions);
+    card.appendChild(feedback);
+    card.appendChild(answer);
+
+    wrap.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  let total = 0, checked = 0, correct = 0, missed = 0;
+  // Only count non-flashcard quiz questions for progress
+  total = QUESTIONS.length;
+  for(const q of QUESTIONS){
+    const s = STATE[q.id];
+    if(s?.checked){
+      checked++;
+      if(s.lastCorrect) correct++;
+      else missed++;
+    }
+  }
+  const pct = total ? Math.round((checked/total)*100) : 0;
+  document.getElementById("progText").textContent = `${checked} checked • ${correct} correct`;
+  document.getElementById("missedText").textContent = `Missed: ${missed}`;
+  document.getElementById("progFill").style.width = `${pct}%`;
+}
+
+/*
+  TABS
+*/
+function setTab(name){
+  document.querySelectorAll(".tab").forEach(b=> b.classList.toggle("active", b.dataset.tab === name));
+  document.querySelectorAll(".panel").forEach(p=> p.classList.remove("active"));
+  document.getElementById("panel_" + name).classList.add("active");
+}
+
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+});
+
+/*
+  HEADER CONTROLS
+*/
+document.getElementById("filter").addEventListener("change", renderPractice);
+
+document.getElementById("resetAll").addEventListener("click", ()=>{
+  if(confirm("Reset all saved progress for this review page?")){
+    STATE = {};
+    saveState();
+    renderPractice();
+  }
+});
+
+document.getElementById("toggleTheme").addEventListener("click", ()=>{
+  const body = document.body;
+  const isLight = body.getAttribute("data-theme")==="light";
+  body.setAttribute("data-theme", isLight ? "dark" : "light");
+  localStorage.setItem("medieval_review_theme", isLight ? "dark" : "light");
+});
+
+(function initTheme(){
+  const t = localStorage.getItem("medieval_review_theme") || "dark";
+  document.body.setAttribute("data-theme", t);
+})();
+
+/*
+  Flashcard controls
+*/
+document.getElementById("flashFilter").addEventListener("change", renderFlashcards);
+
+document.getElementById("revealAll").addEventListener("click", ()=>{
+  document.querySelectorAll(".flash").forEach(c=> c.classList.add("revealed"));
+});
+document.getElementById("hideAll").addEventListener("click", ()=>{
+  document.querySelectorAll(".flash").forEach(c=> c.classList.remove("revealed"));
+});
+
+/*
+  Init
+*/
+renderFlashcards();
+renderPractice();
+</script>
+</body>
+</html>
+
+If you want this to feel even more like Schoology without copying it, I can add a “Test Mode” toggle that hides hints/explanations until the end and forces “one attempt” per question.
