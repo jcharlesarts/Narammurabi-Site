@@ -6,6 +6,7 @@
   <title>Medieval Europe — Test Review (Aligned + Not Copy/Paste)</title>
   <style>
     :root{
+      --base-font:17px;
       --bg:#0b1220;
       --card:#111b2e;
       --card2:#0f172a;
@@ -30,10 +31,11 @@
       --bad:#e11d48;
     }
     *{box-sizing:border-box}
+    html{font-size:var(--base-font);}
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      font-size:16px;
+      font-size:1rem;
       line-height:1.5;
       text-rendering:optimizeLegibility;
       background: radial-gradient(1200px 600px at 20% -10%, rgba(56,189,248,.18), transparent 50%),
@@ -50,17 +52,18 @@
       backdrop-filter: blur(10px);
       z-index:10;
     }
-    h1{font-size:22px; line-height:1.2; margin:0 0 6px;}
-    .sub{color:var(--muted); font-size:14px; line-height:1.4; margin:0;}
+    h1{font-size:1.375rem; line-height:1.2; margin:0 0 6px;}
+    .sub{color:var(--muted); font-size:0.875rem; line-height:1.4; margin:0;}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;}
     .controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+    .text-controls{display:flex; gap:6px; align-items:center;}
     button, select, input[type="text"]{
       background: var(--card);
       border:1px solid var(--line);
       color:var(--ink);
       padding:10px 12px;
       border-radius:12px;
-      font-size:15px;
+      font-size:0.9375rem;
       line-height:1.2;
       cursor:pointer;
     }
@@ -83,7 +86,7 @@
     }
     .meta{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;}
     .tag{
-      font-size:12px; padding:4px 8px; border-radius:999px;
+      font-size:0.75rem; padding:4px 8px; border-radius:999px;
       border:1px solid var(--line);
       color:var(--muted);
       background: color-mix(in srgb, var(--card) 85%, transparent);
@@ -91,7 +94,7 @@
     .tag.test{border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); color: color-mix(in srgb, var(--accent) 85%, var(--ink));}
     .tag.related{border-color: color-mix(in srgb, var(--warn) 55%, var(--line)); color: color-mix(in srgb, var(--warn) 90%, var(--ink));}
     .tag.day{border-color: color-mix(in srgb, rgba(255,255,255,.35) 40%, var(--line));}
-    .qtext{font-size:16px; line-height:1.5; margin:0 0 10px;}
+    .qtext{font-size:1rem; line-height:1.5; margin:0 0 10px;}
     .choices{display:grid; gap:8px; margin:8px 0 10px;}
     label.choice{
       display:flex; gap:10px; align-items:flex-start;
@@ -100,13 +103,13 @@
       border-radius:12px;
       background: color-mix(in srgb, var(--card) 90%, transparent);
       cursor:pointer;
-      font-size:15px;
+      font-size:0.9375rem;
       line-height:1.45;
     }
     label.choice:hover{border-color: color-mix(in srgb, var(--accent) 35%, var(--line));}
     input[type="radio"], input[type="checkbox"]{margin-top:2px;}
     .actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px;}
-    .feedback{font-size:14px; margin-top:8px;}
+    .feedback{font-size:0.875rem; margin-top:8px;}
     .good{color:var(--good)}
     .bad{color:var(--bad)}
     .muted{color:var(--muted)}
@@ -117,7 +120,7 @@
       border:1px dashed color-mix(in srgb, var(--accent) 45%, var(--line));
       background: color-mix(in srgb, var(--accent) 10%, var(--card));
       display:none;
-      font-size:14px;
+      font-size:0.875rem;
       line-height:1.45;
     }
     .answer strong{color: color-mix(in srgb, var(--accent) 85%, var(--ink));}
@@ -129,12 +132,12 @@
       border:1px solid var(--line);
       background: color-mix(in srgb, var(--card) 88%, transparent);
       margin-top:10px;
-      font-size:14px;
+      font-size:0.875rem;
       color:var(--muted);
     }
     .bar{flex:1; min-width:180px; height:10px; border-radius:999px; background: color-mix(in srgb, var(--line) 85%, transparent); overflow:hidden;}
     .fill{height:100%; width:0%; background: var(--accent);}
-    .note{font-size:13px; color:var(--muted); margin-top:6px;}
+    .note{font-size:0.8125rem; color:var(--muted); margin-top:6px;}
     .twoCol{display:grid; grid-template-columns:1fr; gap:10px;}
     @media (min-width: 900px){ .twoCol{grid-template-columns:1fr 1fr;} }
     .mini{
@@ -142,12 +145,12 @@
       border-radius:12px;
       border:1px solid var(--line);
       background: color-mix(in srgb, var(--card) 92%, transparent);
-      font-size:14px;
+      font-size:0.875rem;
     }
-    .mini h3{margin:0 0 8px; font-size:13px; color:var(--muted); font-weight:600;}
+    .mini h3{margin:0 0 8px; font-size:0.8125rem; color:var(--muted); font-weight:600;}
     .mini ul{margin:0; padding-left:18px;}
     .mini li{margin:6px 0;}
-    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size:12px; padding:2px 6px; border:1px solid var(--line); border-radius:8px; background: color-mix(in srgb, var(--card) 85%, transparent); color:var(--muted);}
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size:0.75rem; padding:2px 6px; border:1px solid var(--line); border-radius:8px; background: color-mix(in srgb, var(--card) 85%, transparent); color:var(--muted);}
     /* flashcards */
     .flashbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;}
     .flashgrid{display:grid; grid-template-columns:1fr; gap:12px;}
@@ -161,11 +164,11 @@
       position:relative;
       min-height:120px;
     }
-    .flash .front{font-size:17px; font-weight:700;}
-    .flash .back{display:none; margin-top:10px; font-size:14px; color:var(--ink); line-height:1.45;}
+    .flash .front{font-size:1.0625rem; font-weight:700;}
+    .flash .back{display:none; margin-top:10px; font-size:0.875rem; color:var(--ink); line-height:1.45;}
     .flash.revealed .back{display:block;}
     .flash.revealed .front{color: color-mix(in srgb, var(--accent) 85%, var(--ink));}
-    .small{font-size:13px; color:var(--muted);}
+    .small{font-size:0.8125rem; color:var(--muted);}
     /* short answer */
     textarea{
       width:100%;
@@ -175,7 +178,7 @@
       border:1px solid var(--line);
       background: color-mix(in srgb, var(--card) 95%, transparent);
       color:var(--ink);
-      font-size:15px;
+      font-size:0.9375rem;
       line-height:1.45;
     }
     .rubric{
@@ -185,7 +188,7 @@
       border:1px solid var(--line);
       background: color-mix(in srgb, var(--card) 90%, transparent);
       color:var(--muted);
-      font-size:14px;
+      font-size:0.875rem;
       line-height:1.45;
     }
   </style>
@@ -204,7 +207,12 @@
         <option value="related">Show: Related only</option>
         <option value="missed">Show: I missed</option>
       </select>
-      <button class="ghost" id="toggleTheme">Theme</button>
+      <div class="text-controls" role="group" aria-label="Text size">
+        <button class="ghost" id="textSm" type="button" aria-label="Smaller text">A-</button>
+        <button class="ghost" id="textReset" type="button" aria-label="Reset text size">A</button>
+        <button class="ghost" id="textLg" type="button" aria-label="Larger text">A+</button>
+      </div>
+      <button class="ghost" id="toggleTheme">Light/Dark</button>
       <button class="ghost" id="resetAll">Reset</button>
     </div>
   </div>
@@ -1006,6 +1014,35 @@ document.querySelectorAll(".tab").forEach(btn=>{
 */
 document.getElementById("filter").addEventListener("change", renderPractice);
 
+const rootEl = document.documentElement;
+const FONT_KEY = "medieval_review_font";
+const FONT_MIN = 15;
+const FONT_MAX = 19;
+const FONT_DEFAULT = 17;
+
+function clampFont(size){
+  return Math.max(FONT_MIN, Math.min(FONT_MAX, size));
+}
+function setFontSize(size){
+  const clamped = clampFont(size);
+  rootEl.style.setProperty("--base-font", `${clamped}px`);
+  localStorage.setItem(FONT_KEY, String(clamped));
+  updateFontButtons(clamped);
+}
+function getFontSize(){
+  const stored = Number(localStorage.getItem(FONT_KEY));
+  return Number.isFinite(stored) && stored > 0 ? stored : FONT_DEFAULT;
+}
+function updateFontButtons(size){
+  document.getElementById("textReset").disabled = size === FONT_DEFAULT;
+  document.getElementById("textSm").disabled = size <= FONT_MIN;
+  document.getElementById("textLg").disabled = size >= FONT_MAX;
+}
+
+document.getElementById("textSm").addEventListener("click", ()=> setFontSize(getFontSize() - 1));
+document.getElementById("textLg").addEventListener("click", ()=> setFontSize(getFontSize() + 1));
+document.getElementById("textReset").addEventListener("click", ()=> setFontSize(FONT_DEFAULT));
+
 document.getElementById("resetAll").addEventListener("click", ()=>{
   if(confirm("Reset all saved progress for this review page?")){
     STATE = {};
@@ -1014,16 +1051,28 @@ document.getElementById("resetAll").addEventListener("click", ()=>{
   }
 });
 
-document.getElementById("toggleTheme").addEventListener("click", ()=>{
+const themeBtn = document.getElementById("toggleTheme");
+function updateThemeButton(){
+  const isLight = document.body.getAttribute("data-theme")==="light";
+  themeBtn.textContent = isLight ? "Dark mode" : "Light mode";
+}
+
+themeBtn.addEventListener("click", ()=>{
   const body = document.body;
   const isLight = body.getAttribute("data-theme")==="light";
   body.setAttribute("data-theme", isLight ? "dark" : "light");
   localStorage.setItem("medieval_review_theme", isLight ? "dark" : "light");
+  updateThemeButton();
 });
 
 (function initTheme(){
   const t = localStorage.getItem("medieval_review_theme") || "dark";
   document.body.setAttribute("data-theme", t);
+  updateThemeButton();
+})();
+
+(function initFontSize(){
+  setFontSize(getFontSize());
 })();
 
 /*
