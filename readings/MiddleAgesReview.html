@@ -1,19 +1,3 @@
-<!-- ====== KILL SWITCH (REMOVE TO RE-ENABLE) ====== -->
-<script>
-  (function () {
-    // Hard stop: wipe the page and prevent the rest of the scripts from running.
-    document.documentElement.innerHTML =
-      '<head><title>Temporarily Disabled</title></head>' +
-      '<body style="font-family:system-ui;padding:24px;line-height:1.4">' +
-      '<h2>This page is temporarily disabled.</h2>' +
-      '<p>Please check back soon.</p>' +
-      '</body>';
-
-    // Stop any further JS execution on this page
-    throw new Error("Page disabled (remove kill switch to re-enable).");
-  })();
-</script>
-<!-- ====== END KILL SWITCH ====== -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -237,6 +221,7 @@
     <button class="tab active" data-tab="flashcards" type="button">Vocab Flashcards</button>
     <button class="tab" data-tab="practice" type="button">Practice Quiz</button>
     <button class="tab" data-tab="shortanswer" type="button">Short Answer Practice</button>
+    <button class="tab" data-tab="spanish" type="button">Spanish Helper</button>
   </div>
 
   <div class="progress" id="progressBox">
@@ -365,6 +350,76 @@
           <summary>Show a strong sample</summary>
           <p>In feudalism, nobles had land and soldiers, so they had power. When King John demanded too much, nobles forced him to accept limits. The Magna Carta mattered because it showed the king must follow rules, which helped lead to Parliament later.</p>
         </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPANISH HELPER -->
+  <section class="panel" id="panel_spanish">
+    <div class="card">
+      <div class="meta">
+        <span class="tag related">related</span>
+        <span class="tag">Spanish Support</span>
+      </div>
+      <p class="qtext"><strong>Spanish Helper:</strong> Key vocabulary + quick meanings to support your test review.</p>
+
+      <div class="twoCol">
+        <div class="mini">
+          <h3>Vocab Helper (EN → ES)</h3>
+          <ul>
+            <li>peninsula → península</li>
+            <li>natural barrier → barrera natural</li>
+            <li>trade → comercio</li>
+            <li>Vikings → vikingos</li>
+            <li>Muslims → musulmanes</li>
+            <li>Magyars → magiares</li>
+            <li>missionary → misionero</li>
+            <li>pope → papa</li>
+            <li>concordat → concordato</li>
+            <li>feudalism → feudalismo</li>
+            <li>lord → señor feudal</li>
+            <li>vassal → vasallo</li>
+            <li>knight → caballero</li>
+            <li>fief → feudo</li>
+            <li>serf → siervo</li>
+            <li>guild → gremio</li>
+            <li>crusade → cruzada</li>
+            <li>Magna Carta → Carta Magna</li>
+            <li>Parliament → Parlamento</li>
+            <li>plague → peste</li>
+            <li>Great Schism → Gran Cisma</li>
+            <li>friar → fraile</li>
+            <li>monk → monje</li>
+          </ul>
+        </div>
+
+        <div class="mini">
+          <h3>Important Info (EN → ES)</h3>
+          <ul>
+            <li>Limits on the king → límites al poder del rey</li>
+            <li>Rule of law → estado de derecho</li>
+            <li>Invasions weakened kingdoms → las invasiones debilitaron los reinos</li>
+            <li>Feudalism offered protection → el feudalismo ofrecía protección</li>
+            <li>Population grew over time → la población creció con el tiempo</li>
+            <li>Crusades increased trade → las Cruzadas aumentaron el comercio</li>
+            <li>Church reform movements → movimientos de reforma de la Iglesia</li>
+            <li>Leadership conflict in the Church → conflicto de liderazgo en la Iglesia</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="mini">
+        <h3>Helpful Testing Hints</h3>
+        <ul>
+          <li>Look for cause → effect words: because, led to, resulted in.</li>
+          <li>Match people/roles: lord gives land, vassal promises service, knight fights, serf works.</li>
+          <li>Use time clues: Magna Carta (1215) before Parliament grows.</li>
+          <li>For Crusades effects, pick trade/ideas or increased conflict (not “ended forever”).</li>
+          <li>Plague effects: labor shortage, higher wages, social change.</li>
+        </ul>
+        <div class="note">Tip: If a choice sounds “absolute” (always/never), it is often wrong.</div>
       </div>
     </div>
   </section>
