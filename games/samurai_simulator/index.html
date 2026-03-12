@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Samurai Paths: A Japan History Roleplay</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="cabinet">
+    <section class="game-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-header">
+            <pre class="brand-kabuto" aria-hidden="true">   /^\
+ _/___\_
+/_=====_\
+\_/\_/\_/
+  |___|</pre>
+            <div class="brand-copy">
+              <p id="hudEyebrow" class="eyebrow">HISTORICAL CHRONICLE</p>
+              <h1 id="hudTitle">Samurai Paths</h1>
+              <p id="hudSubtitle" class="hud-subtitle">Choose a house. Follow orders. Build your name.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar-controls">
+          <div class="control-group compact">
+            <span id="languageLabel" class="control-label">Language</span>
+            <div id="hudLanguageButtons" class="button-row"></div>
+          </div>
+
+          <div class="control-group compact">
+            <button id="glossaryToggle" class="control-btn" type="button" data-nav="true"></button>
+            <button id="teacherToggle" class="control-btn" type="button" data-nav="true"></button>
+          </div>
+        </div>
+      </header>
+
+      <section class="frame">
+        <section class="stage">
+          <section id="titleView" class="view">
+            <p id="titleEyebrow" class="eyebrow">PRESS START</p>
+            <h2 id="titleHeading" class="screen-title">Samurai Paths</h2>
+            <pre id="titleArt" class="ascii-art ascii-art--title" aria-hidden="true"></pre>
+            <div class="dialog-box">
+              <p id="titleCopy" class="lead-copy">You lead a samurai house through war, peace, and change.</p>
+            </div>
+            <div class="title-grid">
+              <div id="titleBrief" class="dialog-box"></div>
+              <div id="titleMenuHelp" class="dialog-box"></div>
+            </div>
+            <div class="action-row stage-actions">
+              <button id="titleStart" class="menu-btn menu-btn--primary" type="button" data-nav="true">Start Game</button>
+            </div>
+          </section>
+
+          <section id="setupView" class="view hidden">
+            <div class="stage-header">
+              <div>
+                <p id="setupEyebrow" class="eyebrow">CREATE YOUR HOUSE</p>
+                <h2 id="setupHeading" class="screen-title">Choose a Name</h2>
+              </div>
+              <p id="setupStepLabel" class="meta-copy">STEP 1 OF 4</p>
+            </div>
+
+            <div id="setupPrompt" class="dialog-box"></div>
+
+	            <label class="field-group" for="leaderName">
+	              <span id="nameLabel" class="field-label">Leader Name</span>
+	              <div class="name-input-row">
+	                <input id="leaderName" class="text-input" type="text" maxlength="24" autocomplete="off" spellcheck="false" placeholder="Takeda">
+	                <button id="randomNameBtn" class="control-btn name-random-btn" type="button" data-nav="true">Random Name</button>
+	              </div>
+	              <p id="nameHelper" class="field-helper">Type your own family name or generate one.</p>
+	            </label>
+
+            <div class="setup-grid">
+              <section class="selector-panel">
+                <h3 id="familyHeading" class="selector-heading">House Origin</h3>
+                <div id="familyOptions" class="selector-list"></div>
+              </section>
+
+              <section class="selector-panel">
+                <h3 id="focusHeading" class="selector-heading">Leadership Focus</h3>
+                <div id="focusOptions" class="selector-list"></div>
+              </section>
+            </div>
+
+            <div id="setupHint" class="dialog-box"></div>
+            <div id="setupSummary" class="dialog-box hidden"></div>
+
+            <div class="action-row stage-actions">
+              <button id="setupBack" class="menu-btn" type="button" data-nav="true">Back</button>
+              <button id="beginChronicle" class="menu-btn menu-btn--primary" type="button" data-nav="true">Continue</button>
+            </div>
+          </section>
+
+	          <section id="playView" class="view hidden">
+	            <div class="stage-header">
+	              <div>
+                <p id="sceneStep" class="eyebrow">CHAPTER 1 OF 8</p>
+                <h2 id="sceneTitle" class="screen-title"></h2>
+              </div>
+              <div class="screen-meta">
+                <span id="sceneYears" class="meta-chip"></span>
+	                <span id="sceneAuthority" class="meta-chip"></span>
+	              </div>
+	            </div>
+	
+	            <div class="play-brief-grid">
+	              <section class="narrator-box">
+	                <p id="narratorLabel" class="mission-label">Story</p>
+	                <pre id="sceneArt" class="ascii-art ascii-art--scene hidden" aria-hidden="true"></pre>
+	                <p id="sceneIntro" class="typewriter-copy"></p>
+	                <button id="skipIntro" class="control-btn hidden" type="button" data-nav="true">Fast Forward</button>
+	              </section>
+
+	              <div class="mission-flow">
+	                <section class="mission-box">
+	                  <p id="objectiveLabel" class="mission-label">Your Orders</p>
+	                  <p id="sceneObjective" class="mission-copy"></p>
+	                </section>
+
+	                <section id="mapDock" class="map-dock hidden">
+	                  <div class="map-dock-copy">
+	                    <p id="mapDockLabel" class="mission-label">Scout Brief</p>
+	                    <p id="mapDockLead" class="mission-copy"></p>
+	                    <p id="mapDockStatus" class="map-dock-status"></p>
+	                  </div>
+	                  <div class="map-dock-actions">
+	                    <button id="openMapBtn" class="menu-btn menu-btn--primary" type="button" data-nav="true">Scout for Clues</button>
+	                    <div id="minimapSlot" class="minimap-slot">MINIMAP BAY</div>
+	                  </div>
+	                </section>
+	              </div>
+	            </div>
+
+	            <section id="investigationSummary" class="dialog-box intel-summary-panel hidden"></section>
+
+	            <div id="mapOverlay" class="map-overlay hidden">
+	              <section id="mapPanel" class="map-panel">
+                <div class="map-header">
+                  <div>
+                    <p id="mapLabel" class="mission-label">Field Map</p>
+                    <h3 id="mapTitle" class="selector-heading">Estate Village</h3>
+	                  </div>
+	                  <div class="map-header-tools">
+	                    <span id="mapTierChip" class="meta-chip"></span>
+	                    <span id="mapCoords" class="meta-chip"></span>
+	                    <button id="mapHelpBtn" class="control-btn" type="button" data-nav="true">Help</button>
+	                    <button id="closeMapBtn" class="control-btn" type="button" data-nav="true">Return</button>
+	                  </div>
+	                </div>
+
+                <div class="map-layout">
+                  <section class="map-screen">
+                    <div id="mapCanvas" class="ascii-map" role="img" aria-live="polite"></div>
+                  </section>
+
+                  <div class="map-sidebar">
+                    <section class="map-status-panel">
+                      <p id="mapLocationLabel" class="mission-label">Current Spot</p>
+                      <p id="mapLocationName" class="mission-copy"></p>
+                      <p id="mapPrompt" class="map-prompt"></p>
+                    </section>
+
+                    <section id="mapEventBox" class="map-event-box"></section>
+
+	                    <section class="map-goals-panel">
+	                      <p id="mapObjectivesLabel" class="mission-label">Scout Goals</p>
+	                      <div id="mapObjectives" class="map-objectives"></div>
+	                    </section>
+	                  </div>
+	                </div>
+
+	                <div class="map-footer">
+	                  <div class="map-footer-strip map-footer-strip--controls">
+	                    <p id="mapControlsLabel" class="mission-label">Move</p>
+	                    <div id="mapControls" class="map-control-deck">
+	                      <div class="movement-pad" role="group" aria-label="Map movement pad">
+	                        <button id="moveUp" class="map-move-btn control-btn" type="button" data-nav="true" aria-label="Move north">
+	                          <span class="map-move-glyph" aria-hidden="true">^</span>
+	                          <span class="map-move-text">Up</span>
+	                        </button>
+	                        <button id="moveLeft" class="map-move-btn control-btn" type="button" data-nav="true" aria-label="Move west">
+	                          <span class="map-move-glyph" aria-hidden="true">&lt;</span>
+	                          <span class="map-move-text">Left</span>
+	                        </button>
+	                        <button id="moveRight" class="map-move-btn control-btn" type="button" data-nav="true" aria-label="Move east">
+	                          <span class="map-move-glyph" aria-hidden="true">&gt;</span>
+	                          <span class="map-move-text">Right</span>
+	                        </button>
+	                        <button id="moveDown" class="map-move-btn control-btn" type="button" data-nav="true" aria-label="Move south">
+	                          <span class="map-move-glyph" aria-hidden="true">v</span>
+	                          <span class="map-move-text">Down</span>
+	                        </button>
+	                      </div>
+	                      <div class="map-action-pad">
+	                        <button
+	                          id="mapInteract"
+	                          class="map-move-btn map-move-btn--interact menu-btn menu-btn--primary"
+	                          type="button"
+	                          data-nav="true"
+	                          aria-label="Inspect current location"
+	                        >
+	                          <span class="map-action-glyph" aria-hidden="true">A</span>
+	                          <span class="map-action-text">Inspect</span>
+	                        </button>
+	                      </div>
+	                    </div>
+	                  </div>
+
+	                  <div class="map-footer-strip map-footer-strip--factions">
+	                    <p id="mapFactionLabel" class="mission-label">Power Map</p>
+	                    <div id="mapFactions" class="map-factions"></div>
+	                  </div>
+	                </div>
+
+	                <section id="mapHelpPanel" class="map-help-popover hidden">
+	                  <div class="map-help-head">
+	                    <p id="mapLegendLabel" class="mission-label">Map Help</p>
+	                    <button id="mapHelpClose" class="control-btn" type="button" data-nav="true">Close</button>
+	                  </div>
+	                  <p id="mapControlsHint" class="map-controls-hint"></p>
+	                  <div id="mapLegend" class="map-legend"></div>
+	                </section>
+
+	                <section id="mapInspectPopup" class="map-inspect-popup hidden">
+	                  <div id="mapInspectBody" class="map-inspect-body"></div>
+	                  <div class="action-row">
+	                    <button id="mapInspectDismiss" class="menu-btn menu-btn--primary" type="button" data-nav="true">Continue</button>
+	                  </div>
+	                </section>
+	              </section>
+	            </div>
+
+            <article id="sceneBody" class="scene-body"></article>
+
+            <section class="choice-section">
+              <h3 id="choiceHeading" class="selector-heading">Pick a move</h3>
+              <div id="choiceList" class="choice-list"></div>
+            </section>
+
+            <section id="resultPanel" class="result-panel hidden"></section>
+          </section>
+
+          <section id="endView" class="view hidden">
+            <p id="endEyebrow" class="eyebrow">FINAL REPORT</p>
+            <h2 id="endHeading" class="screen-title">How Your House Is Remembered</h2>
+            <pre id="endArt" class="ascii-art ascii-art--ending" aria-hidden="true"></pre>
+            <div id="endingSummary" class="ending-box"></div>
+            <div id="scoreBreakdown" class="score-breakdown"></div>
+            <div id="finalReflection" class="dialog-box"></div>
+            <div class="action-row stage-actions">
+              <button id="restartBtn" class="menu-btn menu-btn--primary" type="button" data-nav="true">Play Again</button>
+            </div>
+          </section>
+        </section>
+
+        <aside class="status-rail hud">
+          <section id="statusProfile" class="rail-block">
+            <h2 id="profileHeading" class="section-title">House File</h2>
+            <div id="playerCard" class="player-card"></div>
+          </section>
+
+          <section id="statusScores" class="rail-block">
+            <div class="score-grid">
+              <div class="score-box">
+                <span id="legacyScoreLabel" class="score-label">Legacy</span>
+                <strong id="legacyScoreValue" class="score-value">0</strong>
+              </div>
+              <div class="score-box">
+                <span id="eraScoreLabel" class="score-label">Era</span>
+                <strong id="eraScoreValue" class="score-value">0</strong>
+              </div>
+            </div>
+          </section>
+
+          <section id="statusStats" class="rail-block">
+            <h2 id="statsHeading" class="section-title">Stats</h2>
+            <div id="statsGrid" class="stats-grid"></div>
+          </section>
+
+          <section id="statusTraits" class="rail-block">
+            <h2 id="traitsHeading" class="section-title">Traits</h2>
+            <div id="badgeList" class="badge-list"></div>
+          </section>
+
+          <section id="teacherNotes" class="dialog-box hidden"></section>
+
+          <section id="statusLegend" class="rail-block">
+            <h2 id="vocabHeading" class="section-title">Vocabulary</h2>
+            <div class="legend-row">
+              <span id="tier2Legend" class="legend-chip legend-chip--tier2">Tier 2 words</span>
+              <span id="tier3Legend" class="legend-chip legend-chip--tier3">Tier 3 words</span>
+            </div>
+          </section>
+
+          <section id="statusLog" class="rail-block">
+            <h2 id="logHeading" class="section-title">Latest Log</h2>
+            <div id="logList" class="log-list"></div>
+          </section>
+        </aside>
+      </section>
+    </section>
+  </main>
+
+  <div id="termPopover" class="term-popover hidden" role="dialog" aria-live="polite" aria-label="Vocabulary definition"></div>
+
+  <script src="game.js"></script>
+</body>
+</html>
