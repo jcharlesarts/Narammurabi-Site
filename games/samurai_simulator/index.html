@@ -137,8 +137,6 @@
 	              </div>
 	            </div>
 
-	            <section id="investigationSummary" class="dialog-box intel-summary-panel hidden"></section>
-
 	            <div id="mapOverlay" class="map-overlay hidden">
 	              <section id="mapPanel" class="map-panel">
                 <div class="map-header">
@@ -236,14 +234,34 @@
 	              </section>
 	            </div>
 
-            <article id="sceneBody" class="scene-body"></article>
+	            <article id="sceneBody" class="scene-body"></article>
 
-            <section class="choice-section">
-              <h3 id="choiceHeading" class="selector-heading">Pick a move</h3>
-              <div id="choiceList" class="choice-list"></div>
-            </section>
+	            <section id="investigationReviewStage" class="review-stage hidden">
+	              <div class="stage-header review-stage-header">
+	                <div>
+	                  <p id="reviewEyebrow" class="eyebrow">SCOUT REPORT</p>
+	                  <h3 id="reviewHeading" class="selector-heading">Review the Scouting Report</h3>
+	                </div>
+	              </div>
+	              <section id="investigationSummary" class="dialog-box intel-summary-panel"></section>
+	              <div class="action-row stage-actions review-actions">
+	                <button id="reviewBackToMapBtn" class="menu-btn" type="button" data-nav="true">Back to Map</button>
+	                <button id="reviewHintsBtn" class="menu-btn menu-btn--primary" type="button" data-nav="true">Review Pressure Hints</button>
+	                <button id="reviewChooseBtn" class="menu-btn menu-btn--primary hidden" type="button" data-nav="true">Choose Your Move</button>
+	              </div>
+	            </section>
 
-            <section id="resultPanel" class="result-panel hidden"></section>
+	            <section id="choiceStage" class="choice-stage hidden">
+	              <div class="action-row stage-actions choice-stage-actions">
+	                <button id="choiceBackBtn" class="menu-btn" type="button" data-nav="true">Back to Report</button>
+	              </div>
+	              <section class="choice-section">
+	                <h3 id="choiceHeading" class="selector-heading">Pick a move</h3>
+	                <div id="choiceList" class="choice-list"></div>
+	              </section>
+	            </section>
+
+	            <section id="resultPanel" class="result-panel hidden"></section>
           </section>
 
           <section id="endView" class="view hidden">
