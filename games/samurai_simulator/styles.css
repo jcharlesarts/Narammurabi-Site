@@ -358,7 +358,9 @@ pre {
 }
 
 .play-brief-grid,
-.mission-flow {
+.mission-flow,
+.review-stage,
+.choice-stage {
   display: grid;
   gap: 12px;
 }
@@ -370,6 +372,20 @@ pre {
 
 .mission-flow {
   align-content: start;
+}
+
+.review-stage,
+.choice-stage {
+  align-content: start;
+}
+
+.review-stage-header {
+  align-items: flex-start;
+}
+
+.review-actions,
+.choice-stage-actions {
+  justify-content: flex-start;
 }
 
 .hidden {
@@ -517,6 +533,10 @@ pre {
     linear-gradient(180deg, rgba(98, 220, 255, 0.08), transparent 18%),
     linear-gradient(180deg, #10192f 0%, #0a1225 100%);
   border-color: var(--cyan);
+  box-shadow:
+    inset 0 0 18px rgba(98, 220, 255, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08),
+    5px 5px 0 var(--shadow);
 }
 
 .mission-box {
@@ -526,6 +546,10 @@ pre {
     linear-gradient(180deg, rgba(255, 213, 90, 0.08), transparent 18%),
     linear-gradient(180deg, #271f08 0%, #151102 100%);
   border-color: var(--gold);
+  box-shadow:
+    inset 0 0 18px rgba(255, 213, 90, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08),
+    5px 5px 0 var(--shadow);
 }
 
 .map-panel {
@@ -539,6 +563,21 @@ pre {
     linear-gradient(180deg, #11182e 0%, #09101f 100%);
   border-color: #9beeff;
   overflow: hidden;
+}
+
+.map-panel.is-inspecting .map-header,
+.map-panel.is-inspecting .map-layout,
+.map-panel.is-inspecting .map-footer,
+.map-panel.is-inspecting .map-help-popover {
+  opacity: 0.52;
+  filter: saturate(0.78) brightness(0.84);
+}
+
+.map-panel.is-inspecting .map-screen {
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 213, 90, 0.08),
+    inset 0 0 18px rgba(255, 213, 90, 0.06),
+    4px 4px 0 var(--shadow);
 }
 
 .map-dock,
@@ -769,6 +808,14 @@ pre {
   box-shadow:
     inset 0 0 0 1px rgba(98, 220, 255, 0.46),
     0 0 8px rgba(98, 220, 255, 0.12);
+}
+
+.map-cell--inspect-source {
+  background: rgba(255, 213, 90, 0.14);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 213, 90, 0.7),
+    0 0 12px rgba(255, 213, 90, 0.28);
+  animation: inspect-pulse 0.9s steps(2, end) infinite;
 }
 
 .map-cell--done {
@@ -1073,15 +1120,21 @@ pre {
   left: 50%;
   top: 50%;
   bottom: auto;
-  width: min(430px, calc(100% - 24px));
-  max-height: min(360px, calc(100% - 24px));
-  overflow: auto;
+  width: min(560px, calc(100% - 32px));
+  max-height: calc(100% - 28px);
+  padding: 16px 18px 14px;
+  overflow: hidden auto;
   align-content: start;
   transform: translate(-50%, -50%);
+  transform-origin: var(--inspect-origin-x, 50%) var(--inspect-origin-y, 50%);
   border-color: var(--gold);
   background:
     linear-gradient(180deg, rgba(255, 213, 90, 0.08), transparent 16%),
     linear-gradient(180deg, #21180a 0%, #0d0a05 100%);
+}
+
+.map-inspect-popup.is-opening {
+  animation: inspect-open 160ms steps(4, end);
 }
 
 .map-inspect-body,
@@ -1090,13 +1143,20 @@ pre {
   gap: 10px;
 }
 
+.map-inspect-body {
+  min-width: 0;
+}
+
 .map-inspect-popup .action-row {
   justify-content: end;
   justify-items: end;
+  padding-top: 4px;
+  border-top: 2px solid rgba(255, 255, 255, 0.14);
 }
 
 .map-inspect-popup .menu-btn {
   width: max-content;
+  min-width: 10rem;
 }
 
 .intel-summary-panel,
@@ -1208,6 +1268,47 @@ pre {
   color: var(--ink);
 }
 
+.intel-event--inspect {
+  gap: 14px;
+}
+
+.intel-event-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.intel-event-block {
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px;
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
+    linear-gradient(180deg, #171104 0%, #0f0c05 100%);
+}
+
+.map-inspect-popup .intel-event-head {
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(255, 213, 90, 0.24);
+}
+
+.map-inspect-popup .intel-event-title {
+  font-size: 1.12rem;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.map-inspect-popup .intel-chip {
+  color: var(--gold);
+  background: rgba(255, 213, 90, 0.1);
+}
+
+.intel-event-copy {
+  color: var(--ink);
+  line-height: 1.5;
+  max-width: none;
+}
+
 .map-footer-strip .mission-label {
   font-size: 0.74rem;
 }
@@ -1219,6 +1320,10 @@ pre {
     linear-gradient(180deg, rgba(131, 244, 141, 0.07), transparent 18%),
     linear-gradient(180deg, #10221b 0%, #0b1611 100%);
   border-color: var(--green);
+  box-shadow:
+    inset 0 0 18px rgba(131, 244, 141, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08),
+    5px 5px 0 var(--shadow);
 }
 
 .choice-section {
@@ -1227,6 +1332,30 @@ pre {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
     linear-gradient(180deg, #131a31 0%, #0d1326 100%);
+}
+
+.review-stage .intel-summary-panel,
+.choice-stage .choice-section {
+  min-height: 0;
+}
+
+.review-stage .intel-summary-panel {
+  border-color: rgba(255, 213, 90, 0.8);
+  background:
+    linear-gradient(180deg, rgba(255, 213, 90, 0.08), transparent 18%),
+    linear-gradient(180deg, #171304 0%, #0d0a03 100%);
+  box-shadow:
+    inset 0 0 18px rgba(255, 213, 90, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08),
+    5px 5px 0 var(--shadow);
+}
+
+.choice-stage .choice-section {
+  border-color: rgba(98, 220, 255, 0.78);
+  box-shadow:
+    inset 0 0 18px rgba(98, 220, 255, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08),
+    5px 5px 0 var(--shadow);
 }
 
 .title-grid,
@@ -1256,6 +1385,12 @@ pre {
 .stage-actions {
   justify-content: flex-start;
   gap: 12px;
+  padding: 8px 10px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
+    linear-gradient(180deg, #0f162a 0%, #09101d 100%);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.04);
 }
 
 .field-group {
@@ -1371,6 +1506,10 @@ pre {
     linear-gradient(180deg, #ffe899 0%, var(--gold) 70%);
   color: #090a12;
   border-color: #fff5c6;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    5px 5px 0 var(--shadow),
+    0 0 0 1px rgba(255, 213, 90, 0.16);
 }
 
 .control-btn {
@@ -1480,11 +1619,40 @@ pre {
   border-color: #ddf9ff !important;
 }
 
+.menu-btn--primary.is-active,
+.menu-btn--primary.is-selected {
+  background:
+    linear-gradient(180deg, #fff0ad 0%, #ffd24b 72%) !important;
+  color: #05060c !important;
+  border-color: #fff5c6 !important;
+}
+
+.menu-btn--primary.is-active::before,
+.menu-btn--primary.is-selected::before {
+  color: rgba(9, 10, 18, 0.84) !important;
+}
+
 .menu-btn--primary:hover,
 .menu-btn--primary:focus-visible {
   background:
     linear-gradient(180deg, #fff0ad 0%, #ffd24b 70%);
   color: #05060c;
+}
+
+.game-shell.is-play-shell .stage-actions .menu-btn--primary:not(:disabled),
+.game-shell.is-play-shell .map-dock-actions .menu-btn--primary:not(:disabled) {
+  padding-left: 38px;
+}
+
+.game-shell.is-play-shell .stage-actions .menu-btn--primary:not(:disabled)::before,
+.game-shell.is-play-shell .map-dock-actions .menu-btn--primary:not(:disabled)::before {
+  content: ">>";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(9, 10, 18, 0.84);
+  animation: blink 1.15s steps(1) infinite;
 }
 
 .selector-title,
@@ -1923,6 +2091,41 @@ pre {
   }
 }
 
+@keyframes inspect-open {
+  0% {
+    opacity: 0;
+    transform: translate(
+        calc(-50% + var(--inspect-shift-x, 0px)),
+        calc(-50% + var(--inspect-shift-y, 0px))
+      )
+      scale(0.42);
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes inspect-pulse {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 213, 90, 0.7),
+      0 0 12px rgba(255, 213, 90, 0.28);
+  }
+
+  50% {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 213, 90, 0.92),
+      0 0 16px rgba(255, 213, 90, 0.4);
+  }
+}
+
 @media (max-width: 1180px) {
   .frame {
     grid-template-columns: minmax(0, 1fr) 312px;
@@ -2122,6 +2325,11 @@ pre {
     width: calc(100% - 16px);
   }
 
+  .map-inspect-popup {
+    max-height: calc(100% - 16px);
+    padding: 12px;
+  }
+
   .typewriter-copy {
     min-height: 96px;
   }
@@ -2182,6 +2390,17 @@ pre {
   .ascii-map {
     min-height: 220px;
     font-size: 0.56rem;
+  }
+
+  .map-inspect-popup {
+    width: calc(100% - 12px);
+    max-height: calc(100% - 12px);
+    padding: 10px;
+  }
+
+  .map-inspect-popup .menu-btn {
+    width: 100%;
+    min-width: 0;
   }
 
   .dialog-box,
