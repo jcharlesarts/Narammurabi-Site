@@ -75,42 +75,50 @@ const copy = {
     objectiveLabel: "Your Mission",
     narratorLabel: "Narrator",
     skipIntro: "Fast Forward",
-    choiceHeading: "Choose Your Move",
+    choiceHeading: "Issue Your Command",
     mapLabel: "Field Map",
     mapDockLabel: "Scout Brief",
-    mapDockLead: "Scout the marked places before making your choice.",
-    mapDockReadyLead: "You have enough clues. Return and choose how your house will respond.",
+    mapDockLead: "Scout the marked places. You need real proof before you give an order.",
+    mapDockReadyLead: "You have enough clues. Return from the map and review what your scouts found.",
     mapDockProgress: (checked, total) => `Clues ${checked}/${total}`,
     mapOpenButton: "Scout for Clues",
-    mapCloseButton: "Back to Mission",
+    mapCloseButton: "Return",
     mapMinimapStub: "MINIMAP BAY",
-    investigationHeading: "Scout Report",
-    investigationLead: (checked, total) => `Checked ${checked} of ${total} key sites.`,
+    investigationHeading: "Scouting Report",
+    investigationLead: (checked, total) => `Scouts checked ${checked} of ${total} key sites.`,
     investigationLocked: "Scout the marked places to build your case.",
     investigationNeedMore: remaining =>
       `${remaining} key site${remaining === 1 ? "" : "s"} still need checking.`,
-    investigationReady: "You have enough evidence. Choose your response.",
-    investigationWhatLearned: "What Your Scouts Found",
+    investigationReady: "You have enough evidence. Review the report, then give your order.",
+    investigationWhatLearned: "What The Scout Run Revealed",
     investigationNoNotes: "No field notes yet.",
     investigationMoreNotes: count => `+${count} more notes in the full scout log.`,
+    reviewEyebrow: "SCOUT REPORT",
+    reviewHeading: "Review the Scouting Report",
+    reviewBackToMap: "Back to Map",
+    reviewHintsButton: "Read Pressure Hints",
+    reviewChooseButton: "Issue Your Command",
+    reviewHintsHeading: "Pressure Hints",
+    reviewHintsLead: "These hints show what each move solves first, and what it leaves exposed.",
+    choiceBackButton: "Back to Report",
     strategyPressureLabel: "Strongest pressures",
     strategyReadLabel: "Your clan reads",
     strategyGuideLabel: "Response guide",
     strategyEvidenceLabel: "Scouts saw",
     strategyRiskLabel: "Risk",
     strategyRemainingLabel: "Still at risk",
-    intelFindingLabel: "Finding",
+    intelFindingLabel: "Scouts uncover",
     intelWhyLabel: "Why it matters",
     intelMissionLabel: "Mission pressure",
     intelNextStepLabel: "Best next step",
     intelBlockedLabel: "Why scouts stop here",
     intelAccessLabel: "What opens this path",
-    intelNoteLabel: "Note added",
-    intelSupportLabel: "Helps judge",
-    intelRepeatPrefix: "Your notes still show",
-    intelDefaultStatus: "Scout Brief",
-    intelDefaultFinding: "Check the marked places to see what is really happening on the ground.",
-    intelDefaultWhy: "Each clue will help you judge the final order.",
+    intelNoteLabel: "Report note",
+    intelSupportLabel: "Points toward",
+    intelRepeatPrefix: "Your notes still point to",
+    intelDefaultStatus: "Mission Intel",
+    intelDefaultFinding: "Scout the marked places to see what is failing on the ground.",
+    intelDefaultWhy: "Each clue can change which order makes the most sense.",
     intelDefaultNote: "Different places reveal different parts of the problem.",
     intelGenericWhy: "This clue changes how the final order might work.",
     mapLocationLabel: "Current Spot",
@@ -131,7 +139,7 @@ const copy = {
     mapStatusDone: "Checked",
     mapStatusNew: "New",
     mapNeedMore: remaining => `Scout ${remaining} more place${remaining === 1 ? "" : "s"} to unlock your orders.`,
-    mapReady: "Scout complete. Your orders are ready below.",
+    mapReady: "Scout run complete. Review what your scouts found next.",
     mapBlocked: "A wall, river, or closed path stops you.",
     mapNothingNearby: "No marked place is within reach here.",
     mapCoords: (x, y) => `X ${String(x + 1).padStart(2, "0")}  Y ${String(y + 1).padStart(2, "0")}`,
@@ -268,42 +276,50 @@ const copy = {
     objectiveLabel: "Tu mision",
     narratorLabel: "Narrador",
     skipIntro: "Avanzar",
-    choiceHeading: "Elige tu movimiento",
+    choiceHeading: "Da tu orden",
     mapLabel: "Mapa",
     mapDockLabel: "Informe de exploracion",
-    mapDockLead: "Explora los lugares marcados antes de tomar tu decision.",
-    mapDockReadyLead: "Ya tienes suficientes pistas. Vuelve y elige como respondera tu casa.",
+    mapDockLead: "Explora los lugares marcados. Necesitas pruebas reales antes de dar una orden.",
+    mapDockReadyLead: "Ya tienes suficientes pistas. Vuelve del mapa y revisa lo que encontraron tus exploradores.",
     mapDockProgress: (checked, total) => `Pistas ${checked}/${total}`,
     mapOpenButton: "Buscar pistas",
-    mapCloseButton: "Volver a la mision",
+    mapCloseButton: "Volver",
     mapMinimapStub: "ESPACIO MINIMAPA",
     investigationHeading: "Informe de exploracion",
-    investigationLead: (checked, total) => `Revisaste ${checked} de ${total} sitios clave.`,
+    investigationLead: (checked, total) => `Tus exploradores revisaron ${checked} de ${total} sitios clave.`,
     investigationLocked: "Explora los lugares marcados para construir tu caso.",
     investigationNeedMore: remaining =>
       `Aun faltan ${remaining} sitio${remaining === 1 ? "" : "s"} clave por revisar.`,
-    investigationReady: "Ya tienes suficiente evidencia. Elige tu respuesta.",
-    investigationWhatLearned: "Lo que encontraron tus exploradores",
+    investigationReady: "Ya tienes suficiente evidencia. Revisa el informe y luego da tu orden.",
+    investigationWhatLearned: "Lo que revelo la exploracion",
     investigationNoNotes: "Todavia no hay notas de campo.",
     investigationMoreNotes: count => `+${count} notas mas en el registro completo.`,
+    reviewEyebrow: "INFORME DE EXPLORACION",
+    reviewHeading: "Revisa el informe de exploracion",
+    reviewBackToMap: "Volver al mapa",
+    reviewHintsButton: "Leer presiones",
+    reviewChooseButton: "Dar tu orden",
+    reviewHintsHeading: "Pistas de presion",
+    reviewHintsLead: "Estas pistas muestran que resuelve primero cada movimiento y que deja expuesto.",
+    choiceBackButton: "Volver al informe",
     strategyPressureLabel: "Presiones mas fuertes",
     strategyReadLabel: "Tu clan lo lee asi",
     strategyGuideLabel: "Guia de respuesta",
     strategyEvidenceLabel: "Los exploradores vieron",
     strategyRiskLabel: "Riesgo",
     strategyRemainingLabel: "Sigue en riesgo",
-    intelFindingLabel: "Hallazgo",
+    intelFindingLabel: "Los exploradores descubren",
     intelWhyLabel: "Por que importa",
     intelMissionLabel: "Presion de la mision",
     intelNextStepLabel: "Mejor siguiente paso",
     intelBlockedLabel: "Por que se detienen los exploradores",
     intelAccessLabel: "Que abre este paso",
-    intelNoteLabel: "Nota agregada",
-    intelSupportLabel: "Ayuda a juzgar",
-    intelRepeatPrefix: "Tus notas aun muestran",
-    intelDefaultStatus: "Resumen de exploracion",
-    intelDefaultFinding: "Revisa los lugares marcados para ver que esta pasando de verdad en el terreno.",
-    intelDefaultWhy: "Cada pista te ayudara a juzgar la orden final.",
+    intelNoteLabel: "Nota del informe",
+    intelSupportLabel: "Apunta hacia",
+    intelRepeatPrefix: "Tus notas aun apuntan a",
+    intelDefaultStatus: "Intel de mision",
+    intelDefaultFinding: "Explora los lugares marcados para ver que esta fallando en el terreno.",
+    intelDefaultWhy: "Cada pista puede cambiar que orden tiene mas sentido.",
     intelDefaultNote: "Cada lugar muestra una parte distinta del problema.",
     intelGenericWhy: "Esta pista cambia como podria funcionar la orden final.",
     mapLocationLabel: "Lugar actual",
@@ -324,7 +340,7 @@ const copy = {
     mapStatusDone: "Hecho",
     mapStatusNew: "Nuevo",
     mapNeedMore: remaining => `Explora ${remaining} lugar${remaining === 1 ? "" : "es"} mas para desbloquear tus ordenes.`,
-    mapReady: "Exploracion completa. Tus ordenes ya estan listas abajo.",
+    mapReady: "Exploracion completa. Revisa ahora lo que encontraron tus exploradores.",
     mapBlocked: "Un muro, un rio o un camino cerrado te detiene.",
     mapNothingNearby: "No hay un lugar marcado al alcance aqui.",
     mapCoords: (x, y) => `X ${String(x + 1).padStart(2, "0")}  Y ${String(y + 1).padStart(2, "0")}`,
@@ -771,7 +787,7 @@ const scenes = [
       es: "Seguridad territorial y lazos locales"
     },
     objective: {
-      en: "Protect the estate and prove people can trust your house.",
+      en: "Find what is breaking estate safety, then decide what your house protects first.",
       es: "Demuestra que tu casa puede proteger haciendas sin perder la confianza local."
     },
     scoreLabel: {
@@ -787,12 +803,12 @@ const scenes = [
     },
     paragraphs: {
       en: [
-        "Kyoto feels far away. Out here, one raid can empty a rice storehouse or ruin a whole harvest.",
+        "Kyoto feels far away. Out here, one raid can empty a rice storehouse or ruin a whole harvest, but long patrols can drain the same grain.",
         "Village heads want to know if your retainers can guard the roads, fields, and granaries without turning on the people.",
         "How will you answer the alarm?"
       ],
       es: [
-        "Tu casa sirve a una hacienda tributaria lejos de Kioto. Saqueos, disputas de tierras y patrullas debiles amenazan las cosechas.",
+        "Tu casa sirve a una hacienda tributaria lejos de Kioto. Saqueos, disputas de tierras y patrullas debiles amenazan las cosechas, pero las patrullas largas tambien gastan ese mismo grano.",
         "Si demuestras que tu linaje es una casa de [[retainer|retenedores]] confiable, los funcionarios locales podrian confiarte mas jinetes y almacenes.",
         "Como aseguras el distrito y fortaleces tu [[legitimacy|legitimidad]]?"
       ]
@@ -813,19 +829,19 @@ const scenes = [
           es: "Reune jefes de aldea, retenedores y jinetes cercanos para crear puestos compartidos de vigilancia y aviso."
         },
         result: {
-          en: "Watch posts rise, warning routes improve, and more villages begin to trust your house. But a bold raid could still test the roads before every ally is ready.",
-          es: "Se levantan puestos de vigilancia, mejoran las rutas de aviso y mas aldeas empiezan a confiar en tu casa. Aun asi, un saqueo audaz podria probar los caminos antes de que cada aliado este listo."
+          en: "Watch posts rise, warning routes improve, and more villages begin to trust your house. But gifts, grain shares, and extra watch duty cut into stored rice, and the roads still take time to cover.",
+          es: "Se levantan puestos de vigilancia, mejoran las rutas de aviso y mas aldeas empiezan a confiar en tu casa. Pero los regalos, el grano compartido y la guardia extra gastan las reservas, y aun hace falta tiempo para cubrir todos los caminos."
         },
         log: {
-          en: "Village heads and retainers tied the estate together, even if the roads still need time.",
-          es: "Jefes de aldea y jinetes unieron la hacienda, aunque los caminos aun necesitan tiempo."
+          en: "Village heads and retainers tied the estate together, but shared defense cost grain.",
+          es: "Jefes de aldea y retenedores unieron la hacienda, pero la defensa compartida costo grano."
         },
         effects: {
-          standing: 3,
+          standing: 2,
           giri: 3,
-          koku: 2,
-          learning: 2,
-          people: 6
+          koku: -2,
+          learning: 1,
+          people: 5
         },
         scoreBonus: 4,
         badge: {
@@ -841,21 +857,21 @@ const scenes = [
           es: "Envia jinetes montados de inmediato y refuerza el camino oriental con patrullas mas duras."
         },
         result: {
-          en: "Your retainers scatter the raiders and the roads feel safer fast, but nearby villages now watch your patrols with fear.",
-          es: "Tus jinetes dispersan a los saqueadores y los caminos se sienten mas seguros rapido, pero las aldeas cercanas ahora miran tus patrullas con miedo."
+          en: "Your retainers scatter the raiders and the roads feel safer fast, but extra horse patrols eat into stored rice and nearby villages now watch your guards with fear.",
+          es: "Tus retenedores dispersan a los saqueadores y los caminos se sienten mas seguros rapido, pero las patrullas a caballo gastan arroz almacenado y las aldeas cercanas ahora miran a tus guardias con miedo."
         },
         log: {
-          en: "Fast patrols closed the roads, but fear spread with them.",
-          es: "Los jinetes rapidos cerraron los caminos, pero el miedo avanzo con ellos."
+          en: "Fast patrols closed the roads, but grain ran low and fear spread with them.",
+          es: "Las patrullas rapidas cerraron los caminos, pero el grano bajo y el miedo avanzo con ellas."
         },
         effects: {
-          standing: 5,
+          standing: 6,
           giri: 4,
-          koku: 2,
+          koku: -2,
           learning: 0,
           people: -1
         },
-        scoreBonus: 4,
+        scoreBonus: 5,
         badge: {
           id: "mounted-patrol",
           en: "Mounted Patrol",
@@ -869,19 +885,19 @@ const scenes = [
           es: "Revisa padrones, linderos y viejas disputas de frontera antes de mover mas tropas."
         },
         result: {
-          en: "Your ledgers sharpen, grain and field claims grow clearer, and border fights become easier to settle. But the next raid could still come before fresh orders reach the roads.",
-          es: "Tus registros se aclaran, el grano y los reclamos de tierras quedan mas claros y las disputas de frontera se vuelven mas faciles de resolver. Pero el siguiente saqueo aun puede llegar antes de que nuevas ordenes salgan a los caminos."
+          en: "Your ledgers sharpen, grain and field claims grow clearer, and border fights become easier to settle. But the road guards stay thin, and the next raid could still hit before new orders spread.",
+          es: "Tus registros se aclaran, el grano y los reclamos de tierras quedan mas claros y las disputas de frontera se vuelven mas faciles de resolver. Pero los guardias del camino siguen siendo pocos y el siguiente saqueo aun puede llegar antes de que se repartan las nuevas ordenes."
         },
         log: {
-          en: "Clear records steadied the estate, even while the roads stayed exposed.",
-          es: "Los registros claros estabilizaron la hacienda, aunque los caminos siguieron expuestos."
+          en: "Clear records steadied the estate, even while road defense stayed thin.",
+          es: "Los registros claros estabilizaron la hacienda, aunque la defensa del camino siguio siendo delgada."
         },
         effects: {
-          standing: 1,
-          giri: 2,
+          standing: 0,
+          giri: 1,
           koku: 4,
           learning: 5,
-          people: 2
+          people: -1
         },
         scoreBonus: 4,
         badge: {
@@ -908,7 +924,7 @@ const scenes = [
       es: "Logistica, lealtad y supervivencia"
     },
     objective: {
-      en: "Choose where your retainers, grain, and loyalty will go.",
+      en: "Scout the war pressure around you, then decide where your grain and loyalty will go.",
       es: "Elige una estrategia de guerra que mantenga viva a tu casa mientras clanes mayores luchan por el poder."
     },
     scoreLabel: {
@@ -1045,7 +1061,7 @@ const scenes = [
       es: "Ley, lazos vasallaticos y gobierno practico"
     },
     objective: {
-      en: "Choose how close your house will stand to the new [[shogunate|shogunate]].",
+      en: "Judge what the new [[shogunate|shogunate]] can offer and what tying your house to it may cost.",
       es: "Decide como operara tu casa bajo el nuevo [[shogunate|shogunato]]."
     },
     scoreLabel: {
@@ -1182,7 +1198,7 @@ const scenes = [
       es: "Descentralizacion y poder regional"
     },
     objective: {
-      en: "Hold your region together while central power falls apart.",
+      en: "Find what is snapping first in your region, then choose what you will hold together.",
       es: "Mantén unidas tus tierras mientras la autoridad central se debilita y surgen senores regionales."
     },
     scoreLabel: {
@@ -1319,7 +1335,7 @@ const scenes = [
       es: "Construccion del dominio, armas de fuego e impuestos"
     },
     objective: {
-      en: "Turn your house into a [[daimyo|daimyo]] domain that can last.",
+      en: "Decide what kind of [[daimyo|daimyo]] power your house will build first: army, grain, or followers.",
       es: "Convierte la supervivencia militar en gobierno regional estable y autoridad [[daimyo|daimyo]] creible."
     },
     scoreLabel: {
@@ -1456,7 +1472,7 @@ const scenes = [
       es: "Burocracia, ritual y residencia alterna"
     },
     objective: {
-      en: "Keep your house important in a peaceful age of law, ledgers, and processions to Edo.",
+      en: "Keep your house useful in peace by choosing what matters most now: order, office, or display.",
       es: "Redefine tu casa para una era en la que el papeleo puede importar tanto como las espadas."
     },
     scoreLabel: {
@@ -1593,7 +1609,7 @@ const scenes = [
       es: "Reforma del dominio y aprendizaje global limitado"
     },
     objective: {
-      en: "Handle debt, unrest, and new ideas without losing your domain.",
+      en: "Find which pressure is breaking the domain first, then choose what your house can afford to solve.",
       es: "Responde a la crisis sin quebrar la autoridad de tu casa."
     },
     scoreLabel: {
@@ -1731,7 +1747,7 @@ const scenes = [
       es: "Modernizacion, memoria y adaptacion"
     },
     objective: {
-      en: "Find a future for your house after samurai status is stripped away.",
+      en: "Decide what your house will save, surrender, or rebuild as samurai status ends.",
       es: "Guia tu casa a traves de la crisis que termina con la clase samurai como orden legal."
     },
     scoreLabel: {
@@ -1861,7 +1877,7 @@ const sceneFlavor = {
       es: "Alarma de la hacienda"
     },
     intro: {
-      en: "Before sunrise, a mud-splashed rider pounds at your gate. Raiders hit the estate edge, and the harvest may vanish by nightfall.",
+      en: "Before sunrise, a mud-splashed courier pounds at your gate. Raiders struck the estate edge, and one bad order could cost both harvest and trust.",
       es: "Antes del amanecer, un jinete embarrado llega a tu puerta. Saqueadores probaron la frontera de la hacienda y la cosecha esta en riesgo."
     }
   },
@@ -1871,7 +1887,7 @@ const sceneFlavor = {
       es: "Llamado del campamento"
     },
     intro: {
-      en: "War banners crowd the roads. If you do not choose soon, a larger clan will use your retainers and grain for its own cause.",
+      en: "War banners choke the roads. If you do not choose a side and route soon, a greater house will spend your grain for you.",
       es: "Los estandartes de guerra llenan los caminos. Si no eliges pronto, un clan mas fuerte elegira por ti."
     }
   },
@@ -1881,7 +1897,7 @@ const sceneFlavor = {
       es: "Llamado de Kamakura"
     },
     intro: {
-      en: "A sealed order from Kamakura lands on your mat. The new government wants service, names, and land records.",
+      en: "A sealed order from Kamakura lands on your mat. It offers backing, but only if your house accepts new duties and new risks.",
       es: "Llega una orden sellada desde Kamakura. El nuevo gobierno militar quiere servicio, nombres y lealtades claras."
     }
   },
@@ -1891,7 +1907,7 @@ const sceneFlavor = {
       es: "Despacho provincial"
     },
     intro: {
-      en: "Smoke rises over Kyoto, but the worst trouble is here: closed roads, missing couriers, and small wars breaking loose.",
+      en: "Smoke rises over Kyoto, but the real test is here: seized toll gates, missing couriers, and neighbors probing your borders.",
       es: "El humo de Kioto se siente lejano, pero el desorden no. Caminos se cierran, mensajeros desaparecen y las pequenas guerras se extienden."
     }
   },
@@ -1901,7 +1917,7 @@ const sceneFlavor = {
       es: "Orden de la ciudad-castillo"
     },
     intro: {
-      en: "Retainers crowd the hall while gunners drill outside. If your house wants daimyo power, it must look ready to rule now.",
+      en: "Retainers crowd the hall while gunners drill outside. Every rival is building harder power, and your house cannot stay half-made.",
       es: "Los retenedores llenan la sala mientras los tiradores practican afuera. No es tiempo para una casa debil ni para un dominio a medias."
     }
   },
@@ -1911,7 +1927,7 @@ const sceneFlavor = {
       es: "Aviso Tokugawa"
     },
     intro: {
-      en: "Your swords still mark rank, but clerks and magistrates now shape daily life. Peace has turned power into paperwork, roads, and careful law.",
+      en: "Your swords still mark rank, but clerks, magistrates, and processions now decide who matters. One mistake can drain prestige without drawing a blade.",
       es: "Tus espadas aun marcan rango, pero escribanos y magistrados ahora moldean el poder diario. La paz convirtio el gobierno en papeleo, viajes y ley cuidadosa."
     }
   },
@@ -1921,7 +1937,7 @@ const sceneFlavor = {
       es: "Aviso de reforma"
     },
     intro: {
-      en: "Granaries run low, debt climbs, and village petitions stack up on your desk. One order may calm the domain or inflame it.",
+      en: "Granaries run low, debt climbs, and village petitions pile up on your desk. Any order you give will calm one pressure and stir another.",
       es: "Los graneros estan bajos, la deuda es alta y las peticiones de aldea se amontonan. Una sola orden tuya puede calmar el dominio o acercarlo al conflicto."
     }
   },
@@ -1931,7 +1947,7 @@ const sceneFlavor = {
       es: "Aviso imperial"
     },
     intro: {
-      en: "The old badges of rank fade by the month. If your house will survive, it must decide what to carry into the new Japan.",
+      en: "The old badges of rank fade month by month. If your house will survive, it must choose what to keep and what to let go.",
       es: "Las viejas marcas de rango valen menos cada temporada. Si tu casa va a sobrevivir, debe elegir que llevar al nuevo Japon."
     }
   }
@@ -2283,7 +2299,7 @@ const sceneMaps = {
           es: "Casa del jefe de aldea"
         },
         text: {
-          en: "The village head points to the paddies and says people will back retainers who protect fields instead of frightening them.",
+          en: "The village head points to the paddies and says people will back retainers who protect fields instead of frightening them, but shared watch duty will still cost grain and labor.",
           es: "El jefe de aldea senala los arrozales y dice que la gente apoyara a los jinetes que protejan los campos sin sembrar miedo."
         }
       },
@@ -2307,7 +2323,7 @@ const sceneMaps = {
           es: "Puerta oriental"
         },
         text: {
-          en: "The gate guards can hold for a little while, but they need clear orders and fresh messengers.",
+          en: "The gate guards can hold for a little while, but stronger patrols will need fresh messengers, more horses, and more rice.",
           es: "Los guardias de la puerta pueden resistir un poco, pero necesitan ordenes claras y mensajeros rapidos."
         }
       },
@@ -2319,7 +2335,7 @@ const sceneMaps = {
           es: "Granero de arroz"
         },
         text: {
-          en: "Rice bags are stacked behind heavy doors. One raid here would hurt every family on the estate.",
+          en: "Rice bags are stacked behind heavy doors. One raid here would hurt every family on the estate, and every extra patrol also draws from the same stores.",
           es: "Los sacos de arroz estan apilados tras puertas pesadas. Un solo saqueo aqui golpearia a todas las familias de la hacienda."
         }
       },
@@ -2331,7 +2347,7 @@ const sceneMaps = {
           es: "Puesto de mensajeros"
         },
         text: {
-          en: "Couriers water horses and pass sealed notices here. If warnings slow down at this post, retainers and gate guards reach trouble too late.",
+          en: "Couriers water horses and pass sealed notices here. If warnings slow down at this post, retainers and gate guards reach trouble too late, after rice carts and field workers are already exposed.",
           es: "Los mensajeros dan agua a los caballos y pasan avisos sellados aqui. Si las advertencias se frenan en este puesto, los jinetes y guardias llegan tarde al problema."
         }
       }
@@ -3079,19 +3095,29 @@ const investigationIntelByScene = {
   heian: {
     headman: {
       status: "Village Warning",
-      finding: "The village head says farmers will back retainers who guard the paddies without shaking them down.",
+      finding: "The village head says farmers will back retainers who guard the paddies without shaking them down, but they cannot spare many watchmen unless your house shares grain.",
       whyLabel: {
         en: "Headman's concern",
         es: "Preocupacion del jefe aldeano"
       },
-      why: "If patrols scare the villages, the estate loses trust and food.",
+      why: {
+        en: "If patrols scare the villages, the estate loses trust. If you ask for extra village watch duty, you also spend grain and labor.",
+        es: "Si las patrullas asustan a las aldeas, la hacienda pierde confianza. Si pides mas turnos de guardia, tambien gastas grano y trabajo."
+      },
       note: "Village trust concern",
-      summary: "Farmers want protection without rough patrols.",
+      summary: {
+        en: "Farmers want protection, but shared defense will still cost grain.",
+        es: "Los campesinos quieren proteccion, pero la defensa compartida tambien costara grano."
+      },
       repeat: "The village head still says fear alone will not keep farmers loyal.",
-      support: "Shared defense with village heads.",
+      support: {
+        en: "Shared defense with village heads, if your house can spare grain for it.",
+        es: "Defensa compartida con jefes de aldea, si tu casa puede ceder grano."
+      },
       evidence: {
         trust: 2,
-        authority: 1
+        authority: 1,
+        supply: 1
       }
     },
     shrine: {
@@ -3101,11 +3127,17 @@ const investigationIntelByScene = {
         en: "Shrine keeper's warning",
         es: "Advertencia del cuidador del santuario"
       },
-      why: "If your house leans only on fear, village trust may break before the raiders do.",
+      why: {
+        en: "If your house leans only on fear, village trust may break before the raiders do. People want fair protection, not just harsher patrols.",
+        es: "Si tu casa se apoya solo en el miedo, la confianza puede romperse antes que los saqueadores. La gente quiere proteccion justa, no solo patrullas mas duras."
+      },
       note: "Village mood logged",
       summary: "The shrine shows that people want safety and fairness, not just harsher patrols.",
       repeat: "Your shrine notes still show the same mood: fear is spreading faster than trust.",
-      support: "Alliance-building and visible trust.",
+      support: {
+        en: "Alliance-building and fair patrols.",
+        es: "Alianzas y patrullas justas."
+      },
       evidence: {
         trust: 2,
         authority: 1
@@ -3113,16 +3145,25 @@ const investigationIntelByScene = {
     },
     granary: {
       status: "Supply Warning",
-      finding: "The granary keeper says one raid here would cut seed rice and winter stores at the same time.",
+      finding: "The granary keeper says one raid here would cut seed rice and winter stores at the same time, and every extra patrol horse will feed from the same sacks.",
       whyLabel: {
         en: "Granary keeper's warning",
         es: "Advertencia del guardian del granero"
       },
-      why: "Protecting grain matters as much as chasing raiders.",
+      why: {
+        en: "The same rice that feeds families also feeds guards, horses, and messengers.",
+        es: "El mismo arroz que alimenta a las familias tambien alimenta a guardias, caballos y mensajeros."
+      },
       note: "Granary risk logged",
-      summary: "One raid on the granary would hurt every household.",
+      summary: {
+        en: "One raid or one costly patrol push could drain the same rice stores.",
+        es: "Un saqueo o una gran oleada de patrullas podria vaciar esas mismas reservas."
+      },
       repeat: "The granary keeper still warns that one more raid could empty the rice stores.",
-      support: "Careful protection of grain and estate records.",
+      support: {
+        en: "Any plan that protects rice, or avoids burning through it too fast.",
+        es: "Cualquier plan que proteja el arroz, o evite gastarlo demasiado rapido."
+      },
       evidence: {
         supply: 2,
         records: 1
@@ -3130,29 +3171,39 @@ const investigationIntelByScene = {
     },
     eastGate: {
       status: "Gate Report",
-      finding: "Gate guards say the east road stays too open after dark and messengers arrive late.",
+      finding: "Gate guards say the east road stays too open after dark and messengers arrive late. They want more patrols, but more horses and guards will need feed.",
       whyLabel: {
         en: "Gate captain's warning",
         es: "Advertencia del capitan de la puerta"
       },
-      why: "Fast patrol orders could stop the next raid before it reaches the fields.",
+      why: {
+        en: "A stronger guard line could stop the next raid before it reaches the fields, but it will cost rice to keep it moving.",
+        es: "Una linea de guardia mas fuerte podria frenar el proximo saqueo antes de los campos, pero costara arroz mantenerla en marcha."
+      },
       note: "Road security concern",
       summary: "The east road is under-defended after dark.",
       repeat: "The gate captain repeats that the road is too open for weak patrols.",
-      support: "Mounted retainers and faster response.",
+      support: {
+        en: "Fast patrols, if the estate can feed more horses and guards.",
+        es: "Patrullas rapidas, si la hacienda puede alimentar mas caballos y guardias."
+      },
       evidence: {
         security: 2,
-        response: 2
+        response: 2,
+        supply: 1
       }
     },
     rumorPost: {
       status: "Courier Report",
-      finding: "Retainers at the courier post say warnings are arriving too late. By the time help moves, raiders have already passed the fields or turned toward the storehouses.",
+      finding: "Retainers at the courier post say warnings are arriving too late. By the time help moves, raiders have already passed the fields or turned toward the storehouses, and every late order wastes time, horses, and rice.",
       whyLabel: {
         en: "Couriers' warning",
         es: "Advertencia de los mensajeros"
       },
-      why: "Slow messages leave patrols guessing, and late notices also make border reports harder to keep straight.",
+      why: {
+        en: "Slow messages leave patrols guessing, and late notices waste time while making border reports harder to keep straight.",
+        es: "Los mensajes lentos dejan a las patrullas adivinando, y los avisos tardios gastan tiempo mientras vuelven mas confusos los informes de frontera."
+      },
       note: "Warning delay logged",
       summary: "The estate is hearing about trouble too late to answer quickly.",
       repeat: "The courier post still points to the same problem: warnings are moving too slowly.",
@@ -3160,7 +3211,8 @@ const investigationIntelByScene = {
       evidence: {
         response: 2,
         security: 1,
-        records: 1
+        records: 1,
+        supply: 1
       }
     }
   },
@@ -3549,37 +3601,68 @@ const heianLensProfiles = {
   }
 };
 
+const missionLensProfiles = {
+  family: {
+    provincial: {
+      en: "Border roots keep pulling your eye toward exposed routes and slow response.",
+      es: "Las raices de frontera siguen llevando tu mirada hacia rutas expuestas y respuestas lentas."
+    },
+    court: {
+      en: "Court roots keep highlighting visible authority and who must be reassured.",
+      es: "Las raices cortesanas siguen resaltando la autoridad visible y a quien hay que tranquilizar."
+    },
+    scholar: {
+      en: "Record roots keep catching mixed reports, land confusion, and broken counts.",
+      es: "Las raices de registros siguen captando informes cruzados, confusion de tierras y cuentas rotas."
+    }
+  },
+  focus: {
+    martial: {
+      en: "Commander style weighs speed, force, and readiness first.",
+      es: "El estilo de comandante pesa primero la velocidad, la fuerza y la preparacion."
+    },
+    steward: {
+      en: "Steward style keeps weighing grain, roads, and steady order.",
+      es: "El estilo de administrador sigue pesando el grano, los caminos y el orden firme."
+    },
+    scholar: {
+      en: "Strategist style keeps testing timing, coordination, and hidden tradeoffs.",
+      es: "El estilo de estratega sigue probando el tiempo, la coordinacion y los costos ocultos."
+    }
+  }
+};
+
 const heianChoiceGuidance = {
   "heian-alliance": {
     strengths: ["trust", "authority"],
-    risks: ["security", "response"],
+    risks: ["supply", "security"],
     label: {
       en: "Build alliances",
       es: "Construir alianzas"
     },
     best: {
-      en: "Best for village trust and shared warning routes.",
+      en: "Builds village trust and shared warning routes.",
       es: "Mejor para la confianza de la aldea y las rutas compartidas de aviso."
     },
     risk: {
-      en: "Road danger may stay high until every ally is in place.",
-      es: "El peligro del camino puede seguir alto hasta que todos los aliados esten listos."
+      en: "Costs grain, and bold raiders may still test open roads before the watches knit together.",
+      es: "Los regalos y puestos de guardia compartidos cuestan arroz, y los saqueadores aun pueden probar caminos abiertos."
     }
   },
   "heian-martial": {
     strengths: ["security", "response"],
-    risks: ["trust", "authority"],
+    risks: ["trust", "supply"],
     label: {
       en: "Patrol harder",
       es: "Patrullar con mas fuerza"
     },
     best: {
-      en: "Best for quick road defense and fast response.",
+      en: "Secures the roads fastest and answers alarms quickly.",
       es: "Mejor para la defensa rapida del camino y la respuesta veloz."
     },
     risk: {
-      en: "Fear can rise faster than loyalty if patrols feel too harsh.",
-      es: "El miedo puede crecer mas rapido que la lealtad si las patrullas se sienten demasiado duras."
+      en: "Burns stored rice, and frightened villages may start fearing your own patrols.",
+      es: "Las patrullas extra gastan arroz almacenado, y las aldeas asustadas pueden confiar menos en ti."
     }
   },
   "heian-survey": {
@@ -3590,12 +3673,12 @@ const heianChoiceGuidance = {
       es: "Arreglar registros"
     },
     best: {
-      en: "Best for field order, grain tracking, and clear land claims.",
+      en: "Restores field order, grain counts, and clear land claims.",
       es: "Mejor para el orden de tierras, el control del grano y los reclamos claros."
     },
     risk: {
-      en: "The next raid may still land before new reports and orders move out.",
-      es: "El siguiente saqueo aun puede llegar antes de que salgan los nuevos avisos y ordenes."
+      en: "The roads stay exposed until the new ledgers and orders reach the outer fields.",
+      es: "Los guardias del camino siguen siendo pocos hasta que los nuevos registros y ordenes llegan a los campos lejanos."
     }
   }
 };
@@ -3722,6 +3805,8 @@ const state = {
   setupStep: 0,
   sceneIndex: 0,
   choiceLocked: false,
+  playPhase: "mission",
+  pressureHintsReviewed: false,
   introSceneId: "",
   introLanguage: "en",
   typedIntroArt: "",
@@ -3744,7 +3829,8 @@ const state = {
   mapOverlayOpen: false,
   mapIntel: null,
   mapHelpOpen: false,
-  mapInspectNotice: null
+  mapInspectNotice: null,
+  mapInspectAnchor: null
 };
 
 const dom = {};
@@ -3817,6 +3903,7 @@ function cacheDom() {
   dom.setupBack = document.getElementById("setupBack");
   dom.beginChronicle = document.getElementById("beginChronicle");
   dom.playView = document.getElementById("playView");
+  dom.playBriefGrid = dom.playView.querySelector(".play-brief-grid");
   dom.sceneStep = document.getElementById("sceneStep");
   dom.sceneTitle = document.getElementById("sceneTitle");
   dom.sceneYears = document.getElementById("sceneYears");
@@ -3833,7 +3920,13 @@ function cacheDom() {
   dom.mapDockStatus = document.getElementById("mapDockStatus");
   dom.openMapBtn = document.getElementById("openMapBtn");
   dom.minimapSlot = document.getElementById("minimapSlot");
+  dom.investigationReviewStage = document.getElementById("investigationReviewStage");
+  dom.reviewEyebrow = document.getElementById("reviewEyebrow");
+  dom.reviewHeading = document.getElementById("reviewHeading");
   dom.investigationSummary = document.getElementById("investigationSummary");
+  dom.reviewBackToMapBtn = document.getElementById("reviewBackToMapBtn");
+  dom.reviewHintsBtn = document.getElementById("reviewHintsBtn");
+  dom.reviewChooseBtn = document.getElementById("reviewChooseBtn");
   dom.mapOverlay = document.getElementById("mapOverlay");
   dom.mapPanel = document.getElementById("mapPanel");
   dom.mapLabel = document.getElementById("mapLabel");
@@ -3867,6 +3960,8 @@ function cacheDom() {
   dom.mapInspectBody = document.getElementById("mapInspectBody");
   dom.mapInspectDismiss = document.getElementById("mapInspectDismiss");
   dom.sceneBody = document.getElementById("sceneBody");
+  dom.choiceStage = document.getElementById("choiceStage");
+  dom.choiceBackBtn = document.getElementById("choiceBackBtn");
   dom.choiceSection = document.querySelector(".choice-section");
   dom.choiceHeading = document.getElementById("choiceHeading");
   dom.choiceList = document.getElementById("choiceList");
@@ -3894,6 +3989,10 @@ function bindEvents() {
   });
   dom.skipIntro.addEventListener("click", skipTypewriter);
   dom.openMapBtn.addEventListener("click", openMapOverlay);
+  dom.reviewBackToMapBtn.addEventListener("click", openMapOverlay);
+  dom.reviewHintsBtn.addEventListener("click", reviewPressureHints);
+  dom.reviewChooseBtn.addEventListener("click", openChoiceStage);
+  dom.choiceBackBtn.addEventListener("click", openReportStage);
   dom.mapHelpBtn.addEventListener("click", toggleMapHelp);
   dom.closeMapBtn.addEventListener("click", () => closeMapOverlay(true));
   dom.mapHelpClose.addEventListener("click", () => closeMapHelp(true));
@@ -4201,12 +4300,17 @@ function renderPlayView() {
   if (!inPlay) {
     clearTypewriter();
     dom.sceneArt.textContent = "";
+    resetPlayPhase();
     state.mapOverlayOpen = false;
     state.mapIntel = null;
     state.mapHelpOpen = false;
     state.mapInspectNotice = null;
+    dom.playBriefGrid.classList.remove("hidden");
+    dom.investigationReviewStage.classList.add("hidden");
+    dom.choiceStage.classList.add("hidden");
     dom.mapDock.classList.add("hidden");
     dom.investigationSummary.classList.add("hidden");
+    dom.choiceSection.classList.add("hidden");
     dom.mapOverlay.classList.add("hidden");
     dom.stage.classList.remove("is-map-open");
     return;
@@ -4221,6 +4325,8 @@ function renderPlayView() {
   const scene = scenes[state.sceneIndex];
   const flavor = getSceneFlavor(scene.id);
   const sceneMap = getSceneMap(scene.id);
+  const playPhase = getResolvedPlayPhase(scene);
+  state.playPhase = playPhase;
   dom.sceneStep.textContent = locale.chapterLabel(state.sceneIndex + 1, scenes.length);
   dom.sceneTitle.textContent = scene.title[state.language];
   dom.sceneYears.textContent = scene.years;
@@ -4229,6 +4335,12 @@ function renderPlayView() {
   dom.objectiveLabel.textContent = locale.objectiveLabel;
   dom.sceneObjective.innerHTML = renderRichText(scene.objective[state.language]);
   dom.choiceHeading.textContent = locale.choiceHeading;
+  dom.reviewEyebrow.textContent = locale.reviewEyebrow;
+  dom.reviewHeading.textContent = locale.reviewHeading;
+  dom.reviewBackToMapBtn.textContent = locale.reviewBackToMap;
+  dom.reviewHintsBtn.textContent = locale.reviewHintsButton;
+  dom.reviewChooseBtn.textContent = locale.reviewChooseButton;
+  dom.choiceBackBtn.textContent = locale.choiceBackButton;
   dom.skipIntro.textContent = locale.skipIntro;
   dom.mapDockLabel.textContent = locale.mapDockLabel;
   dom.mapDockLead.textContent = locale.mapDockLead;
@@ -4287,12 +4399,28 @@ function renderPlayView() {
     beginTypewriter(scene);
   }
 
-  updateSceneIntroDisplay(scene);
-  renderMapDock(scene);
-  renderInvestigationSummary(scene);
+  updateSceneIntroDisplay(scene, playPhase);
+  renderMapDock(scene, playPhase);
+  renderInvestigationSummary(scene, {
+    visible: playPhase === "report",
+    showPressureHints: state.pressureHintsReviewed
+  });
   renderMapPanel(scene);
   renderChoices(scene);
   renderResultPanel(scene);
+
+  const hasBody = dom.sceneBody.dataset.hasContent === "true";
+  const showMissionStage = playPhase === "mission" && !state.pendingOutcome;
+  const showReviewStage = playPhase === "report" && !state.pendingOutcome;
+  const showChoiceStage = playPhase === "choices" && !state.pendingOutcome;
+  dom.playBriefGrid.classList.toggle("hidden", !showMissionStage);
+  dom.sceneBody.classList.toggle("hidden", !showMissionStage || !hasBody);
+  dom.investigationReviewStage.classList.toggle("hidden", !showReviewStage);
+  dom.reviewBackToMapBtn.classList.toggle("hidden", !sceneMap);
+  dom.reviewHintsBtn.classList.toggle("hidden", state.pressureHintsReviewed);
+  dom.reviewChooseBtn.classList.toggle("hidden", !state.pressureHintsReviewed);
+  dom.choiceStage.classList.toggle("hidden", !showChoiceStage);
+  dom.choiceSection.classList.toggle("hidden", !showChoiceStage || state.choiceLocked);
 }
 
 function renderChoices(scene) {
@@ -4488,6 +4616,63 @@ function getSetupPrimaryButtonLabel(locale) {
   return locale.setupContinue;
 }
 
+function resetPlayPhase() {
+  state.playPhase = "mission";
+  state.pressureHintsReviewed = false;
+}
+
+function getResolvedPlayPhase(scene) {
+  const sceneMap = scene ? getSceneMap(scene.id) : null;
+  if (!sceneMap) {
+    return state.introComplete && !state.pendingOutcome ? "choices" : "mission";
+  }
+  if (!state.introComplete || state.pendingOutcome || !isSceneMapComplete(scene.id)) {
+    return "mission";
+  }
+  if (state.playPhase === "choices" && !state.pressureHintsReviewed) {
+    return "report";
+  }
+  return state.playPhase;
+}
+
+function openReportStage(resetNav = true) {
+  const scene = getCurrentScene();
+  if (!scene || !getSceneMap(scene.id) || !isSceneMapComplete(scene.id)) {
+    return;
+  }
+  state.mapOverlayOpen = false;
+  state.mapHelpOpen = false;
+  state.mapInspectNotice = null;
+  state.playPhase = "report";
+  refreshPlayScene(false, resetNav);
+}
+
+function reviewPressureHints(resetNav = true) {
+  const scene = getCurrentScene();
+  if (!scene || !getSceneMap(scene.id) || !isSceneMapComplete(scene.id)) {
+    return;
+  }
+  state.pressureHintsReviewed = true;
+  state.playPhase = "report";
+  refreshPlayScene(false, resetNav);
+}
+
+function openChoiceStage(resetNav = true) {
+  const scene = getCurrentScene();
+  if (!scene) {
+    return;
+  }
+  const sceneMap = getSceneMap(scene.id);
+  if (sceneMap && (!isSceneMapComplete(scene.id) || !state.pressureHintsReviewed)) {
+    return;
+  }
+  state.mapOverlayOpen = false;
+  state.mapHelpOpen = false;
+  state.mapInspectNotice = null;
+  state.playPhase = "choices";
+  refreshPlayScene(false, resetNav);
+}
+
 function getSceneFlavor(sceneId) {
   return sceneFlavor[sceneId];
 }
@@ -4614,7 +4799,7 @@ function clearTypewriter() {
   state.isTyping = false;
 }
 
-function updateSceneIntroDisplay(scene) {
+function updateSceneIntroDisplay(scene, playPhase = state.playPhase) {
   const art = getAsciiArt(scene.id);
   const sceneMap = getSceneMap(scene.id);
   dom.sceneArt.textContent = state.typedIntroArt;
@@ -4624,14 +4809,11 @@ function updateSceneIntroDisplay(scene) {
   dom.sceneIntro.classList.toggle("is-typing", state.isTyping && state.introArtComplete);
   dom.sceneIntro.classList.toggle("is-ready", state.introComplete && !state.pendingOutcome);
   dom.skipIntro.classList.toggle("hidden", !state.isTyping);
-  const revealNarrative = state.introComplete || !!state.pendingOutcome;
-  const hasBody = dom.sceneBody.dataset.hasContent === "true";
-  const mapVisible = revealNarrative && !state.pendingOutcome && !!sceneMap;
-  const choicesReady = revealNarrative && !state.pendingOutcome && (!sceneMap || isSceneMapComplete(scene.id));
-  dom.sceneBody.classList.toggle("hidden", !revealNarrative || !hasBody);
-  dom.mapDock.classList.toggle("hidden", !mapVisible);
-  dom.mapDock.classList.toggle("is-ready", mapVisible && isSceneMapComplete(scene.id));
-  if (!mapVisible) {
+  const mapDockVisible = (state.introComplete || !!state.pendingOutcome) && !state.pendingOutcome && !!sceneMap && playPhase === "mission";
+  const mapAvailable = state.introComplete && !state.pendingOutcome && !!sceneMap;
+  dom.mapDock.classList.toggle("hidden", !mapDockVisible);
+  dom.mapDock.classList.toggle("is-ready", mapDockVisible && isSceneMapComplete(scene.id));
+  if (!mapAvailable) {
     state.mapOverlayOpen = false;
     state.mapIntel = null;
     state.mapHelpOpen = false;
@@ -4639,7 +4821,6 @@ function updateSceneIntroDisplay(scene) {
     dom.mapOverlay.classList.add("hidden");
     dom.stage.classList.remove("is-map-open");
   }
-  dom.choiceSection.classList.toggle("hidden", !choicesReady || state.choiceLocked);
 }
 
 function getCurrentScene() {
@@ -4771,8 +4952,11 @@ function getDefaultMapMessage(sceneId) {
 function getRemainingSceneMapGoals(sceneId) {
   const sceneMap = getSceneMap(sceneId);
   const progress = getSceneMapProgress(sceneId);
-  if (!sceneMap || !progress) {
+  if (!sceneMap) {
     return 0;
+  }
+  if (!progress) {
+    return sceneMap.required.length;
   }
 
   return sceneMap.required.filter(locationId => !progress.visited.includes(locationId)).length;
@@ -5187,13 +5371,13 @@ function getMapIntelPayload(scene, sceneMap, progress) {
   const locale = getLocale();
   const intel = getLocationIntelData(scene.id, location);
   if (state.mapIntel.mode === "repeat") {
-    return {
-      title: location.title,
-      status: {
-        en: "Intel Logged",
-        es: "Intel registrada"
-      },
-      finding: intel.repeat || {
+      return {
+        title: location.title,
+        status: {
+        en: "Clue Confirmed",
+        es: "Pista confirmada"
+        },
+        finding: intel.repeat || {
         en: `${locale.intelRepeatPrefix}: ${localizeForLanguage(intel.summary, "en")}`,
         es: `${copy.es.intelRepeatPrefix}: ${localizeForLanguage(intel.summary, "es")}`
       },
@@ -5378,11 +5562,107 @@ function getHeianChoiceBrief(choice, snapshot) {
   };
 }
 
-function renderInvestigationSummary(scene) {
+function getMissionReadText() {
+  const familyRead = missionLensProfiles.family[getFamily().id];
+  const focusRead = missionLensProfiles.focus[getFocus().id];
+  if (!familyRead || !focusRead) {
+    return null;
+  }
+  return {
+    en: `${familyRead.en} ${focusRead.en}`,
+    es: `${familyRead.es} ${focusRead.es}`
+  };
+}
+
+function renderGenericPressureHints(evidence) {
+  const locale = getLocale();
+  if (!evidence.length) {
+    return `
+      <div class="intel-strategy-box">
+        <p class="mission-label">${locale.reviewHintsHeading}</p>
+        <p class="intel-summary-meta">${locale.investigationLocked}</p>
+      </div>
+    `;
+  }
+
+  const hintEntries = evidence.slice(-3).reverse();
+  return `
+    <div class="intel-strategy-box">
+      <p class="mission-label">${locale.reviewHintsHeading}</p>
+      <p class="intel-summary-meta">${locale.reviewHintsLead}</p>
+      <div class="intel-guide-list">
+        ${hintEntries
+          .map(entry => {
+            const support = entry.intel.support ? localize(entry.intel.support) : localize(entry.intel.summary);
+            const whyLabel = entry.intel.whyLabel ? localize(entry.intel.whyLabel) : locale.intelWhyLabel;
+            const why = localize(entry.intel.why);
+            return `
+              <div class="intel-guide-item">
+                <strong>${escapeHtml(localize(entry.location.title))}</strong>
+                <p>${renderRichText(support)}</p>
+                <p class="intel-summary-meta"><span class="intel-label">${escapeHtml(whyLabel)}:</span> ${renderRichText(why)}</p>
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderHeianPressureHints(scene, heianSnapshot) {
+  const locale = getLocale();
+  const heianTopPressures = heianSnapshot ? heianSnapshot.ordered.slice(0, 3) : [];
+  const heianRemainingRisk = heianSnapshot ? heianSnapshot.ordered.slice(0, 2) : [];
+
+  if (!heianSnapshot) {
+    return renderGenericPressureHints([]);
+  }
+
+  return `
+    <div class="intel-strategy-box">
+      <p class="mission-label">${locale.reviewHintsHeading}</p>
+      <p class="intel-summary-meta">${locale.reviewHintsLead}</p>
+      <p class="mission-label">${locale.strategyPressureLabel}</p>
+      <div class="intel-pressure-row">
+        ${heianTopPressures
+          .map(category => `<span class="intel-pill">${escapeHtml(getHeianEvidenceLabel(category))}</span>`)
+          .join("")}
+      </div>
+      <p class="intel-summary-meta"><span class="intel-label">${locale.strategyReadLabel}:</span> ${renderRichText(
+        `${localize(heianSnapshot.familyRead)} ${localize(heianSnapshot.focusRead)}`
+      )}</p>
+      <p class="intel-summary-meta"><span class="intel-label">${locale.strategyRemainingLabel}:</span> ${escapeHtml(
+        heianRemainingRisk.map(category => getHeianEvidenceLabel(category)).join(" / ")
+      )}</p>
+      <div class="intel-guide-list">
+        <p class="mission-label">${locale.strategyGuideLabel}</p>
+        ${scene.choices
+          .map(choice => {
+            const brief = getHeianChoiceBrief(choice, heianSnapshot);
+            if (!brief) {
+              return "";
+            }
+            return `
+              <div class="intel-guide-item">
+                <strong>${escapeHtml(brief.label)}</strong>
+                <p>${escapeHtml(brief.best)}</p>
+                <p class="intel-summary-meta"><span class="intel-label">${locale.strategyRiskLabel}:</span> ${escapeHtml(
+                  brief.risk
+                )}</p>
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderInvestigationSummary(scene, options = {}) {
+  const { visible = false, showPressureHints = false } = options;
   const sceneMap = getSceneMap(scene.id);
-  const showSummary =
-    state.view === "play" && state.introComplete && !state.pendingOutcome && !!sceneMap && !state.mapOverlayOpen;
-  if (!showSummary) {
+  if (!visible || state.view !== "play" || !state.introComplete || state.pendingOutcome || !sceneMap) {
     dom.investigationSummary.classList.add("hidden");
     dom.investigationSummary.innerHTML = "";
     return;
@@ -5395,8 +5675,12 @@ function renderInvestigationSummary(scene) {
   const evidence = getSceneEvidence(scene, sceneMap, progress);
   const visibleEvidence = evidence.slice(scene.id === "heian" ? -4 : -3).reverse();
   const heianSnapshot = scene.id === "heian" && evidence.length ? getHeianEvidenceSnapshot(evidence) : null;
-  const heianTopPressures = heianSnapshot ? heianSnapshot.ordered.slice(0, 3) : [];
-  const heianRemainingRisk = heianSnapshot ? heianSnapshot.ordered.slice(0, 2) : [];
+  const missionReadText = scene.id === "heian" ? null : getMissionReadText();
+  const pressureHintsMarkup = showPressureHints
+    ? scene.id === "heian"
+      ? renderHeianPressureHints(scene, heianSnapshot)
+      : renderGenericPressureHints(evidence)
+    : "";
 
   dom.investigationSummary.classList.remove("hidden");
   dom.investigationSummary.innerHTML = `
@@ -5408,6 +5692,13 @@ function renderInvestigationSummary(scene) {
       <p class="intel-summary-status">${remaining > 0 ? locale.investigationNeedMore(remaining) : locale.investigationReady}</p>
     </div>
     <div class="intel-summary-body">
+      ${
+        missionReadText
+          ? `<p class="intel-summary-meta"><span class="intel-label">${locale.strategyReadLabel}:</span> ${renderRichText(
+              localize(missionReadText)
+            )}</p>`
+          : ""
+      }
       <p class="mission-label">${locale.investigationWhatLearned}</p>
       ${
         evidence.length
@@ -5438,44 +5729,7 @@ function renderInvestigationSummary(scene) {
             </div>`
           : `<p class="mission-copy">${locale.investigationLocked}</p>`
       }
-      ${
-        heianSnapshot
-          ? `<div class="intel-strategy-box">
-              <p class="mission-label">${locale.strategyPressureLabel}</p>
-              <div class="intel-pressure-row">
-                ${heianTopPressures
-                  .map(category => `<span class="intel-pill">${escapeHtml(getHeianEvidenceLabel(category))}</span>`)
-                  .join("")}
-              </div>
-              <p class="intel-summary-meta"><span class="intel-label">${locale.strategyReadLabel}:</span> ${renderRichText(
-                `${localize(heianSnapshot.familyRead)} ${localize(heianSnapshot.focusRead)}`
-              )}</p>
-              <p class="intel-summary-meta"><span class="intel-label">${locale.strategyRemainingLabel}:</span> ${escapeHtml(
-                heianRemainingRisk.map(category => getHeianEvidenceLabel(category)).join(" / ")
-              )}</p>
-              <div class="intel-guide-list">
-                <p class="mission-label">${locale.strategyGuideLabel}</p>
-                ${scene.choices
-                  .map(choice => {
-                    const brief = getHeianChoiceBrief(choice, heianSnapshot);
-                    if (!brief) {
-                      return "";
-                    }
-                    return `
-                      <div class="intel-guide-item">
-                        <strong>${escapeHtml(brief.label)}</strong>
-                        <p>${escapeHtml(brief.best)}</p>
-                        <p class="intel-summary-meta"><span class="intel-label">${locale.strategyRiskLabel}:</span> ${escapeHtml(
-                          brief.risk
-                        )}</p>
-                      </div>
-                    `;
-                  })
-                  .join("")}
-              </div>
-            </div>`
-          : ""
-      }
+      ${pressureHintsMarkup}
       ${
         evidence.length > visibleEvidence.length
           ? `<p class="intel-summary-meta">${locale.investigationMoreNotes(
@@ -5487,9 +5741,9 @@ function renderInvestigationSummary(scene) {
   `;
 }
 
-function renderMapDock(scene) {
+function renderMapDock(scene, playPhase = state.playPhase) {
   const sceneMap = getSceneMap(scene.id);
-  if (!sceneMap || state.view !== "play" || !state.introComplete || state.pendingOutcome) {
+  if (!sceneMap || state.view !== "play" || !state.introComplete || state.pendingOutcome || playPhase !== "mission") {
     dom.mapDock.classList.add("hidden");
     return;
   }
@@ -5536,7 +5790,17 @@ function renderMapPanel(scene) {
   dom.mapLocationName.textContent = getCurrentMapSpotLabel(sceneMap, progress);
   dom.mapLocationName.className = "mission-copy map-location-name";
   dom.mapPrompt.textContent = getMapPrompt(scene.id, sceneMap, progress);
-  dom.mapCanvas.innerHTML = renderAsciiMap(sceneMap, template, progress, resolvedLocations);
+  const inspectLocationId =
+    state.mapInspectNotice && state.mapInspectNotice.sceneId === scene.id
+      ? state.mapInspectNotice.locationId || ""
+      : "";
+  dom.mapCanvas.innerHTML = renderAsciiMap(
+    sceneMap,
+    template,
+    progress,
+    resolvedLocations,
+    inspectLocationId
+  );
   dom.mapCanvas.setAttribute("aria-label", `${localize(sceneMap.title)} ${locale.mapLabel}`);
   renderMapEventBox(scene, sceneMap, progress);
   renderMapObjectives(scene, sceneMap, progress);
@@ -5554,6 +5818,13 @@ function renderMapHelpPanel() {
 function renderMapInspectPopup(scene, sceneMap, progress) {
   const notice = state.mapInspectNotice;
   if (!notice || notice.sceneId !== scene.id) {
+    state.mapInspectAnchor = null;
+    dom.mapPanel.classList.remove("is-inspecting");
+    dom.mapInspectPopup.classList.remove("is-opening");
+    dom.mapInspectPopup.style.removeProperty("--inspect-origin-x");
+    dom.mapInspectPopup.style.removeProperty("--inspect-origin-y");
+    dom.mapInspectPopup.style.removeProperty("--inspect-shift-x");
+    dom.mapInspectPopup.style.removeProperty("--inspect-shift-y");
     dom.mapInspectPopup.classList.add("hidden");
     dom.mapInspectBody.innerHTML = "";
     return;
@@ -5568,30 +5839,71 @@ function renderMapInspectPopup(scene, sceneMap, progress) {
   const note = intel.note ? localize(intel.note) : "";
   const support = intel.support ? localize(intel.support) : "";
   const lens = intel.lens ? localize(intel.lens) : "";
+  const anchor = getMapInspectAnchor(notice);
+
+  state.mapInspectAnchor = anchor;
+  dom.mapPanel.classList.add("is-inspecting");
+  if (anchor) {
+    dom.mapInspectPopup.style.setProperty("--inspect-origin-x", `${anchor.originX}%`);
+    dom.mapInspectPopup.style.setProperty("--inspect-origin-y", `${anchor.originY}%`);
+    dom.mapInspectPopup.style.setProperty("--inspect-shift-x", `${anchor.shiftX}px`);
+    dom.mapInspectPopup.style.setProperty("--inspect-shift-y", `${anchor.shiftY}px`);
+  } else {
+    dom.mapInspectPopup.style.setProperty("--inspect-origin-x", "50%");
+    dom.mapInspectPopup.style.setProperty("--inspect-origin-y", "50%");
+    dom.mapInspectPopup.style.setProperty("--inspect-shift-x", "0px");
+    dom.mapInspectPopup.style.setProperty("--inspect-shift-y", "0px");
+  }
 
   dom.mapInspectPopup.classList.remove("hidden");
+  dom.mapInspectPopup.classList.remove("is-opening");
   dom.mapInspectBody.innerHTML = `
-    <div class="intel-event">
+    <div class="intel-event intel-event--inspect">
       <div class="intel-event-head">
         <span class="intel-chip">${escapeHtml(localize(intel.status))}</span>
         <strong class="intel-event-title">${escapeHtml(localize(intel.title))}</strong>
       </div>
-      <p><span class="intel-label">${locale.intelFindingLabel}:</span> ${renderRichText(finding)}</p>
-      <p><span class="intel-label">${escapeHtml(whyLabel)}:</span> ${renderRichText(why)}</p>
-      ${note ? `<p class="intel-note-line"><span class="intel-label">${locale.intelNoteLabel}:</span> ${renderRichText(note)}</p>` : ""}
+      <div class="intel-event-grid">
+        <section class="intel-event-block">
+          <p class="intel-label">${locale.intelFindingLabel}</p>
+          <p class="intel-event-copy">${renderRichText(finding)}</p>
+        </section>
+        <section class="intel-event-block">
+          <p class="intel-label">${escapeHtml(whyLabel)}</p>
+          <p class="intel-event-copy">${renderRichText(why)}</p>
+        </section>
+        ${
+          note
+            ? `<section class="intel-event-block">
+                <p class="intel-label">${locale.intelNoteLabel}</p>
+                <p class="intel-note-line">${renderRichText(note)}</p>
+              </section>`
+            : ""
+        }
       ${
         support
-          ? `<p class="intel-support-line"><span class="intel-label">${locale.intelSupportLabel}:</span> ${renderRichText(
-              support
-            )}</p>`
+          ? `<section class="intel-event-block">
+              <p class="intel-label">${locale.intelSupportLabel}</p>
+              <p class="intel-support-line">${renderRichText(support)}</p>
+            </section>`
           : ""
       }
-      ${lens ? `<p class="intel-support-line"><span class="intel-label">${locale.strategyReadLabel}:</span> ${renderRichText(lens)}</p>` : ""}
+      ${
+        lens
+          ? `<section class="intel-event-block">
+              <p class="intel-label">${locale.strategyReadLabel}</p>
+              <p class="intel-support-line">${renderRichText(lens)}</p>
+            </section>`
+          : ""
+      }
+      </div>
     </div>
   `;
+  void dom.mapInspectPopup.offsetWidth;
+  dom.mapInspectPopup.classList.add("is-opening");
 }
 
-function renderAsciiMap(sceneMap, template, progress, resolvedLocations) {
+function renderAsciiMap(sceneMap, template, progress, resolvedLocations, inspectLocationId = "") {
   const { width, height } = getTemplateDimensions(template);
   const locationMarkers = sceneMap.locationsByMarker || {};
   const locationByCoord = new Map(
@@ -5625,6 +5937,9 @@ function renderAsciiMap(sceneMap, template, progress, resolvedLocations) {
       if (location) {
         classes.push("map-cell--interest");
       }
+      if (location && inspectLocationId && location.id === inspectLocationId) {
+        classes.push("map-cell--inspect-source");
+      }
       if (isRequired && !isDone) {
         classes.push("map-cell--mission");
       }
@@ -5636,8 +5951,11 @@ function renderAsciiMap(sceneMap, template, progress, resolvedLocations) {
       }
 
       const className = classes.join(" ");
-      topCells.push(`<span class="${className}">${escapeHtml(pattern[0])}</span>`);
-      bottomCells.push(`<span class="${className}">${escapeHtml(pattern[1])}</span>`);
+      const dataAttrs = location
+        ? ` data-location-id="${escapeHtml(location.id)}" data-map-x="${x}" data-map-y="${y}"`
+        : ` data-map-x="${x}" data-map-y="${y}"`;
+      topCells.push(`<span class="${className}"${dataAttrs}>${escapeHtml(pattern[0])}</span>`);
+      bottomCells.push(`<span class="${className}"${dataAttrs}>${escapeHtml(pattern[1])}</span>`);
     }
     rows.push(`<div class="map-row map-row--top">${topCells.join("")}</div>`);
     rows.push(`<div class="map-row map-row--bottom">${bottomCells.join("")}</div>`);
@@ -5757,6 +6075,7 @@ function closeMapInspectPopup(resetNav = false) {
   }
 
   state.mapInspectNotice = null;
+  state.mapInspectAnchor = null;
   refreshPlayScene(false, resetNav);
 }
 
@@ -5786,11 +6105,17 @@ function closeMapOverlay(resetNav = false) {
     return;
   }
 
+  const scene = getCurrentScene();
   closeTermPopover();
   state.mapHelpOpen = false;
   state.mapInspectNotice = null;
   state.mapOverlayOpen = false;
   if (state.view === "play") {
+    if (scene && getSceneMap(scene.id) && isSceneMapComplete(scene.id)) {
+      state.playPhase = "report";
+    } else {
+      state.playPhase = "mission";
+    }
     refreshPlayScene(false, resetNav);
   } else {
     dom.mapOverlay.classList.add("hidden");
@@ -5972,6 +6297,43 @@ function interactWithMapLocation() {
   refreshPlayScene(false, false);
 }
 
+function getMapInspectAnchor(notice) {
+  if (!notice?.locationId || !dom.mapCanvas || !dom.mapPanel) {
+    return null;
+  }
+
+  const locationCells = Array.from(dom.mapCanvas.querySelectorAll("[data-location-id]")).filter(
+    cell => cell.dataset.locationId === notice.locationId
+  );
+  if (!locationCells.length) {
+    return null;
+  }
+
+  const panelRect = dom.mapPanel.getBoundingClientRect();
+  if (!panelRect.width || !panelRect.height) {
+    return null;
+  }
+
+  const cellRects = locationCells.map(cell => cell.getBoundingClientRect());
+  const left = Math.min(...cellRects.map(rect => rect.left));
+  const right = Math.max(...cellRects.map(rect => rect.right));
+  const top = Math.min(...cellRects.map(rect => rect.top));
+  const bottom = Math.max(...cellRects.map(rect => rect.bottom));
+  const centerX = left + (right - left) / 2 - panelRect.left;
+  const centerY = top + (bottom - top) / 2 - panelRect.top;
+  const originX = clamp((centerX / panelRect.width) * 100, 10, 90);
+  const originY = clamp((centerY / panelRect.height) * 100, 12, 88);
+  const shiftX = Math.round(centerX - panelRect.width / 2);
+  const shiftY = Math.round(centerY - panelRect.height / 2);
+
+  return {
+    originX,
+    originY,
+    shiftX,
+    shiftY
+  };
+}
+
 function chooseOption(choice, scene) {
   if (state.choiceLocked) {
     return;
@@ -6000,6 +6362,7 @@ function chooseOption(choice, scene) {
     effects: choice.effects,
     eraScore
   };
+  state.playPhase = "choices";
   state.mapOverlayOpen = false;
   state.mapIntel = null;
   state.mapHelpOpen = false;
@@ -6010,6 +6373,7 @@ function chooseOption(choice, scene) {
 function advanceScene() {
   state.sceneIndex += 1;
   state.choiceLocked = false;
+  resetPlayPhase();
   state.pendingOutcome = null;
   state.mapMessage = null;
   state.mapOverlayOpen = false;
@@ -6030,6 +6394,7 @@ function startChronicle() {
   state.setupStep = 0;
   state.sceneIndex = 0;
   state.choiceLocked = false;
+  resetPlayPhase();
   state.legacyScore = 0;
   state.eraScore = 0;
   state.badges = [];
@@ -6075,6 +6440,7 @@ function restartChronicle() {
   state.setupStep = 0;
   state.sceneIndex = 0;
   state.choiceLocked = false;
+  resetPlayPhase();
   state.stats = getPreviewStats();
   state.legacyScore = 0;
   state.eraScore = 0;
@@ -6096,6 +6462,7 @@ function restartChronicle() {
 
 function openSetup() {
   clearTypewriter();
+  resetPlayPhase();
   state.mapOverlayOpen = false;
   state.mapIntel = null;
   state.mapHelpOpen = false;
