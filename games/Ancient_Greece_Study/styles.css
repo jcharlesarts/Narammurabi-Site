@@ -768,6 +768,10 @@ button:disabled {
 .matching-widget {
   display: grid;
   gap: 1rem;
+  padding: 1.15rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(35, 49, 61, 0.1);
+  background: linear-gradient(180deg, rgba(255, 248, 236, 1), rgba(248, 239, 224, 0.98));
 }
 
 .matching-head {
@@ -823,17 +827,19 @@ button:disabled {
 }
 
 .matching-card.is-correct {
-  border-color: rgba(91, 140, 82, 0.5);
+  border-color: rgba(91, 140, 82, 0.82);
   box-shadow:
-    0 0 0 2px rgba(91, 140, 82, 0.22),
-    0 0 28px rgba(91, 140, 82, 0.34);
+    0 0 0 3px rgba(91, 140, 82, 0.36),
+    0 0 34px rgba(91, 140, 82, 0.44),
+    inset 0 0 0 999px rgba(91, 140, 82, 0.12);
 }
 
 .matching-card.is-incorrect {
-  border-color: rgba(180, 94, 64, 0.48);
+  border-color: rgba(180, 94, 64, 0.82);
   box-shadow:
-    0 0 0 2px rgba(180, 94, 64, 0.18),
-    0 0 26px rgba(180, 94, 64, 0.26);
+    0 0 0 3px rgba(180, 94, 64, 0.34),
+    0 0 32px rgba(180, 94, 64, 0.4),
+    inset 0 0 0 999px rgba(180, 94, 64, 0.1);
 }
 
 .matching-text {
