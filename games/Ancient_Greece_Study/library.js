@@ -1367,7 +1367,15 @@ function renderToolContent(tool) {
   `;
 }
 
-function renderOlympusProgress(progressScore, lockedCount, attempts, deckLength, activeBadgeIndex) {
+function renderOlympusProgress(progressScore, lockedCount, attempts, deckLength, activeBadgeIndex, config = {}) {
+  const {
+    eyebrow = "Test Yourself",
+    title = "Climb Mount Olympus",
+    description = "Right answers raise the gods. Misses make the meter drop.",
+    scoreLabel = "Score",
+    lockedLabel = "Locked In",
+    readoutFallback = "Help the gods!"
+  } = config;
   const target = Math.max(deckLength, 1);
   const visibleBadgeCount = Math.min(olympianBadges.length, target);
   const visibleBadges = olympianBadges.slice(0, visibleBadgeCount);
@@ -1385,17 +1393,18 @@ function renderOlympusProgress(progressScore, lockedCount, attempts, deckLength,
   const activeBadge = badges[activeBadgeIndex] ?? null;
   const readout = activeBadge
     ? `${activeBadge.name}: ${Math.round(activeBadge.fillPercent)}% full`
-    : "Help the gods!";
+    : readoutFallback;
+  const scoreText = scoreLabel ? `${progressScore} ${scoreLabel}` : String(progressScore);
 
   return `
     <section class="challenge-panel">
       <div class="challenge-head">
         <div>
-          <p class="eyebrow">Test Yourself</p>
-          <h3>Climb Mount Olympus</h3>
-          <p>Right answers raise the gods. Misses make the meter drop.</p>
+          <p class="eyebrow">${escapeHtml(eyebrow)}</p>
+          <h3>${escapeHtml(title)}</h3>
+          <p>${escapeHtml(description)}</p>
         </div>
-        <span class="status-badge">${progressScore} Score</span>
+        <span class="status-badge">${escapeHtml(scoreText)}</span>
       </div>
 
       <div class="challenge-stats">
@@ -1408,7 +1417,7 @@ function renderOlympusProgress(progressScore, lockedCount, attempts, deckLength,
           <strong>${accuracy}%</strong>
         </div>
         <div class="challenge-stat">
-          <span class="challenge-label">Locked In</span>
+          <span class="challenge-label">${escapeHtml(lockedLabel)}</span>
           <strong>${lockedCount}/${target}</strong>
         </div>
       </div>
@@ -1984,7 +1993,10 @@ function initializeMatchingWidgets() {
       selected: [],
       feedback: null,
       locked: false,
+      attempts: 0,
       matches: 0,
+      progressScore: 0,
+      activeBadge: null,
       complete: false
     };
 
@@ -2030,50 +2042,65 @@ function initializeMatchingWidgets() {
     };
 
     const render = () => {
-      if (state.complete) {
-        root.innerHTML = `
-          <article class="challenge-complete">
-            <p class="eyebrow">Matching Complete</p>
-            <h3>Board Cleared</h3>
-            <p>You matched ${state.matches} out of ${deck.length} pairs.</p>
-            <div class="button-row">
-              <button type="button" class="button" data-restart-matching>Play Again</button>
-            </div>
-          </article>
-        `;
-
-        root.querySelector("[data-restart-matching]").addEventListener("click", () => {
-          resetGame();
-        });
-
-        return;
-      }
-
       root.innerHTML = `
-        <div class="matching-widget">
-          <div class="matching-head">
-            <span class="status-badge">Matched ${state.matches} of ${deck.length}</span>
-            <p class="matching-note">Every card on the board has a real match. Tap one word and one meaning.</p>
-          </div>
+        <div class="challenge-layout${state.complete ? " challenge-layout--complete" : ""}">
+          ${renderOlympusProgress(
+            state.progressScore,
+            state.matches,
+            state.attempts,
+            deck.length,
+            state.activeBadge,
+            {
+              eyebrow: "Matching Game",
+              description: "Correct matches raise the gods. Misses make the meter drop.",
+              lockedLabel: "Matched"
+            }
+          )}
 
-          <div class="matching-grid">
-            ${state.cards.map((card) => {
-              const isSelected = state.selected.includes(card.id);
-              const feedbackKind = state.feedback?.ids.includes(card.id) ? state.feedback.kind : "";
+          <div class="challenge-main">
+            ${state.complete ? `
+              <article class="challenge-complete">
+                <p class="eyebrow">Matching Complete</p>
+                <h3>Board Cleared</h3>
+                <p>You matched ${state.matches} out of ${deck.length} pairs.</p>
+                <div class="button-row">
+                  <button type="button" class="button" data-restart-matching>Play Again</button>
+                </div>
+              </article>
+            ` : `
+              <div class="matching-widget">
+                <div class="matching-head">
+                  <span class="status-badge">Matched ${state.matches} of ${deck.length}</span>
+                  <p class="matching-note">Every card on the board has a real match. Tap one word and one meaning.</p>
+                </div>
 
-              return `
-                <button
-                  type="button"
-                  class="matching-card matching-card--${card.kind}${isSelected ? " is-selected" : ""}${feedbackKind ? ` is-${feedbackKind}` : ""}"
-                  data-match-card="${card.id}"
-                >
-                  <span class="matching-text">${escapeHtml(card.label)}</span>
-                </button>
-              `;
-            }).join("")}
+                <div class="matching-grid">
+                  ${state.cards.map((card) => {
+                    const isSelected = state.selected.includes(card.id);
+                    const feedbackKind = state.feedback?.ids.includes(card.id) ? state.feedback.kind : "";
+
+                    return `
+                      <button
+                        type="button"
+                        class="matching-card matching-card--${card.kind}${isSelected ? " is-selected" : ""}${feedbackKind ? ` is-${feedbackKind}` : ""}"
+                        data-match-card="${card.id}"
+                      >
+                        <span class="matching-text">${escapeHtml(card.label)}</span>
+                      </button>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+            `}
           </div>
         </div>
       `;
+
+      if (state.complete) {
+        root.querySelector("[data-restart-matching]").addEventListener("click", () => {
+          resetGame();
+        });
+      }
 
       root.querySelectorAll("[data-match-card]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -2111,7 +2138,15 @@ function initializeMatchingWidgets() {
           );
 
           state.locked = true;
+          state.attempts += 1;
           state.feedback = { ids: [firstId, secondId], kind: isMatch ? "correct" : "incorrect" };
+
+          if (isMatch) {
+            state.progressScore = Math.min(deck.length, state.progressScore + 1);
+          } else {
+            state.progressScore = Math.max(0, state.progressScore - 1);
+          }
+
           render();
 
           feedbackTimer = window.setTimeout(() => {
@@ -2132,6 +2167,14 @@ function initializeMatchingWidgets() {
           }, isMatch ? 320 : 460);
         });
       });
+
+      root.querySelectorAll("[data-badge-index]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const badgeIndex = Number(button.dataset.badgeIndex);
+          state.activeBadge = state.activeBadge === badgeIndex ? null : badgeIndex;
+          render();
+        });
+      });
     };
 
     const resetGame = () => {
@@ -2145,7 +2188,10 @@ function initializeMatchingWidgets() {
       state.selected = [];
       state.feedback = null;
       state.locked = false;
+      state.attempts = 0;
       state.matches = 0;
+      state.progressScore = 0;
+      state.activeBadge = null;
       state.complete = false;
 
       refillBoard();
