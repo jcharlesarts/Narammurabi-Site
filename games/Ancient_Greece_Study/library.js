@@ -2067,7 +2067,6 @@ function initializeMatchingWidgets() {
                   class="matching-card matching-card--${card.kind}${isSelected ? " is-selected" : ""}${feedbackKind ? ` is-${feedbackKind}` : ""}"
                   data-match-card="${card.id}"
                 >
-                  <span class="micro-label">${escapeHtml(card.eyebrow)}</span>
                   <span class="matching-text">${escapeHtml(card.label)}</span>
                 </button>
               `;
