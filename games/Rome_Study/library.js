@@ -828,7 +828,7 @@ function renderLightningRound(items) {
     `;
 }
 
-function renderCircusTrack(prefix, spriteSrc, spriteClass = "") {
+function renderCircusTrack(prefix, spriteSrc, spriteClass = "", includeGhost = false) {
     return `
         <div class="circus-track" data-${prefix}-track>
             <div class="circus-track-lane"></div>
@@ -838,6 +838,11 @@ function renderCircusTrack(prefix, spriteSrc, spriteClass = "") {
                 <span class="circus-track-finish-post"></span>
             </div>
             <div class="circus-track-burst" data-${prefix}-burst hidden aria-hidden="true"></div>
+            ${includeGhost ? `
+                <div class="circus-track-racer circus-track-racer-ghost" data-${prefix}-ghost aria-hidden="true" hidden>
+                    <img src="${spriteSrc}" alt="" class="circus-track-racer-sprite">
+                </div>
+            ` : ""}
             <div class="circus-track-racer ${spriteClass}" data-${prefix}-racer aria-hidden="true">
                 <img src="${spriteSrc}" alt="" class="circus-track-racer-sprite">
             </div>
@@ -876,12 +881,13 @@ function renderRaceGameTool(items) {
     return `
         <article class="study-card circus-tool race-game-tool" data-race-game='${escapeAttribute(JSON.stringify(items))}'>
             <p class="mini-label">Race Game</p>
-            ${renderCircusTrack("race", "assets/characters/winged-runner.png", "circus-track-racer-race")}
+            ${renderCircusTrack("race", "assets/characters/winged-runner.png", "circus-track-racer-race", true)}
             <div class="lightning-head">
                 <p class="tool-counter" data-race-counter>1 / ${items.length}</p>
                 <p class="tool-counter" data-race-score>Locked In: 0</p>
             </div>
             <p class="tool-counter race-timer" data-race-timer>Chariot Clock: 0:00</p>
+            <p class="tool-counter race-ghost-readout" data-race-ghost-readout hidden>Ghost: none yet</p>
             <h3 class="lightning-question" data-race-question>${items[0].question}</h3>
             <div class="lightning-options" data-race-options></div>
             <p class="feedback" data-race-feedback hidden></p>
@@ -2045,6 +2051,8 @@ function bindRaceGameTools() {
         let startedAt = 0;
         let elapsedMs = 0;
         let timerId = 0;
+        let checkpointTimes = [];
+        let bestRun = null;
 
         const questionNode = tool.querySelector("[data-race-question]");
         const optionsNode = tool.querySelector("[data-race-options]");
@@ -2052,9 +2060,11 @@ function bindRaceGameTools() {
         const counterNode = tool.querySelector("[data-race-counter]");
         const scoreNode = tool.querySelector("[data-race-score]");
         const timerNode = tool.querySelector("[data-race-timer]");
+        const ghostReadoutNode = tool.querySelector("[data-race-ghost-readout]");
         const nextButton = tool.querySelector("[data-race-next]");
         const restartButton = tool.querySelector("[data-race-restart]");
         const racer = tool.querySelector("[data-race-racer]");
+        const ghost = tool.querySelector("[data-race-ghost]");
         const track = tool.querySelector("[data-race-track]");
         const burst = tool.querySelector("[data-race-burst]");
 
@@ -2070,6 +2080,48 @@ function bindRaceGameTools() {
             if (timerNode) {
                 timerNode.textContent = `Chariot Clock: ${formatRaceTime(currentElapsed)}`;
             }
+            updateGhost(currentElapsed);
+        };
+
+        const updateGhostReadout = (message, hidden = false) => {
+            if (!ghostReadoutNode) {
+                return;
+            }
+            ghostReadoutNode.hidden = hidden;
+            ghostReadoutNode.textContent = message;
+        };
+
+        const updateGhost = (currentElapsed = elapsedMs) => {
+            if (!ghost || !bestRun || !bestRun.checkpoints.length) {
+                if (ghost) {
+                    ghost.hidden = true;
+                }
+                updateGhostReadout("Ghost: none yet", true);
+                return;
+            }
+
+            ghost.hidden = false;
+            const firstCheckpoint = bestRun.checkpoints[0]?.timeMs ?? 0;
+            let progressPercent = 0;
+
+            if (currentElapsed >= bestRun.totalMs) {
+                progressPercent = 100;
+            } else if (currentElapsed >= firstCheckpoint) {
+                for (let index = 0; index < bestRun.checkpoints.length; index += 1) {
+                    const current = bestRun.checkpoints[index];
+                    const previous = bestRun.checkpoints[index - 1] || { progress: 0, timeMs: 0 };
+                    if (currentElapsed <= current.timeMs) {
+                        const span = Math.max(current.timeMs - previous.timeMs, 1);
+                        const ratio = (currentElapsed - previous.timeMs) / span;
+                        progressPercent = previous.progress + ((current.progress - previous.progress) * ratio);
+                        break;
+                    }
+                    progressPercent = current.progress;
+                }
+            }
+
+            setCircusTrackProgress(track, ghost, progressPercent, false);
+            updateGhostReadout(`Ghost to beat: ${formatRaceTime(bestRun.totalMs)}`);
         };
 
         const stopTimer = () => {
@@ -2112,6 +2164,15 @@ function bindRaceGameTools() {
                 restartButton.hidden = false;
                 updateRacer();
                 stopTimer();
+                if (!bestRun || elapsedMs < bestRun.totalMs) {
+                    bestRun = {
+                        totalMs: elapsedMs,
+                        checkpoints: checkpointTimes.map((item) => ({ ...item }))
+                    };
+                    updateGhostReadout(`New ghost: ${formatRaceTime(bestRun.totalMs)}`);
+                } else {
+                    updateGhostReadout(`Ghost to beat: ${formatRaceTime(bestRun.totalMs)}`);
+                }
                 triggerCircusBurst(track, burst, 100, true);
                 return;
             }
@@ -2132,6 +2193,7 @@ function bindRaceGameTools() {
             restartButton.hidden = true;
             locked = false;
             updateRacer();
+            updateGhost();
         };
 
         const reset = () => {
@@ -2140,6 +2202,7 @@ function bindRaceGameTools() {
             lockedIn = 0;
             elapsedMs = 0;
             startedAt = 0;
+            checkpointTimes = [];
             updateTimer();
             render();
         };
@@ -2154,6 +2217,10 @@ function bindRaceGameTools() {
                 if (isCorrect) {
                     lockedIn += 1;
                     queue.shift();
+                    checkpointTimes.push({
+                        progress: (lockedIn / Math.max(source.length, 1)) * 100,
+                        timeMs: elapsedMs + (startedAt ? Date.now() - startedAt : 0)
+                    });
                 } else {
                     queue.push(queue.shift());
                 }
