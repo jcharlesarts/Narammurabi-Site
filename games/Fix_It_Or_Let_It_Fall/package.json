@@ -1,0 +1,9 @@
+{
+  "name": "rome-extreme-chaos-copilot",
+  "private": true,
+  "scripts": {
+    "check:event-trees": "node tools/check_event_tree_dupes.js",
+    "audit:event-trees": "node tools/audit_event_trees.js",
+    "map:event-trees": "node tools/map_event_tree_dependencies.js"
+  }
+}
