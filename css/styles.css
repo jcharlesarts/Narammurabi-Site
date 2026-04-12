@@ -92,6 +92,65 @@ a:hover {
 .hero h2 { font-size:1.9rem; line-height:1.2; margin-top:0; }
 h2 { font-family: var(--font-h2); }
 .hero p { font-size:1.05rem; }
+.hero-home h2 {
+  max-width: 12ch;
+  margin-bottom: 0.6rem;
+}
+.hero-kicker,
+.section-label {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  padding: 0.18rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(180,83,9,0.1);
+  border: 1px solid rgba(180,83,9,0.18);
+  color: var(--brand);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero-lede {
+  max-width: 58ch;
+  color: #383328;
+  font-size: 1.08rem;
+}
+.hero-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(240px, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+.hero-copy p:last-child {
+  margin-bottom: 0;
+}
+.hero-aside {
+  padding: 0.95rem 1rem;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.18)),
+    rgba(239, 228, 199, 0.85);
+  border: 1px solid rgba(180,83,9,0.18);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+}
+.hero-aside h3 {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-h2);
+  font-size: 1.05rem;
+}
+.hero-highlights {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.hero-highlights li + li {
+  margin-top: 0.45rem;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
 .hero::after {
   content: "";
   position: absolute;
@@ -136,6 +195,32 @@ h2 { font-family: var(--font-h2); }
   border-color: rgba(0, 95, 115, 0.42);
 }
 
+.card-featured {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.26)),
+    linear-gradient(135deg, rgba(180,83,9,0.05), rgba(0,95,115,0.06)),
+    var(--panel);
+}
+
+.card-coming-soon {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.2)),
+    repeating-linear-gradient(-45deg, rgba(180,83,9,0.05) 0 8px, rgba(180,83,9,0.02) 8px 16px),
+    var(--panel);
+}
+
+.card-study::before {
+  background: linear-gradient(90deg, var(--accent), #57a7b6, transparent 80%);
+}
+
+.card-resource {
+  max-width: 780px;
+}
+
+.cards-resources {
+  grid-template-columns: 1fr;
+}
+
 .btn {
   display:inline-block; text-decoration:none;
   background: linear-gradient(180deg, #0d7b90 0%, var(--accent) 100%);
@@ -153,6 +238,19 @@ h2 { font-family: var(--font-h2); }
   box-shadow:
     0 6px 14px rgba(0,0,0,0.16),
     inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, #f8f3e7 0%, #e8dcc1 100%);
+  color: #3f3a2e;
+  border-color: rgba(125, 97, 46, 0.28);
+  box-shadow:
+    0 2px 0 rgba(91, 73, 33, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+}
+
+.btn-secondary:hover {
+  color: #2e2a22;
 }
 
 .site-footer {
@@ -175,6 +273,25 @@ h2 { font-family: var(--font-h2); }
 
 .about p:last-child {
   margin-bottom: 0;
+}
+
+.about-signoff {
+  margin-top: 0.9rem;
+  color: #40392d;
+}
+
+.section-heading {
+  margin: 1.8rem 0 0.45rem;
+  max-width: 46rem;
+}
+
+.section-heading h2 {
+  margin: 0.1rem 0 0.25rem;
+}
+
+.section-heading p:last-child,
+.section-intro {
+  color: var(--muted);
 }
 
 /* Ensure anchors account for sticky header */
@@ -393,6 +510,15 @@ section { scroll-margin-top: calc(var(--header-height) + 12px); }
   .hero {
     padding: 1rem;
   }
+  .hero-columns {
+    grid-template-columns: 1fr;
+  }
+  .hero-home h2 {
+    max-width: none;
+  }
+  .hero-aside {
+    padding: 0.85rem 0.9rem;
+  }
   .cards {
     grid-template-columns: 1fr;
   }
@@ -406,6 +532,7 @@ section { scroll-margin-top: calc(var(--header-height) + 12px); }
 
 /* ——— Per-game display fonts using :has() ——— */
 /* Fix It or Let It Fall (Metal Mania) */
+.card-fiolif h3,
 .cards .card:has(a[href*="Fiolif"]) h3,
 .cards .card:has(a[href*="FIOLIF/"]) h3 {
   font-family: var(--font-game-fiolif);
@@ -413,6 +540,7 @@ section { scroll-margin-top: calc(var(--header-height) + 12px); }
 }
 
 /* Caravan Courier (Astloch) */
+.card-caravan h3,
 .cards .card:has(a[href*="Mesopotamian-Trade-Simulator"]) h3,
 .cards .card:has(a[href*="Caravan"]) h3 {
   font-family: var(--font-game-caravan);
@@ -420,6 +548,7 @@ section { scroll-margin-top: calc(var(--header-height) + 12px); }
 }
 
 /* FIOLIF — Retro (Press Start 2P) */
+.card-fiolif-retro h3,
 .cards .card:has(a[href*="FIOLIF-RETRO"]) h3 {
   font-family: var(--font-game-retro);
   font-size: 1rem;            /* Press Start 2P runs small */
@@ -429,6 +558,7 @@ section { scroll-margin-top: calc(var(--header-height) + 12px); }
 }
 
 /* Mandate of Heaven (calligraphy style) */
+.card-mandate h3,
 .cards .card:has(a[href*="Mandate-of-Heaven-Challenge"]) h3,
 .cards .card:has(a[href*="Mandate"]) h3 {
   font-family: var(--font-game-moh);
