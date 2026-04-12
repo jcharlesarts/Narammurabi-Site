@@ -1,21 +1,46 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Narammurabi | Educational History Games</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
   <div id="header"></div>
 
   <main class="container">
-    <section class="hero">
-      <h2>Hello there! Stay a while and listen.</h2>
-      <p>To some, I am known as King <strong>Narammurabi</strong>, but others call me Mister Pharaohmore Naramore.</p>
-      <p>My name is unimportant! I tinker on these silly simulations to make learning history a little less...</p>
-      <p>...<i>dull</i>.</p>
-      <p>And my students? They can't get enough! They just <em>beg</em> to test their knowledge and try their luck again and again and again!</p>
+    <section id="intro" class="hero hero-home">
+      <div class="hero-kicker">Classroom archive of games, readings, and historical experiments</div>
+      <h2>Hello there. Stay a while and learn something weird.</h2>
+      <p class="hero-lede">Welcome to the workshop of <strong>Narammurabi</strong>, where ancient empires, trade routes, dynasties, and bad decisions become classroom games.</p>
+      <div class="hero-columns">
+        <div class="hero-copy">
+          <p>To some, I am known as King <strong>Narammurabi</strong>, but others call me Mister Pharaohmore Naramore.</p>
+          <p>The name is negotiable. The mission is not: build silly simulations, interactive readings, and quick study tools that make history a little less <em>dull</em>.</p>
+          <p>My students seem to approve. They replay the disasters, test their luck again, and keep asking for one more round.</p>
+        </div>
+        <aside class="hero-aside" aria-label="Site highlights">
+          <h3>Inside the archive</h3>
+          <ul class="hero-highlights">
+            <li>Playable history games with classroom-friendly chaos</li>
+            <li>Interactive readings and study helpers</li>
+            <li>Projects in active development for new units</li>
+          </ul>
+        </aside>
+      </div>
+      <div class="hero-actions">
+        <a class="btn" href="#games">Enter the Game Vault</a>
+        <a class="btn btn-secondary" href="#resources">Browse Readings</a>
+      </div>
+    </section>
+
+    <section class="section-heading" aria-labelledby="featured-title">
+      <p class="section-label">Featured Curiosity</p>
+      <h2 id="featured-title">Begin with the law of the land</h2>
+      <p>A proper archive needs one ceremonial artifact before the chaos starts.</p>
     </section>
 
     <section id="code-of-narammurabi" class="cards law">
@@ -27,7 +52,8 @@
         </header>
 
         <p class="law-intro">
-          Before the games begin, one must know the law! Step into the classroom court of Narammurabi and test your judgment.
+          Before the games begin, one must know the law! Step into the classroom court of Narammurabi and test your
+          judgment.
         </p>
 
         <div class="law-actions">
@@ -36,90 +62,109 @@
       </article>
     </section>
 
+    <section class="section-heading" aria-labelledby="games-title">
+      <p class="section-label">Play</p>
+      <h2 id="games-title">Game Vault</h2>
+      <p>Choose an empire, trade route, timeline, or crisis and see whether your judgment survives.</p>
+    </section>
+
     <section id="games" class="cards">
-      <article class="card">
+      <article class="card card-featured card-fiolif">
         <h3>Fix It or Let It Fall: Extreme Chaos Edition</h3>
         <p>This is the original classic “FIOLIF” — an experiment in Roman politics brought to life!</p>
         <p>Can you keep the Roman Empire from collapsing? <em>Studying is FUN!</em></p>
         <a class="btn small" href="https://jcharlesarts.github.io/Fiolif/" target="_blank">Play Now</a>
       </article>
 
-      <article class="card">
+      <article class="card card-fiolif-retro">
         <h3>FIOLIF — Retro Expansion</h3>
         <p>Retro Update! Now with even MORE! Very chaotic, very Roman.</p>
         <a class="btn small" href="/games/Fix_It_Or_Let_It_Fall" target="_blank">Play Retro</a>
       </article>
 
-      <article class="card">
+      <article class="card card-caravan">
         <h3>Caravan Courier <em>— A Mesopotamian Trade Minigame.</em></h3>
         <p>Avoid armies and deliver the goods.</p>
-        <a class="btn small" href="https://jcharlesarts.github.io/Mesopotamian-Trade-Simulator/" target="_blank">Open Prototype</a>
+        <a class="btn small" href="https://jcharlesarts.github.io/Mesopotamian-Trade-Simulator/" target="_blank">Open
+          Prototype</a>
       </article>
 
-      <article class="card">
+      <article class="card card-mandate">
         <h3>Mandate of Heaven Challenge <em>— An Ancient China Decision Game.</em></h3>
         <p>Rule as emperor, choose philosophies, and test if your dynasty keeps Heaven’s favor.</p>
-        <a class="btn small" href="https://jcharlesarts.github.io/Mandate-of-Heaven-Challenge/" target="_blank">Open Prototype</a>
+        <a class="btn small" href="https://jcharlesarts.github.io/Mandate-of-Heaven-Challenge/" target="_blank">Open
+          Prototype</a>
       </article>
 
-      <article class="card">
+      <article class="card card-coming-soon">
         <h3>Catch the Conquistadors</h3>
         <p><em>Coming soon!</em> A chase through the New World — dodge, explore, and survive.</p>
       </article>
 
-      <article class="card">
+      <article class="card card-coming-soon">
         <h3>Mesopotamian Trade Adventure</h3>
         <p><em>In development.</em> River routes, caravan quests, and city-state shenanigans.</p>
       </article>
 
-      <article class="card">
+      <article class="card card-study">
         <h3>Early Americas Helper</h3>
         <p>Explore and learn about the early civilizations of the Americas.</p>
         <a class="btn small" href="/games/early_americas_helper" target="_blank">Open Game</a>
       </article>
 
-      <article class="card">
+      <article class="card card-study">
         <h3>Greece Study Helper</h3>
         <p>Review key ideas from Ancient Greece with an interactive study helper.</p>
         <a class="btn small" href="/games/Ancient_Greece_Study" target="_blank">Open Game</a>
       </article>
 
-      <article class="card">
+      <article class="card card-study">
         <h3>Rome Study Helper</h3>
         <p>Lock in key ideas from Ancient Rome with an interactive study helper.</p>
         <a class="btn small" href="/games/Rome_Study" target="_blank">Open Game</a>
       </article>
 
-      <article class="card">
+      <article class="card card-study">
         <h3>Timeline Trainer</h3>
         <p>Hone your skills and expand your knowledge about time and timelines.</p>
         <a class="btn small" href="/games/Timeline_Trainer" target="_blank">Open Game</a>
       </article>
 
-      <article class="card">
+      <article class="card card-study">
         <h3>The Silk Road</h3>
         <p>Journey across the Silk Road in search of riches and adventure.</p>
         <a class="btn small" href="/games/The_Silk_Road_Board_Game" target="_blank">Open Game</a>
       </article>
 
-      <article class="card">
+      <article class="card card-featured">
         <h3>Samurai Simulator</h3>
-        <p>Lead your samurai clan through the turning points of Japanese history in a retro strategy RPG of scouting, hard choices, and survival.</p>
+        <p>Lead your samurai clan through the turning points of Japanese history in a retro strategy RPG of scouting,
+          hard choices, and survival.</p>
         <a class="btn small" href="/games/samurai_simulator" target="_blank">Open Game</a>
       </article>
     </section>
 
-    <section id="resources" class="cards">
-      <article class="card">
+    <section class="section-heading" aria-labelledby="resources-title">
+      <p class="section-label">Study</p>
+      <h2 id="resources-title">Reading Room</h2>
+      <p>Interactive notes, riddles, timelines, and review tools built to keep students awake.</p>
+    </section>
+
+    <section id="resources" class="cards cards-resources">
+      <article class="card card-resource">
         <h3>Classroom Readings</h3>
+        <p class="section-intro">A cabinet of clickable assignments, study aids, and curious review tools.</p>
         <ul class="linklist">
-          <li><a href="readings/china_philosophy_interactive_study.html">Early Chinese Philosophies — Interactive</a></li>
-          <li><a href="readings/china_achievement_interactive_study.html">Early Chinese Civilization — Annotation Interactive</a></li>
+          <li><a href="readings/china_philosophy_interactive_study.html">Early Chinese Philosophies — Interactive</a>
+          </li>
+          <li><a href="readings/china_achievement_interactive_study.html">Early Chinese Civilization — Annotation
+              Interactive</a></li>
           <li><a href="readings/china_civilization_riddle_game.html">Early Chinese Civilization — Study Quiz!!!</a></li>
           <li><a href="readings/Silk_road.html">Here is something different about the Silk Road</a></li>
           <li><a href="readings/timelines.html">Welcome to the world of TIME</a></li>
           <li><a href="readings/fall_of_roman_empire.html">Investigate the Fall of the Roman Empire</a></li>
-          <li><a href="readings/early_america_intro_reading_helper.html">A first look at early civilizations of the Americas</a></li>
+          <li><a href="readings/early_america_intro_reading_helper.html">A first look at early civilizations of the
+              Americas</a></li>
           <li><a href="readings/maya_reader.html">Learn more about the Mayan Civilization</a></li>
           <li><a href="readings/aztec_reader.html">Learn more about Aztec social structure and daily life!</a></li>
           <li><a href="readings/ea_study.html">Test your Early Americas Knowledge (study guide)!</a></li>
@@ -129,16 +174,20 @@
     </section>
 
     <section id="about" class="about">
+      <p class="section-label">Keeper of the archive</p>
       <h2>About</h2>
       <p>
-        I’m Mr. Naramore. I teach social studies (<em>and</em> my students sometimes call me Mr. Narammurabi or Pharaohmore Naramore).
+        I’m Mr. Naramore. I teach social studies (<em>and</em> my students sometimes call me Mr. Narammurabi or
+        Pharaohmore Naramore).
         I create educational games and resources for my students, and share them here for free.<br>
         <strong>Narammurabi</strong>: builder of timelines, sketcher of silly games, and keeper of snacks.
       </p>
+      <p class="about-signoff">If a lesson can become a game, a strange challenge, or an interactive study helper, it probably will.</p>
     </section>
   </main>
 
   <div id="footer"></div>
   <script src="/partials.js"></script>
 </body>
+
 </html>
