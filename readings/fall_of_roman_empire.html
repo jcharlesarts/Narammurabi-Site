@@ -158,6 +158,17 @@
     }
     .btn-hint:hover{ background: rgba(251,191,36,.14); }
 
+    .btn-spanish{
+      border-color: rgba(52,211,153,.35);
+      background: rgba(52,211,153,.10);
+    }
+    .btn-spanish:hover{ background: rgba(52,211,153,.14); }
+    button.is-active{
+      border-color: rgba(52,211,153,.6);
+      background: rgba(52,211,153,.18);
+      color: #d1fae5;
+    }
+
     .progress{
       font-size: .92rem;
       color: var(--muted);
@@ -213,6 +224,18 @@
       background: rgba(56,189,248,.18);
       box-shadow: 0 0 0 2px rgba(56,189,248,.35);
     }
+    .spanish-gloss{
+      display:inline-flex;
+      align-items:center;
+      margin-left: 6px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      border:1px solid rgba(167,139,250,.35);
+      background: rgba(167,139,250,.12);
+      color: #ddd6fe;
+      font-size: .82em;
+      vertical-align: middle;
+    }
 
     /* Modal */
     .modal-backdrop{
@@ -235,7 +258,39 @@
       padding: 16px 16px 12px;
     }
     .modal h4{ margin:0 0 6px; font-size: 1.05rem; }
-    .modal p{ margin:0 0 12px; color: var(--muted); }
+    .modal-content{
+      margin:0 0 12px;
+      color: var(--muted);
+    }
+    .modal-content > :first-child{ margin-top:0; }
+    .modal-content > :last-child{ margin-bottom:0; }
+    .modal-content p{ margin:0 0 10px; }
+    .glossary-list{
+      display:grid;
+      gap:10px;
+    }
+    .glossary-item{
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .glossary-item strong{
+      display:block;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .glossary-label{
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .help-guide ol{
+      margin:8px 0 0 20px;
+      padding-left: 16px;
+    }
+    .help-guide li{
+      margin-top: 6px;
+    }
     .modal .row{
       display:flex; justify-content:flex-end;
     }
@@ -275,6 +330,8 @@
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         <button class="btn-hint" id="btnHint" type="button">Hint</button>
         <button id="btnVocab" type="button">Vocab List</button>
+        <button class="btn-spanish" id="btnSpanishToggle" type="button" aria-pressed="false">Spanish Vocab+: Off</button>
+        <button id="btnSpanishHelp" type="button">Guía en Español</button>
         <span style="width:1px; height:22px; background: var(--line); display:inline-block;"></span>
         <span style="color:var(--muted); font-size:.92rem;">Reading size:</span>
         <button id="btnFontSm" type="button" aria-label="Smaller reading text">A-</button>
@@ -327,7 +384,7 @@
 <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-label="Vocabulary definition">
   <div class="modal">
     <h4 id="modalTitle">Vocabulary</h4>
-    <p id="modalText"></p>
+    <div class="modal-content" id="modalText"></div>
     <div class="row">
       <button id="modalClose" type="button">Close</button>
     </div>
@@ -337,28 +394,95 @@
 <script>
   // --- Vocab bank (clickable words) ---
   const VOCAB = {
-    "unstable": "Not steady. Things change a lot or feel unsafe.",
-    "corrupt": "Dishonest leaders who use power unfairly (often for money).",
-    "civil war": "A war between groups inside the same country.",
-    "Pax Romana": "A long period of peace and prosperity in Rome (about 200 years).",
-    "bribe": "Money paid to influence someone in power to do what you want.",
-    "loyal": "Faithful. Sticks with a person or group.",
-    "invaders": "Attackers from outside the empire.",
-    "inflation": "Prices rise because money is worth less.",
-    "barter": "Trade goods/services instead of using money.",
-    "emperor": "The all-powerful ruler of an empire.",
-    "wages": "Pay (money) for work."
+    "unstable": {
+      en: "Not steady. Things change a lot or feel unsafe.",
+      esTerm: "inestable",
+      es: "No es estable. Las cosas cambian mucho o no se sienten seguras."
+    },
+    "corrupt": {
+      en: "Dishonest leaders who use power unfairly (often for money).",
+      esTerm: "corrupto",
+      es: "Describe a líderes deshonestos que usan su poder de manera injusta, muchas veces por dinero."
+    },
+    "civil war": {
+      en: "A war between groups inside the same country.",
+      esTerm: "guerra civil",
+      es: "Una guerra entre grupos del mismo país."
+    },
+    "pax romana": {
+      en: "A long period of peace and prosperity in Rome (about 200 years).",
+      esTerm: "Pax Romana",
+      es: "Un largo periodo de paz y prosperidad en Roma, de aproximadamente 200 años."
+    },
+    "bribe": {
+      en: "Money paid to influence someone in power to do what you want.",
+      esTerm: "soborno",
+      es: "Dinero que se da para influir a una persona con poder y lograr lo que uno quiere."
+    },
+    "loyal": {
+      en: "Faithful. Sticks with a person or group.",
+      esTerm: "leal",
+      es: "Fiel. Permanece con una persona o grupo."
+    },
+    "invaders": {
+      en: "Attackers from outside the empire.",
+      esTerm: "invasores",
+      es: "Personas o ejércitos que atacan desde fuera del imperio."
+    },
+    "inflation": {
+      en: "Prices rise because money is worth less.",
+      esTerm: "inflación",
+      es: "Los precios suben porque el dinero vale menos."
+    },
+    "barter": {
+      en: "Trade goods/services instead of using money.",
+      esTerm: "trueque",
+      es: "Intercambiar bienes o servicios en vez de usar dinero."
+    },
+    "emperor": {
+      en: "The all-powerful ruler of an empire.",
+      esTerm: "emperador",
+      es: "El gobernante con mucho poder sobre un imperio."
+    },
+    "wages": {
+      en: "Pay (money) for work.",
+      esTerm: "salarios",
+      es: "Dinero que una persona recibe por su trabajo."
+    }
   };
+
+  const VOCAB_ALIASES = {
+    "civil wars": "civil war",
+    "bribes": "bribe",
+    "emperors": "emperor"
+  };
+
+  const SPANISH_GUIDE_HTML = `
+    <div class="help-guide">
+      <p><strong>Cómo usar esta página</strong></p>
+      <p>Esta lectura está en inglés, pero tiene apoyos en español para ayudarte con las palabras y las instrucciones.</p>
+      <ol>
+        <li>Lee un fragmento a la vez.</li>
+        <li>Mira la caja de la derecha para ver qué debes responder en tu hoja.</li>
+        <li>Haz clic en <b>Spanish Vocab+</b> para mostrar palabras clave con apoyo en español.</li>
+        <li>Haz clic en una palabra azul para ver su definición.</li>
+        <li>Copia una evidencia corta de 4 a 6 palabras del texto.</li>
+        <li>Cuando termines esa parte, haz clic en <b>Next</b>.</li>
+      </ol>
+      <p><strong>Si te atoras:</strong> vuelve a leer, pregunta a un compañero o levanta la mano.</p>
+    </div>
+  `;
 
   // Wrap vocab words in spans so they can be clicked.
   function vocabify(text){
     // Order matters: longer phrases first
-    const keys = Object.keys(VOCAB).sort((a,b)=>b.length-a.length);
+    const keys = [...Object.keys(VOCAB), ...Object.keys(VOCAB_ALIASES)].sort((a,b)=>b.length-a.length);
     let out = text;
     keys.forEach(k=>{
       const safe = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const re = new RegExp(`\\b${safe}\\b`, "gi");
-      out = out.replace(re, (match)=>`<span class="vocab" data-vocab="${k.toLowerCase()}">${match}</span>`);
+      const canonicalKey = (VOCAB_ALIASES[k] || k).toLowerCase();
+      out = out.replace(re, (match)=>`<span class="vocab" data-vocab="${canonicalKey}">${match}</span>`);
     });
     return out;
   }
@@ -457,6 +581,7 @@
 
   // --- UI State ---
   let idx = 0;
+  let spanishVocabOn = false;
 
   const elTitle = document.getElementById("chunkTitle");
   const elBody  = document.getElementById("chunkBody");
@@ -471,6 +596,8 @@
   const btnNext = document.getElementById("btnNext");
   const btnHint = document.getElementById("btnHint");
   const btnVocab = document.getElementById("btnVocab");
+  const btnSpanishToggle = document.getElementById("btnSpanishToggle");
+  const btnSpanishHelp = document.getElementById("btnSpanishHelp");
   const btnFontSm = document.getElementById("btnFontSm");
   const btnFontMd = document.getElementById("btnFontMd");
   const btnFontLg = document.getElementById("btnFontLg");
@@ -481,6 +608,44 @@
   const modalTitle = document.getElementById("modalTitle");
   const modalText  = document.getElementById("modalText");
   const modalClose = document.getElementById("modalClose");
+
+  function formatTerm(term){
+    return term.replace(/\b\w/g, (char)=>char.toUpperCase());
+  }
+
+  function getVocabEntry(key, displayWord){
+    const lookup = (key || displayWord || "").toLowerCase();
+    const canonicalKey = VOCAB_ALIASES[lookup] || lookup;
+    return VOCAB[canonicalKey];
+  }
+
+  function showModal(title, html, closeLabel = "Close"){
+    modalTitle.textContent = title;
+    modalText.innerHTML = html;
+    modalClose.textContent = closeLabel;
+    backdrop.style.display = "flex";
+  }
+
+  function syncSpanishToggleUI(){
+    btnSpanishToggle.textContent = spanishVocabOn ? "Spanish Vocab+: On" : "Spanish Vocab+: Off";
+    btnSpanishToggle.setAttribute("aria-pressed", spanishVocabOn ? "true" : "false");
+    btnSpanishToggle.classList.toggle("is-active", spanishVocabOn);
+    btnVocab.textContent = spanishVocabOn ? "Spanish Glossary" : "Vocab List";
+  }
+
+  function addSpanishGlosses(){
+    if(!spanishVocabOn) return;
+
+    document.querySelectorAll("#chunkBody .vocab").forEach(span=>{
+      const entry = getVocabEntry(span.getAttribute("data-vocab"), span.textContent);
+      if(!entry || !entry.esTerm) return;
+
+      const gloss = document.createElement("span");
+      gloss.className = "spanish-gloss";
+      gloss.textContent = entry.esTerm;
+      span.insertAdjacentElement("afterend", gloss);
+    });
+  }
 
   function render(){
     const c = CHUNKS[idx];
@@ -498,6 +663,8 @@
     // Buttons
     btnPrev.disabled = (idx === 0);
     btnNext.disabled = (idx === CHUNKS.length - 1);
+    syncSpanishToggleUI();
+    addSpanishGlosses();
 
     // Attach vocab click listeners
     document.querySelectorAll(".vocab").forEach(span=>{
@@ -555,12 +722,47 @@
     setReadingSize(size);
   }
 
+  function setSpanishVocabMode(enabled, shouldRender = true){
+    spanishVocabOn = !!enabled;
+    syncSpanishToggleUI();
+    try { localStorage.setItem("romeSpanishVocab", spanishVocabOn ? "on" : "off"); } catch(e) {}
+    if(shouldRender) render();
+  }
+
+  function loadSpanishVocabMode(){
+    let saved = "off";
+    try { saved = localStorage.getItem("romeSpanishVocab") || "off"; } catch(e) {}
+    setSpanishVocabMode(saved === "on", false);
+  }
+
   function showVocab(key, displayWord){
-    const def = VOCAB[key] || VOCAB[displayWord.toLowerCase()] || "Definition not found.";
-    modalTitle.textContent = displayWord;
-    modalText.textContent = def;
-    modalText.style.whiteSpace = "normal";
-    backdrop.style.display = "flex";
+    const entry = getVocabEntry(key, displayWord);
+    if(!entry){
+      showModal(displayWord, "<p>Definition not found.</p>");
+      return;
+    }
+
+    if(spanishVocabOn){
+      showModal(
+        `${displayWord} • ${entry.esTerm}`,
+        `
+          <div class="glossary-list">
+            <div class="glossary-item">
+              <strong>Español</strong>
+              <div>${entry.es}</div>
+            </div>
+            <div class="glossary-item">
+              <strong>English</strong>
+              <div>${entry.en}</div>
+            </div>
+          </div>
+        `,
+        "Cerrar"
+      );
+      return;
+    }
+
+    showModal(displayWord, `<p>${entry.en}</p>`);
   }
 
   function closeModal(){ backdrop.style.display = "none"; }
@@ -575,13 +777,46 @@
   });
 
   btnVocab.addEventListener("click", ()=>{
-    // Quick vocab list modal
-    modalTitle.textContent = "Vocab List";
-    modalText.innerHTML = Object.entries(VOCAB)
-      .map(([k,v])=>`<div>• <b>${k.toUpperCase()}</b> - ${v}</div>`)
-      .join("");
-    modalText.style.whiteSpace = "normal";
-    backdrop.style.display = "flex";
+    if(spanishVocabOn){
+      showModal(
+        "Spanish Glossary",
+        `
+          <div class="glossary-list">
+            ${Object.entries(VOCAB).map(([term, entry])=>`
+              <div class="glossary-item">
+                <strong>${formatTerm(term)} → ${entry.esTerm}</strong>
+                <div><span class="glossary-label">Español:</span> ${entry.es}</div>
+                <div><span class="glossary-label">English:</span> ${entry.en}</div>
+              </div>
+            `).join("")}
+          </div>
+        `,
+        "Cerrar"
+      );
+      return;
+    }
+
+    showModal(
+      "Vocab List",
+      `
+        <div class="glossary-list">
+          ${Object.entries(VOCAB).map(([term, entry])=>`
+            <div class="glossary-item">
+              <strong>${formatTerm(term)}</strong>
+              <div>${entry.en}</div>
+            </div>
+          `).join("")}
+        </div>
+      `
+    );
+  });
+
+  btnSpanishToggle.addEventListener("click", ()=>{
+    setSpanishVocabMode(!spanishVocabOn);
+  });
+
+  btnSpanishHelp.addEventListener("click", ()=>{
+    showModal("Guía en Español", SPANISH_GUIDE_HTML, "Cerrar");
   });
 
   btnFontSm.addEventListener("click", ()=> setReadingSize("sm"));
@@ -594,8 +829,9 @@
   window.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 
   // Initial render
-  render();
   loadReadingSize();
+  loadSpanishVocabMode();
+  render();
 </script>
 </body>
 </html>
