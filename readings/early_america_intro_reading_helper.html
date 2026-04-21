@@ -8,28 +8,41 @@
   <style>
     :root {
       --bg: #0f172a;
-      --card: #111827;
-      --ink: #e5e7eb;
-      --muted: #cbd5e1;
-      --accent: #38bdf8;
-      --accent2: #a78bfa;
-      --good: #34d399;
-      --warn: #fbbf24;
+      --card: rgba(15, 23, 42, .82);
+      --card-strong: rgba(15, 23, 42, .92);
+      --panel: rgba(10, 16, 30, .78);
+      --ink: #e7eef8;
+      --muted: #b8c6db;
+      --accent: #52c6ff;
+      --accent2: #f2a65a;
+      --good: #43d9a3;
+      --warn: #f6c35d;
       --bad: #fb7185;
       --line: rgba(255, 255, 255, .12);
+      --line-strong: rgba(255, 255, 255, .2);
+      --shadow: 0 24px 60px rgba(2, 6, 23, .34);
+      --ui-font: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --reading-font: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --radius: 22px;
+      --radius-sm: 16px;
+      --page-max: 1320px;
     }
 
     body[data-theme="light"] {
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --ink: #0f172a;
-      --muted: #334155;
-      --accent: #0284c7;
-      --accent2: #6d28d9;
-      --good: #059669;
-      --warn: #b45309;
-      --bad: #be123c;
-      --line: rgba(15, 23, 42, .16);
+      --bg: #f3efe5;
+      --card: rgba(255, 252, 245, .92);
+      --card-strong: rgba(255, 255, 255, .98);
+      --panel: rgba(255, 250, 240, .9);
+      --ink: #1d2a3a;
+      --muted: #516072;
+      --accent: #0d7c9c;
+      --accent2: #b86432;
+      --good: #0a8f6a;
+      --warn: #a66414;
+      --bad: #b42348;
+      --line: rgba(29, 42, 58, .14);
+      --line-strong: rgba(29, 42, 58, .24);
+      --shadow: 0 20px 45px rgba(60, 72, 88, .14);
     }
 
     body[data-theme="light"] {
@@ -62,70 +75,114 @@
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1100px 700px at 15% 10%, rgba(56, 189, 248, .14), transparent 60%),
-        radial-gradient(1100px 700px at 85% 20%, rgba(167, 139, 250, .14), transparent 55%),
+      font-family: var(--ui-font);
+      background: radial-gradient(1100px 700px at 10% 8%, rgba(82, 198, 255, .16), transparent 58%),
+        radial-gradient(900px 620px at 86% 14%, rgba(242, 166, 90, .14), transparent 54%),
+        linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, 0)),
         var(--bg);
       color: var(--ink);
-      line-height: 1.45;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      padding-bottom: env(safe-area-inset-bottom);
+      min-height: 100svh;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     header {
-      padding: 18px 18px 10px;
-      max-width: 1040px;
+      padding: calc(12px + env(safe-area-inset-top)) 20px 8px;
+      max-width: var(--page-max);
       margin: 0 auto;
+      display: block;
+    }
+
+    .header-copy {
+      max-width: 860px;
+    }
+
+    .header-subrow {
       display: flex;
+      align-items: center;
+      gap: 10px 12px;
       flex-wrap: wrap;
-      gap: 12px;
-      align-items: flex-end;
-      justify-content: space-between;
+      margin-top: 4px;
     }
 
     header h1 {
       margin: 0;
-      font-size: 1.45rem;
-      letter-spacing: .2px;
+      font-size: clamp(1.35rem, 1.02rem + .95vw, 1.9rem);
+      line-height: 1.02;
+      letter-spacing: .01em;
+      max-width: none;
     }
 
     header .sub {
-      margin: 2px 0 0;
+      margin: 0;
       color: var(--muted);
-      font-size: .95rem;
+      font-size: .92rem;
+      line-height: 1.3;
+      max-width: 40rem;
+      flex: 0 1 40rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      flex: 0 0 auto;
     }
 
     .wrap {
-      max-width: 1040px;
+      max-width: var(--page-max);
       margin: 0 auto;
-      padding: 12px 18px 26px;
+      padding: 2px 20px 14px;
       display: grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 14px;
+      grid-template-columns: minmax(0, 860px) auto;
+      gap: 10px;
+      justify-content: center;
+      align-items: flex-start;
     }
 
     .card {
-      background: rgba(17, 24, 39, .86);
+      background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
-      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 18px;
+      backdrop-filter: blur(18px);
+    }
+
+    .chunk {
+      width: min(860px, 100%);
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin: 0;
     }
 
     .chunk-title {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
-      margin: 0 0 8px;
+      margin: 0 0 10px;
       flex-wrap: wrap;
     }
 
     .pill {
-      font-size: .82rem;
-      padding: 4px 10px;
+      font-size: .72rem;
+      padding: 5px 9px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, .04);
+      background: rgba(255, 255, 255, .05);
       color: var(--muted);
       white-space: nowrap;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      font-weight: 700;
     }
 
     .pill.accent {
@@ -150,58 +207,140 @@
 
     .chunk h2 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: clamp(1.25rem, 1.02rem + .58vw, 1.6rem);
+      line-height: 1.08;
+      max-width: none;
     }
 
-    .chunk p {
-      margin: 10px 0 0;
-      font-size: 1.03rem;
+    .chunk h2.chunk-title-enter {
+      animation: chunkTitleFade .34s ease both;
+    }
+
+    .chunk-title-main,
+    .chunk-title-tail {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: chunkTitleFade 2s ease forwards;
+    }
+
+    .chunk-title-main {
+      margin-right: .15em;
+    }
+
+    .chunk-title-tail + .chunk-title-tail::before {
+      content: ", ";
+    }
+
+    #chunkBody {
+      margin-top: 10px;
+      font-family: var(--reading-font);
+      font-size: 1rem;
+      line-height: 1.48;
+      max-width: none;
+      color: var(--ink);
+    }
+
+    #chunkBody.is-typing::after {
+      content: "";
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      margin-left: 3px;
+      background: currentColor;
+      vertical-align: -.12em;
+      animation: caretBlink .85s steps(1, end) infinite;
+    }
+
+    #chunkBody .picture-lead,
+    #chunkBody .picture-infer {
+      display: inline-block;
+      transform-origin: left center;
+    }
+
+    #chunkBody .picture-lead.picture-animate {
+      animation: pictureLeadBloom .9s ease both;
+    }
+
+    #chunkBody .picture-infer.picture-animate {
+      animation: pictureInferGlow 1.6s ease .35s both;
+    }
+
+    #chunkBody p,
+    #chunkBody li {
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    #chunkBody p {
+      margin: 0 0 .78em;
+    }
+
+    #chunkBody ol,
+    #chunkBody ul {
+      margin: 0 0 .85em;
+      padding-left: 1.25em;
+    }
+
+    #chunkBody li + li {
+      margin-top: .24em;
+    }
+
+    #chunkBody b,
+    #chunkBody strong {
+      font-family: var(--ui-font);
+      font-weight: 800;
+      letter-spacing: .01em;
     }
 
     /* Reading font size (LEFT card only) */
     .chunk.reading-sm #chunkBody {
-      font-size: 0.98rem;
+      font-size: .94rem;
     }
 
     .chunk.reading-md #chunkBody {
-      font-size: 1.05rem;
+      font-size: 1rem;
     }
 
     .chunk.reading-lg #chunkBody {
-      font-size: 1.15rem;
+      font-size: 1.08rem;
     }
 
     .chunk.reading-xl #chunkBody {
-      font-size: 1.28rem;
-    }
-
-    .chunk.reading-sm #chunkBody p,
-    .chunk.reading-sm #chunkBody li {
-      font-size: 0.98rem;
-    }
-
-    .chunk.reading-md #chunkBody p,
-    .chunk.reading-md #chunkBody li {
-      font-size: 1.05rem;
-    }
-
-    .chunk.reading-lg #chunkBody p,
-    .chunk.reading-lg #chunkBody li {
-      font-size: 1.15rem;
-    }
-
-    .chunk.reading-xl #chunkBody p,
-    .chunk.reading-xl #chunkBody li {
-      font-size: 1.28rem;
+      font-size: 1.16rem;
     }
 
     .controls {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 14px;
-      align-items: center;
+      margin-top: 8px;
+      align-items: flex-start;
       justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .control-group,
+    .control-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .control-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--line-strong);
+      display: inline-block;
+      margin: 0 2px;
+    }
+
+    .controls-label {
+      color: var(--muted);
+      font-size: .86rem;
+      font-weight: 700;
     }
 
     button {
@@ -209,17 +348,21 @@
       border: 1px solid var(--line);
       background: rgba(255, 255, 255, .06);
       color: var(--ink);
-      padding: 10px 12px;
+      padding: 10px 13px;
+      min-height: 42px;
       border-radius: 12px;
       cursor: pointer;
-      font-weight: 650;
-      letter-spacing: .2px;
-      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+      font-weight: 700;
+      font-size: .9rem;
+      letter-spacing: .01em;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+      touch-action: manipulation;
     }
 
     button:hover {
       background: rgba(255, 255, 255, .09);
-      border-color: rgba(255, 255, 255, .22);
+      border-color: var(--line-strong);
+      box-shadow: 0 10px 18px rgba(2, 6, 23, .12);
     }
 
     button:active {
@@ -259,30 +402,197 @@
     }
 
     .progress {
-      font-size: .92rem;
+      font-size: .88rem;
       color: var(--muted);
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid var(--line);
     }
 
-    /* Right side */
+    .sidebar-shell {
+      position: sticky;
+      top: calc(68px + env(safe-area-inset-top));
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      justify-self: end;
+      z-index: 20;
+      pointer-events: auto;
+    }
+
+    .sidebar-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .sidebar-tab {
+      min-width: 68px;
+      justify-content: center;
+      background: rgba(15, 23, 42, .78);
+      backdrop-filter: blur(14px);
+    }
+
+    .sidebar-tab.active {
+      background: rgba(82, 198, 255, .16);
+      border-color: rgba(82, 198, 255, .45);
+      color: var(--accent);
+    }
+
+    body[data-theme="light"] .sidebar-tab {
+      background: rgba(255, 250, 240, .92);
+    }
+
+    .panel {
+      width: 0;
+      max-width: min(320px, calc(100vw - 116px));
+      max-height: calc(100svh - 96px);
+      background: var(--panel);
+      padding: 0;
+      border-width: 0;
+      pointer-events: auto;
+      transform: translateX(-6px);
+      opacity: 0;
+      visibility: hidden;
+      transition: width .24s ease, padding .24s ease, border-width .24s ease, transform .24s ease, opacity .18s ease, visibility .18s ease;
+      overflow: auto;
+    }
+
+    .sidebar-shell.is-open .panel {
+      width: min(320px, calc(100vw - 116px));
+      padding: 14px;
+      border-width: 1px;
+      transform: translateX(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .panel-header h3 {
+      margin: 0;
+    }
+
+    .panel-close {
+      min-width: 42px;
+      padding: 8px 10px;
+    }
+
     .panel h3 {
-      margin: 0 0 8px;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
+      line-height: 1.1;
     }
 
     .chunk-title .pill {
-      font-size: .86rem;
+      font-size: .74rem;
     }
 
     .chunk-title {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .panel .box {
       background: rgba(255, 255, 255, .04);
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px;
-      margin-top: 10px;
+      border-radius: var(--radius-sm);
+      padding: 11px 12px;
+      margin-top: 8px;
+    }
+
+    .sidebar-panel {
+      display: none;
+      animation: panelFade .18s ease;
+    }
+
+    .sidebar-panel.active {
+      display: block;
+    }
+
+    @keyframes chunkTitleFade {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes panelFade {
+      from {
+        opacity: 0;
+        transform: translateX(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes caretBlink {
+      0%,
+      49% {
+        opacity: 1;
+      }
+
+      50%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes pictureLeadBloom {
+      from {
+        opacity: .6;
+        transform: scale(.94);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pictureInferGlow {
+      0% {
+        opacity: .72;
+        transform: scale(.95);
+        text-shadow: 0 0 0 rgba(82, 198, 255, 0);
+      }
+
+      55% {
+        opacity: 1;
+        transform: scale(1.04);
+        text-shadow: 0 0 18px rgba(82, 198, 255, .22);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(82, 198, 255, 0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .chunk h2.chunk-title-enter,
+      .sidebar-panel,
+      #chunkBody.is-typing::after,
+      #chunkBody .picture-lead.picture-animate,
+      #chunkBody .picture-infer.picture-animate {
+        animation: none;
+      }
     }
 
     .next-task {
@@ -313,7 +623,7 @@
     /* Vocab */
     .vocab {
       color: var(--accent);
-      font-weight: 750;
+      font-weight: 800;
       cursor: pointer;
       border-bottom: 1px dotted rgba(56, 189, 248, .7);
       padding: 0 2px;
@@ -350,7 +660,7 @@
     .vocab-list {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 14px;
     }
 
     .vocab-items {
@@ -364,8 +674,8 @@
 
     .vocab-item {
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 8px 10px;
+      border-radius: 12px;
+      padding: 12px 14px;
       cursor: pointer;
       background: rgba(255, 255, 255, .05);
       color: var(--ink);
@@ -384,8 +694,8 @@
 
     .vocab-def {
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: var(--radius-sm);
+      padding: 14px;
       background: rgba(255, 255, 255, .03);
       min-height: 120px;
     }
@@ -407,21 +717,21 @@
       display: none;
       align-items: flex-start;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 30px 20px;
       z-index: 50;
     }
 
     .modal {
-      max-width: 640px;
+      max-width: 760px;
       width: 100%;
-      max-height: calc(100vh - 48px);
+      max-height: calc(100vh - 60px);
       display: flex;
       flex-direction: column;
-      background: rgba(17, 24, 39, .96);
+      background: var(--card-strong);
       border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
-      padding: 16px 16px 12px;
+      border-radius: 24px;
+      box-shadow: 0 28px 64px rgba(0, 0, 0, .35);
+      padding: 20px 20px 14px;
     }
 
     .modal h4 {
@@ -447,9 +757,9 @@
 
     /* Early finisher */
     .finisher-wrap {
-      margin-top: 14px;
+      margin-top: 18px;
       border-top: 1px solid var(--line);
-      padding-top: 14px;
+      padding-top: 18px;
       display: none;
     }
 
@@ -472,7 +782,7 @@
     .finisher-tab {
       border: 1px solid var(--line);
       background: rgba(255, 255, 255, .05);
-      padding: 8px 10px;
+      padding: 10px 14px;
       border-radius: 999px;
       cursor: pointer;
       font-weight: 700;
@@ -501,32 +811,26 @@
 
     .img-card {
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: var(--radius-sm);
       background: rgba(255, 255, 255, .03);
-      padding: 10px;
+      padding: 12px;
       position: relative;
     }
 
     .img-card h4 {
       margin: 0 0 6px;
-      font-size: .98rem;
+      font-size: 1.05rem;
     }
 
     .img-card img {
       width: 100%;
-      max-height: 120px;
-      object-fit: cover;
-      border-radius: 10px;
+      max-height: 240px;
+      object-fit: contain;
+      border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, .10);
       background: rgba(255, 255, 255, .03);
       cursor: zoom-in;
-      transition: max-height .2s ease, transform .2s ease;
-    }
-
-    .img-card.expanded img {
-      max-height: 260px;
-      transform: scale(1.01);
-      cursor: zoom-out;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
 
     .img-card .img-close {
@@ -543,34 +847,137 @@
       display: none;
     }
 
-    .img-card.expanded .img-close {
-      display: inline-flex;
+    .img-card img:hover {
+      transform: scale(1.01);
+      box-shadow: 0 18px 32px rgba(2, 6, 23, .18);
     }
 
     .img-card p {
-      margin: 8px 0 8px;
+      margin: 6px 0;
       color: var(--muted);
-      font-size: .95rem;
+      font-size: .86rem;
     }
 
     .line-fill {
-      margin-top: 6px;
+      margin-top: 4px;
       color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .image-viewer {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(2, 6, 23, .82);
+      backdrop-filter: blur(10px);
+      z-index: 80;
+    }
+
+    .image-viewer.is-open {
+      display: flex;
+    }
+
+    .image-viewer-dialog {
+      position: relative;
+      width: min(94vw, 1180px);
+      max-height: 90vh;
+      padding: 18px 18px 14px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(15, 23, 42, .96);
+      box-shadow: 0 30px 80px rgba(2, 6, 23, .5);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    body[data-theme="light"] .image-viewer-dialog {
+      background: rgba(255, 252, 245, .98);
+      border-color: rgba(29, 42, 58, .14);
+    }
+
+    .image-viewer-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 2;
+    }
+
+    .image-viewer-frame {
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .03);
+      padding: 10px;
+    }
+
+    .image-viewer-frame img {
+      width: auto;
+      max-width: 100%;
+      max-height: calc(90vh - 150px);
+      object-fit: contain;
+      border-radius: 16px;
+      display: block;
+    }
+
+    .image-viewer-meta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, .95fr);
+      gap: 12px;
+      color: var(--muted);
+    }
+
+    .image-viewer-caption,
+    .image-viewer-instruction {
+      display: grid;
+      gap: 4px;
+      align-content: start;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .03);
+    }
+
+    .image-viewer-title {
+      color: var(--ink);
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .image-viewer-label {
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .image-viewer-instruction strong {
+      font-family: var(--ui-font);
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: .01em;
     }
 
     .blank {
       display: inline-block;
-      min-width: 160px;
-      border-bottom: 2px solid rgba(255, 255, 255, .22);
+      min-width: 170px;
+      border-bottom: 2px solid rgba(255, 255, 255, .28);
       transform: translateY(-1px);
     }
 
     .quiz-q {
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: var(--radius-sm);
+      padding: 12px;
       background: rgba(255, 255, 255, .03);
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .quiz-q .q {
@@ -581,13 +988,13 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .quiz-opt {
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 10px 12px;
       cursor: pointer;
       background: rgba(255, 255, 255, .05);
       color: var(--ink);
@@ -608,12 +1015,171 @@
       background: rgba(251, 113, 133, .14);
     }
 
+    @media (max-width: 1180px) {
+      .chunk {
+        width: min(760px, 100%);
+      }
+    }
+
     @media (max-width: 940px) {
+      header,
       .wrap {
-        grid-template-columns: 1fr;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .wrap {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+
+      .chunk {
+        width: min(760px, 100%);
+        min-height: 0;
       }
 
       .img-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 14px 15px;
+      }
+
+      .vocab-list {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar-shell {
+        top: calc(68px + env(safe-area-inset-top));
+        gap: 6px;
+      }
+
+      .sidebar-tab {
+        min-width: 62px;
+        padding: 9px 10px;
+      }
+
+      .panel {
+        max-width: min(286px, calc(100vw - 88px));
+      }
+
+      .img-card img {
+        max-height: 180px;
+      }
+    }
+
+    @media (max-height: 1200px) and (min-width: 701px) {
+      header .sub {
+        font-size: .86rem;
+        max-width: 44ch;
+      }
+
+      #chunkBody {
+        font-size: .98rem;
+        line-height: 1.42;
+      }
+
+      .chunk.reading-lg #chunkBody {
+        font-size: 1.04rem;
+      }
+
+      .chunk.reading-xl #chunkBody {
+        font-size: 1.11rem;
+      }
+    }
+
+    @media (max-width: 700px) {
+      header {
+        padding-top: calc(12px + env(safe-area-inset-top));
+      }
+
+      .header-copy {
+        max-width: none;
+      }
+
+      .header-subrow {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      header h1 {
+        max-width: none;
+      }
+
+      .header-actions,
+      .controls,
+      .control-group,
+      .control-meta {
+        width: 100%;
+      }
+
+      .control-divider {
+        display: none;
+      }
+
+      #chunkBody {
+        max-width: none;
+      }
+
+      body {
+        overflow: auto;
+      }
+
+      .wrap {
+        grid-template-columns: 1fr;
+        padding-bottom: 110px;
+      }
+
+      .chunk {
+        width: 100%;
+        min-height: auto;
+      }
+
+      .sidebar-shell {
+        right: 12px;
+        left: 12px;
+        top: auto;
+        bottom: 12px;
+        position: fixed;
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .sidebar-tabs {
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .sidebar-tab {
+        min-width: 0;
+        flex: 1 1 0;
+      }
+
+      .panel {
+        width: 100%;
+        max-width: none;
+        max-height: 52svh;
+        padding: 14px;
+        border-width: 1px;
+        transform: translateY(calc(100% + 12px));
+      }
+
+      .sidebar-shell.is-open .panel {
+        transform: translateY(0);
+      }
+
+      .image-viewer {
+        padding: 12px;
+      }
+
+      .image-viewer-dialog {
+        width: 100%;
+        max-height: 92vh;
+        padding: 16px 16px 12px;
+      }
+
+      .image-viewer-meta {
         grid-template-columns: 1fr;
       }
     }
@@ -622,18 +1188,19 @@
 
 <body>
   <header>
-    <div>
+    <div class="header-copy">
       <h1>Early Americas — Intro Reading Helper</h1>
-      <div class="sub">Read the chunked lesson → complete the checkpoint → then do Picture Analysis → click Next.</div>
-    </div>
-    <div style="display:flex; gap:10px; align-items:center;">
-      <button id="btnTheme" type="button" class="btn-secondary" aria-label="Toggle light/dark mode">Bright Mode</button>
-      <div class="progress" id="progressText">Slide 1 of 7</div>
+      <div class="header-subrow">
+        <div class="sub">Read the chunked lesson, use the support tabs when needed, then complete the worksheet section and click Next.</div>
+        <div class="header-actions">
+          <button id="btnTheme" type="button" class="btn-secondary" aria-label="Toggle light/dark mode">Bright Mode</button>
+          <div class="progress" id="progressText">Slide 1 of 7</div>
+        </div>
+      </div>
     </div>
   </header>
 
   <main class="wrap">
-    <!-- LEFT: Reading chunk -->
     <section class="card chunk reading-md" aria-live="polite">
       <div class="chunk-title">
         <span class="pill accent" id="unitTag">Unit: Early Americas</span>
@@ -646,16 +1213,16 @@
       <div id="chunkBody"></div>
 
       <div class="controls">
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <div class="control-group">
           <button class="btn-secondary" id="btnPrev" type="button">← Back</button>
           <button class="btn-primary" id="btnNext" type="button">Next →</button>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div class="control-meta">
           <button class="btn-hint" id="btnHint" type="button">Hint</button>
           <button id="btnVocab" type="button">Vocab List</button>
           <button id="btnSpanish" type="button" class="btn-secondary">Spanish Helper (ELL)</button>
-          <span style="width:1px; height:22px; background: var(--line); display:inline-block;"></span>
-          <span style="color:var(--muted); font-size:.92rem;">Reading size:</span>
+          <span class="control-divider" aria-hidden="true"></span>
+          <span class="controls-label">Reading size:</span>
           <button id="btnFontSm" type="button" aria-label="Smaller reading text">A-</button>
           <button id="btnFontMd" type="button" aria-label="Default reading text">A</button>
           <button id="btnFontLg" type="button" aria-label="Larger reading text">A+</button>
@@ -698,92 +1265,124 @@
       </div>
     </section>
 
-    <!-- RIGHT: worksheet directions + hints -->
-    <aside class="card panel">
-      <h3>Worksheet Checkpoint</h3>
+    <div class="sidebar-shell" id="sidebarShell">
+    <div class="sidebar-tabs" aria-label="Worksheet support tabs">
+      <button type="button" class="sidebar-tab" data-sidebar-tab="steps">Next</button>
+      <button type="button" class="sidebar-tab" data-sidebar-tab="hint">Hint</button>
+      <button type="button" class="sidebar-tab" data-sidebar-tab="targets">Goals</button>
+      <button type="button" class="sidebar-tab" data-sidebar-tab="pictures" id="pictureTab">Pics</button>
+    </div>
 
-      <div class="box rules">
-        <strong>Rules</strong>
-        <div style="color:var(--muted); margin-top:6px;">
-          <div>✅ Every answer should match the reading.</div>
-          <div>✅ Use <b>evidence</b> when the worksheet asks for it (copy 4–6 words from the slide).</div>
-          <div>✅ If stuck: re-read → ask partner → raise hand.</div>
+    <aside class="card panel" id="supportSidebar" aria-hidden="true">
+      <div class="panel-header">
+        <h3>Worksheet Support</h3>
+        <button type="button" class="panel-close" id="btnPanelClose" aria-label="Close sidebar">✕</button>
+      </div>
+
+      <div class="sidebar-panel" data-sidebar-panel="steps">
+        <div class="box rules">
+          <strong>Rules</strong>
+          <div style="color:var(--muted); margin-top:6px;">
+            <div>✅ Every answer should match the reading.</div>
+            <div>✅ Use <b>evidence</b> when the worksheet asks for it.</div>
+            <div>✅ If stuck: re-read → ask partner → raise hand.</div>
+          </div>
+        </div>
+
+        <div class="box next-task" id="nextTaskBox">
+          <strong>After reading, do this now:</strong>
+          <div id="nextTaskText" style="color:var(--muted); margin-top:6px;">
+            Read the directions, then click Next.
+          </div>
         </div>
       </div>
 
-      <div class="box next-task" id="nextTaskBox">
-        <strong>After reading, do this now:</strong>
-        <div id="nextTaskText" style="color:var(--muted); margin-top:6px;">
-          Read the directions, then click Next.
+      <div class="sidebar-panel" data-sidebar-panel="hint">
+        <div class="box hints" id="hintsBox" style="display:block;">
+          <strong>Hint</strong>
+          <div id="hintsText" style="color:var(--muted); margin-top:6px;"></div>
         </div>
       </div>
 
-      <div class="box hints" id="hintsBox">
-        <strong>Hint</strong>
-        <div id="hintsText" style="color:var(--muted); margin-top:6px;"></div>
-      </div>
-
-      <div class="box">
-        <strong>Targets for Day 1</strong>
-        <div style="color:var(--muted); margin-top:6px;">
-          <div>• How geography shapes life: <b>food</b>, <b>building</b>, <b>travel</b>, <b>protection</b></div>
-          <div>• Two regions: <b>Mesoamerica (jungle + lakes)</b> vs <b>Andes (mountains)</b></div>
-          <div>• Maya + Aztec: locate them + name one way geography shaped their cities</div>
-          <div>• Picture Analysis purpose: use the images to infer <b>challenges</b> + <b>advantages</b> of each
-            environment</div>
+      <div class="sidebar-panel" data-sidebar-panel="targets">
+        <div class="box">
+          <strong>Targets for Day 1</strong>
+          <div style="color:var(--muted); margin-top:6px;">
+            <div>• How geography shapes life: <b>food</b>, <b>building</b>, <b>travel</b>, <b>protection</b></div>
+            <div>• Two regions: <b>Mesoamerica (jungle + lakes)</b> vs <b>Andes (mountains)</b></div>
+            <div>• Maya + Aztec: locate them + name one way geography shaped their cities</div>
+            <div>• Picture Analysis: infer <b>challenges</b> + <b>advantages</b> from the environment</div>
+          </div>
         </div>
       </div>
 
-      <div class="box" id="pictureAnalysisBox" style="display:none; border-left: 4px solid rgba(167,139,250,.6);">
-        <strong style="color: var(--accent2);">Worksheet Part: Picture Analysis</strong>
-        <div style="color:var(--muted); margin-top:6px;">
-          Look at the pictures. On your worksheet, describe <b>one challenge</b> and <b>one unique thing</b> for each
-          civilization, then add <b>evidence</b> (copy 4–6 words from the caption or the slide).
-        </div>
-
-        <div class="img-grid" style="margin-top:10px; grid-template-columns: 1fr;">
-          <div class="img-card" data-picture="0">
-            <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
-            <h4>Maya</h4>
-            <img
-              src="https://images.squarespace-cdn.com/content/v1/6047d405b02148755fb6e601/42c604a2-9471-4d64-a922-c72b94d17a12/ver-centroamerica-guatemala-ruinas-tikal-04.jpg?format=2500w"
-              alt="Maya ruins at Tikal (Guatemala)" />
-            <p>Jungle region with stone cities and temples.</p>
-            <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
-            <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
-            <div class="line-fill"><b>Evidence (4–6 words):</b> <span class="blank" style="min-width:220px;"></span>
-            </div>
+      <div class="sidebar-panel" data-sidebar-panel="pictures" id="picturePanel">
+        <div class="box" id="pictureAnalysisBox" style="display:none; border-left: 4px solid rgba(167,139,250,.6);">
+          <strong style="color: var(--accent2);">Worksheet Part: Picture Analysis</strong>
+          <div style="color:var(--muted); margin-top:6px;">
+            Look at the picture. On your worksheet, describe <b>one challenge</b> and <b>one unique thing</b>, then
+            add <b>evidence</b>.
           </div>
 
-          <div class="img-card" data-picture="1">
-            <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
-            <h4>Aztec</h4>
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Painting_of_Tenochtitlan-Tlatelolco_on_Lake_Texcoco_%289755215791%29.jpg"
-              alt="Painting of Tenochtitlan on Lake Texcoco" />
-            <p>Capital city built on water with causeways and canals.</p>
-            <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
-            <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
-            <div class="line-fill"><b>Evidence (4–6 words):</b> <span class="blank" style="min-width:220px;"></span>
+          <div class="img-grid" style="margin-top:10px; grid-template-columns: 1fr;">
+            <div class="img-card" data-picture="0">
+              <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+              <h4>Maya</h4>
+              <img
+                src="https://images.squarespace-cdn.com/content/v1/6047d405b02148755fb6e601/42c604a2-9471-4d64-a922-c72b94d17a12/ver-centroamerica-guatemala-ruinas-tikal-04.jpg?format=2500w"
+                alt="Maya ruins at Tikal (Guatemala)" />
+              <p>Jungle region with stone cities and temples.</p>
+              <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
+              <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
             </div>
-          </div>
 
-          <div class="img-card" data-picture="2">
-            <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
-            <h4>Inca</h4>
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Andenes_at_Machu_Picchu_%28cropped%29.jpg"
-              alt="Inca terraces near Pisac, Peru" />
-            <p>Mountain empire with roads and high-altitude cities.</p>
-            <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
-            <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
-            <div class="line-fill"><b>Evidence (4–6 words):</b> <span class="blank" style="min-width:220px;"></span>
+            <div class="img-card" data-picture="1">
+              <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+              <h4>Aztec</h4>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Painting_of_Tenochtitlan-Tlatelolco_on_Lake_Texcoco_%289755215791%29.jpg"
+                alt="Painting of Tenochtitlan on Lake Texcoco" />
+              <p>Capital city built on water with causeways and canals.</p>
+              <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
+              <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
+            </div>
+
+            <div class="img-card" data-picture="2">
+              <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
+              <h4>Inca</h4>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Andenes_at_Machu_Picchu_%28cropped%29.jpg"
+                alt="Inca terraces near Pisac, Peru" />
+              <p>Mountain empire with roads and high-altitude cities.</p>
+              <div class="line-fill"><b>Challenge:</b> <span class="blank"></span></div>
+              <div class="line-fill"><b>Unique thing:</b> <span class="blank"></span></div>
             </div>
           </div>
         </div>
       </div>
     </aside>
+    </div>
   </main>
+
+  <div class="image-viewer" id="imageViewer" aria-hidden="true">
+    <div class="image-viewer-dialog" role="dialog" aria-modal="true" aria-label="Expanded picture view">
+      <button type="button" class="image-viewer-close btn-secondary" id="imageViewerClose" aria-label="Close expanded picture">Close</button>
+      <div class="image-viewer-frame">
+        <img id="imageViewerImg" alt="" />
+      </div>
+      <div class="image-viewer-meta">
+        <div class="image-viewer-caption">
+          <div class="image-viewer-label">Picture Caption</div>
+          <div class="image-viewer-title" id="imageViewerTitle"></div>
+          <div id="imageViewerCaption"></div>
+        </div>
+        <div class="image-viewer-instruction">
+          <div class="image-viewer-label">Work Instruction</div>
+          <div id="imageViewerInstruction"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal for vocab -->
   <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-label="Vocabulary definition">
@@ -893,14 +1492,14 @@
         <p><b>Today we’re doing 3 things:</b> read → write → picture analysis.</p>
         <ol>
           <li><b>Read the slide</b> on the left (chunked).</li>
-          <li><b>Answer the worksheet questions</b> in the box on the right.</li>
+          <li><b>Answer the worksheet questions</b> using the support tabs when you need them.</li>
           <li><b>Click highlighted vocab</b> if you need help.</li>
           <li>When we reach <b>Picture Analysis</b>, use the image to infer a <b>challenge</b> and an <b>advantage</b>.</li>
         </ol>
         <p><b>Partner rule:</b> If you’re stuck, re-read → ask partner → raise hand.</p>
         <p style="color: rgba(203,213,225,.95);"><b>Mr. Naramore's note:</b>Finish each part of the worksheet before moving on.</p>
       `,
-        nextTask: `On your paper: write your name + date. Then be ready to answer the Do Now on the next slide.`,
+        nextTask: `On your paper: write your name + date. Then answer the questions under <b>"Do Now"</b> on your worksheet.`,
         hint: `Use the buttons at the bottom: Back / Next. Use “Vocab List” if you need a word explained.`
       },
       {
@@ -909,11 +1508,11 @@
         title: "Early Americas: same continent, different worlds",
         body: `
         <p>${vocabify(
-          "The Maya, Aztec, and Inca were three major civilizations in the Americas before the Spanish arrived. Even though they lived on the same continents, their geography was very different — and that changed everything about daily life. Some lived in hot jungle regions, some lived in central Mexico, and some built a huge empire in the Andes Mountains."
+          "The Maya, Aztec, and Inca were three major civilizations in the Americas before the Spanish arrived. They all lived in the Americas, but they did not live in the same kind of place. Some lived in hot jungle regions, some lived in the lake-filled highland region of central Mexico, and some built a huge empire high in the Andes Mountains. Because their environments were so different, people had to adapt, solve problems, and make choices about food, travel, building, and protection. Over time, those choices helped create very different cultures."
         )}</p>
         <p><b>Key idea:</b> Geography isn’t just “where they lived.” Geography shaped food, cities, travel, and power.</p>
       `,
-        nextTask: `Do Now (write in a full sentence):<br/>Stem: <b>“Geography shapes life because ____.”</b><br/>Then add a second sentence using a stem:<br/>Stem: <b>“One example is ____ because ____.”</b><br/><span style="color:rgba(229,231,235,.9)">Evidence (optional today): copy 4–6 words that support your example.</span>`,
+        nextTask: `Answer the questions under <b>"Section 1"</b> on your worksheet.`,
         hint: `Look for the line that says geography “changed everything about daily life.”`
       },
       {
@@ -928,7 +1527,7 @@
           "The Aztec were located in central Mexico. Their empire became powerful in the 1400s (CE), and their society was strongly connected to religion. Their capital, Tenochtitlan, was built on an island in Lake Texcoco. The city had a large temple complex, districts laid out in a grid, and it used causeways to reach the mainland and aqueducts to bring in fresh water."
         )}</p>
       `,
-        nextTask: `1) Maya location (write):<br/>Stem: <b>“The Maya lived in ____.”</b><br/>2) Aztec location (write):<br/>Stem: <b>“The Aztec lived in ____.”</b><br/>3) City + geography (Aztec):<br/>Stem: <b>“Tenochtitlan was built ____ so they had to ____.”</b><br/>4) Comparison (Maya vs Aztec):<br/>Stem: <b>“Both civilizations lived in Mesoamerica, but ____ while ____.”</b><br/>Evidence: copy <b>4–6 words</b> that support your comparison.`,
+        nextTask: `Answer the questions under <b>"Section 2"</b> on your worksheet.`,
         hint: `Find the line about the capital being built on an island in a lake.`
       },
       {
@@ -943,7 +1542,7 @@
           "Their ruler was called the Sapa Inca, and their capital was Cuzco. When the Spanish arrived, the Inca were weakened by civil war and diseases like smallpox, which made it easier for Francisco Pizarro to conquer the empire in 1533."
         )}</p>
       `,
-        nextTask: `1) Terrain (fill in): The Inca lived in the <b>____</b> Mountains.<br/>2) Systems (name one):<br/>Stem: <b>“One system the Inca used was ____.”</b><br/>3) Conquest cause (pick one + explain):<br/>Stem: <b>“The Inca were easier to conquer because ____.”</b><br/>4) Deeper thought (one sentence):<br/>Stem: <b>“Mountains helped the Inca by ____, but also made life harder because ____.”</b>`,
+        nextTask: `Answer the questions under <b>"Section 3"</b> on your worksheet.`,
         hint: `Two causes are named at the end: civil war and smallpox.`
       }
       ,
@@ -952,7 +1551,7 @@
         skill: "Picture analysis",
         title: "Picture Analysis: Maya",
         body: `
-        <p><b>Look at the picture.</b> Your goal is to infer how the environment shaped life. On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
+        <p><b><span class="picture-lead">Look at the picture.</span></b> Your goal is to <span class="picture-infer">infer how the environment shaped life.</span> On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
         <div class="img-card" style="margin-top:10px;">
           <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
           <h4>Maya</h4>
@@ -960,7 +1559,7 @@
           <p>Jungle region with stone cities and temples.</p>
         </div>
       `,
-        nextTask: `Worksheet: For the <b>Maya</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Add <b>evidence</b> (copy <b>4–6 words</b> from the caption or slide). Then add <b>one sentence</b> explaining how geography affects life.`,
+        nextTask: `Answer the questions under <b>"Picture Analysis: Maya"</b> on your worksheet.`,
         hint: `Use the caption: jungle + stone cities + temples. Think: farming, travel, building materials, weather.`
       },
       {
@@ -968,7 +1567,7 @@
         skill: "Picture analysis",
         title: "Picture Analysis: Aztec",
         body: `
-        <p><b>Look at the picture.</b> Your goal is to infer how the environment shaped life. On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
+        <p><b><span class="picture-lead">Look at the picture.</span></b> Your goal is to <span class="picture-infer">infer how the environment shaped life.</span> On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
         <div class="img-card" style="margin-top:10px;">
           <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
           <h4>Aztec</h4>
@@ -976,7 +1575,7 @@
           <p>Capital city built on water with causeways and canals.</p>
         </div>
       `,
-        nextTask: `Worksheet: For the <b>Aztec</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Add <b>evidence</b> (copy <b>4–6 words</b> from the caption or slide). Then add <b>one sentence</b> explaining how geography affects life.`,
+        nextTask: `Answer the questions under <b>"Picture Analysis: Aztec"</b> on your worksheet.`,
         hint: `Use the caption: city on water + causeways + canals. Think: food, fresh water, travel, defense.`
       },
       {
@@ -984,7 +1583,7 @@
         skill: "Picture analysis",
         title: "Picture Analysis: Inca",
         body: `
-        <p><b>Look at the picture.</b> Your goal is to infer how the environment shaped life. On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
+        <p><b><span class="picture-lead">Look at the picture.</span></b> Your goal is to <span class="picture-infer">infer how the environment shaped life.</span> On your worksheet, write <b>one challenge</b>, <b>one unique advantage</b>, and <b>one sentence</b> explaining how geography affects daily life.</p>
         <div class="img-card" style="margin-top:10px;">
           <button type="button" class="img-close" aria-label="Close expanded image">Close</button>
           <h4>Inca</h4>
@@ -992,7 +1591,7 @@
           <p>Mountain empire with roads and high-altitude cities.</p>
         </div>
       `,
-        nextTask: `Worksheet: For the <b>Inca</b> picture — write <b>one challenge</b> + <b>one unique thing</b>. Add <b>evidence</b> (copy <b>4–6 words</b> from the caption or slide). Then add <b>one sentence</b> explaining how geography affects life.`,
+        nextTask: `Answer the questions under <b>"Picture Analysis: Inca"</b> on your worksheet.`,
         hint: `Use the caption: mountains + roads + high altitude. Think: farming, travel, building, communication.`
       }
     ];
@@ -1047,6 +1646,7 @@
     const btnFontMd = document.getElementById("btnFontMd");
     const btnFontLg = document.getElementById("btnFontLg");
     const btnFontXl = document.getElementById("btnFontXl");
+    const chunkSection = document.querySelector("section.card.chunk");
 
     // Early finisher elements
     const finisherWrap = document.getElementById("finisherWrap");
@@ -1054,12 +1654,22 @@
     const finisherTabs = document.getElementById("finisherTabs");
     const finisherQuiz = document.getElementById("finisherQuiz");
     const pictureAnalysisBox = document.getElementById("pictureAnalysisBox");
+    const sidebarShell = document.getElementById("sidebarShell");
+    const supportSidebar = document.getElementById("supportSidebar");
+    const btnPanelClose = document.getElementById("btnPanelClose");
+    const pictureTab = document.getElementById("pictureTab");
 
     // Modal
     const backdrop = document.getElementById("modalBackdrop");
     const modalTitle = document.getElementById("modalTitle");
     const modalText = document.getElementById("modalText");
     const modalClose = document.getElementById("modalClose");
+    const imageViewer = document.getElementById("imageViewer");
+    const imageViewerImg = document.getElementById("imageViewerImg");
+    const imageViewerTitle = document.getElementById("imageViewerTitle");
+    const imageViewerCaption = document.getElementById("imageViewerCaption");
+    const imageViewerInstruction = document.getElementById("imageViewerInstruction");
+    const imageViewerClose = document.getElementById("imageViewerClose");
 
     // Theme toggle (dark/light)
     const btnTheme = document.getElementById("btnTheme");
@@ -1077,45 +1687,38 @@
       applyTheme(saved);
     }
 
-    function render() {
-      const c = CHUNKS[idx];
-      elTitle.textContent = c.title;
-      elBody.innerHTML = c.body;
-      elProgress.textContent = `Slide ${idx + 1} of ${CHUNKS.length}`;
-      elChunkTag.textContent = c.tag;
-      elSkillTag.textContent = `Skill: ${c.skill}`;
-      elNextTaskText.innerHTML = c.nextTask;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let renderAnimationToken = 0;
+    let activeSidebarPanel = null;
+    let activeTypingSession = null;
 
-      // Hide hints by default each chunk
-      elHintsBox.style.display = "none";
-      elHintsText.textContent = c.hint || "";
-
-      // Buttons
-      btnPrev.disabled = (idx === 0);
-      btnNext.disabled = (idx === CHUNKS.length - 1);
-
-      // Show early finisher ONLY on final slide
-      const isFinal = idx === CHUNKS.length - 1;
-      finisherWrap.style.display = isFinal ? "block" : "none";
-
-      // Picture analysis happens AFTER the reading (slides 5–7)
-      if (pictureAnalysisBox) {
-        const isPictureSlide = idx >= 4 && idx <= 6;
-        pictureAnalysisBox.style.display = isPictureSlide ? "block" : "none";
-
-        // Map slide index 4/5/6 to picture card 0/1/2
-        const activePicIndex = idx - 4;
-        pictureAnalysisBox.querySelectorAll("[data-picture]").forEach(card => {
-          const cardIdx = Number(card.getAttribute("data-picture"));
-          card.style.display = (cardIdx === activePicIndex) ? "block" : "none";
-        });
+    function animateChunkTitle(title) {
+      elTitle.classList.remove("chunk-title-enter");
+      const parts = title.split(":");
+      if (prefersReducedMotion.matches || parts.length < 2) {
+        elTitle.textContent = title;
+        if (prefersReducedMotion.matches) return 0;
+        void elTitle.offsetWidth;
+        elTitle.classList.add("chunk-title-enter");
+        return 340;
       }
 
-      // If final chunk, ensure quiz is rendered once
-      if (isFinal) {
-        renderFinisherQuiz();
-      }
+      const main = parts.shift().trim();
+      const tailText = parts.join(":").trim();
+      const tailParts = tailText.split(",").map(part => part.trim()).filter(Boolean);
 
+      const spans = [
+        `<span class="chunk-title-main" style="animation-delay: 0ms;">${main}:</span>`,
+        ...tailParts.map((part, index) => (
+          `<span class="chunk-title-tail" style="animation-delay: ${1200 + (index * 1200)}ms;">${part}</span>`
+        ))
+      ];
+
+      elTitle.innerHTML = spans.join(" ");
+      return 1200 + (tailParts.length * 1200) + 2000;
+    }
+
+    function bindChunkInteractiveContent() {
       // Attach vocab click listeners
       document.querySelectorAll(".vocab").forEach(span => {
         span.setAttribute("tabindex", "0");
@@ -1152,6 +1755,210 @@
       bindImageCardInteractions(document);
     }
 
+    function animatePictureBodyHighlights() {
+      if (prefersReducedMotion.matches) return;
+      const lead = elBody.querySelector(".picture-lead");
+      const infer = elBody.querySelector(".picture-infer");
+      if (lead) {
+        lead.classList.remove("picture-animate");
+        void lead.offsetWidth;
+        lead.classList.add("picture-animate");
+      }
+      if (infer) {
+        infer.classList.remove("picture-animate");
+        void infer.offsetWidth;
+        infer.classList.add("picture-animate");
+      }
+    }
+
+    function typeChunkBody(html, token) {
+      if (prefersReducedMotion.matches) {
+        elBody.innerHTML = html;
+        bindChunkInteractiveContent();
+        return Promise.resolve();
+      }
+
+      const template = document.createElement("template");
+      template.innerHTML = html.trim();
+      elBody.innerHTML = "";
+      elBody.classList.add("is-typing");
+
+      const queue = [];
+
+      function cloneInto(sourceNode, targetParent) {
+        if (sourceNode.nodeType === Node.TEXT_NODE) {
+          const text = sourceNode.textContent || "";
+          if (!/\S/.test(text)) return;
+          const textNode = document.createTextNode("");
+          targetParent.appendChild(textNode);
+          queue.push({ node: textNode, text });
+          return;
+        }
+
+        if (sourceNode.nodeType !== Node.ELEMENT_NODE) return;
+
+        const clone = sourceNode.cloneNode(false);
+        targetParent.appendChild(clone);
+        Array.from(sourceNode.childNodes).forEach(child => cloneInto(child, clone));
+      }
+
+      Array.from(template.content.childNodes).forEach(node => cloneInto(node, elBody));
+
+      return new Promise(resolve => {
+        let queueIndex = 0;
+        let charIndex = 0;
+        let timerId = null;
+        let completed = false;
+
+        function completeImmediately() {
+          if (completed) return;
+          elBody.innerHTML = html;
+          finish();
+        }
+
+        function finish() {
+          if (completed) return;
+          completed = true;
+          if (timerId) window.clearTimeout(timerId);
+          if (activeTypingSession && activeTypingSession.token === token) {
+            activeTypingSession = null;
+          }
+          elBody.classList.remove("is-typing");
+          if (token === renderAnimationToken) {
+            bindChunkInteractiveContent();
+          }
+          resolve();
+        }
+
+        activeTypingSession = {
+          token,
+          complete: completeImmediately
+        };
+
+        function step() {
+          if (token !== renderAnimationToken) {
+            finish();
+            return;
+          }
+
+          const item = queue[queueIndex];
+          const nextChar = item.text.charAt(charIndex);
+          item.node.textContent += nextChar;
+          charIndex += 1;
+
+          if (charIndex >= item.text.length) {
+            queueIndex += 1;
+            charIndex = 0;
+          }
+
+          if (queueIndex >= queue.length) {
+            finish();
+            return;
+          }
+
+          let delay = 44;
+          if (/[,:;]/.test(nextChar)) delay = 165;
+          if (/[.!?]/.test(nextChar)) delay = 340;
+          if (/\)/.test(nextChar)) delay = 185;
+          if (/\s/.test(nextChar)) delay = Math.max(delay, 30);
+
+          timerId = window.setTimeout(step, delay);
+        }
+
+        step();
+      });
+    }
+
+    function setSidebarPanel(panelKey) {
+      const nextPanel = panelKey === activeSidebarPanel ? null : panelKey;
+      activeSidebarPanel = nextPanel;
+      const isOpen = Boolean(nextPanel);
+
+      sidebarShell.classList.toggle("is-open", isOpen);
+      if (supportSidebar) supportSidebar.setAttribute("aria-hidden", isOpen ? "false" : "true");
+
+      document.querySelectorAll("[data-sidebar-tab]").forEach(tab => {
+        const isActive = isOpen && tab.getAttribute("data-sidebar-tab") === nextPanel;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+
+      document.querySelectorAll("[data-sidebar-panel]").forEach(panel => {
+        const isActive = isOpen && panel.getAttribute("data-sidebar-panel") === nextPanel;
+        panel.classList.toggle("active", isActive);
+      });
+    }
+
+    function render() {
+      const c = CHUNKS[idx];
+      renderAnimationToken += 1;
+      const animationToken = renderAnimationToken;
+
+      const titleAnimationDelay = animateChunkTitle(c.title);
+      elBody.classList.remove("is-typing");
+      elBody.innerHTML = "";
+      elProgress.textContent = `Slide ${idx + 1} of ${CHUNKS.length}`;
+      elChunkTag.textContent = c.tag;
+      elSkillTag.textContent = `Skill: ${c.skill}`;
+      elNextTaskText.innerHTML = c.nextTask;
+
+      elHintsText.textContent = c.hint || "";
+
+      // Buttons
+      btnPrev.disabled = (idx === 0);
+      btnNext.disabled = (idx === CHUNKS.length - 1);
+
+      // Show early finisher ONLY on final slide
+      const isFinal = idx === CHUNKS.length - 1;
+      finisherWrap.style.display = isFinal ? "block" : "none";
+
+      // Picture analysis happens AFTER the reading (slides 5–7)
+      if (pictureAnalysisBox) {
+        const isPictureSlide = idx >= 4 && idx <= 6;
+        pictureAnalysisBox.style.display = isPictureSlide ? "block" : "none";
+        if (pictureTab) pictureTab.style.display = isPictureSlide ? "inline-flex" : "none";
+        if (!isPictureSlide && activeSidebarPanel === "pictures") {
+          setSidebarPanel(null);
+        }
+
+        // Map slide index 4/5/6 to picture card 0/1/2
+        const activePicIndex = idx - 4;
+        pictureAnalysisBox.querySelectorAll("[data-picture]").forEach(card => {
+          const cardIdx = Number(card.getAttribute("data-picture"));
+          card.style.display = (cardIdx === activePicIndex) ? "block" : "none";
+        });
+      }
+
+      // If final chunk, ensure quiz is rendered once
+      if (isFinal) {
+        renderFinisherQuiz();
+      }
+
+      const isPictureChunk = idx >= 4 && idx <= 6;
+      if (isPictureChunk) {
+        elBody.innerHTML = c.body;
+        bindChunkInteractiveContent();
+        animatePictureBodyHighlights();
+        return;
+      }
+
+      const titleDelay = prefersReducedMotion.matches ? 0 : titleAnimationDelay;
+      window.setTimeout(() => {
+        if (animationToken !== renderAnimationToken) return;
+        typeChunkBody(c.body, animationToken);
+      }, titleDelay);
+    }
+
+    if (chunkSection) {
+      chunkSection.addEventListener("click", (e) => {
+        if (!activeTypingSession) return;
+        const target = e.target;
+        if (!(target instanceof Element)) return;
+        if (target.closest("button")) return;
+        activeTypingSession.complete();
+      });
+    }
+
     // --- Reading font size controls (LEFT reading only) ---
     const SIZE_CLASS = { sm: "reading-sm", md: "reading-md", lg: "reading-lg", xl: "reading-xl" };
 
@@ -1180,14 +1987,49 @@
 
     function closeModal() { backdrop.style.display = "none"; }
 
+    function openImageViewer(img) {
+      if (!imageViewer || !imageViewerImg || !img) return;
+      const card = img.closest(".img-card");
+      const title = card?.querySelector("h4")?.textContent || img.alt || "Picture";
+      const caption = card?.querySelector("p")?.textContent || img.alt || "";
+      const prompt = 'Write one <strong>challenge</strong>, one <strong>unique advantage</strong>, and one sentence explaining how geography affects <strong>daily life</strong>.';
+
+      imageViewerImg.src = img.currentSrc || img.src;
+      imageViewerImg.alt = img.alt || title;
+      if (imageViewerTitle) imageViewerTitle.textContent = title;
+      if (imageViewerCaption) imageViewerCaption.textContent = caption;
+      if (imageViewerInstruction) imageViewerInstruction.innerHTML = prompt;
+      imageViewer.classList.add("is-open");
+      imageViewer.setAttribute("aria-hidden", "false");
+    }
+
+    function closeImageViewer() {
+      if (!imageViewer || !imageViewerImg) return;
+      imageViewer.classList.remove("is-open");
+      imageViewer.setAttribute("aria-hidden", "true");
+      imageViewerImg.removeAttribute("src");
+    }
+
     btnPrev.addEventListener("click", () => { if (idx > 0) { idx--; render(); } });
     btnNext.addEventListener("click", () => { if (idx < CHUNKS.length - 1) { idx++; render(); } });
 
     btnHint.addEventListener("click", () => {
       const c = CHUNKS[idx];
       elHintsText.textContent = c.hint || "Re-read the chunk and look for key vocabulary words.";
-      elHintsBox.style.display = (elHintsBox.style.display === "none") ? "block" : "none";
+      setSidebarPanel("hint");
     });
+
+    document.querySelectorAll("[data-sidebar-tab]").forEach(tab => {
+      tab.addEventListener("click", () => {
+        const key = tab.getAttribute("data-sidebar-tab");
+        if (key === "pictures" && pictureAnalysisBox && pictureAnalysisBox.style.display === "none") return;
+        setSidebarPanel(key);
+      });
+    });
+
+    if (btnPanelClose) {
+      btnPanelClose.addEventListener("click", () => setSidebarPanel(null));
+    }
 
     btnVocab.addEventListener("click", () => {
       modalTitle.textContent = "Vocab List";
@@ -1280,7 +2122,11 @@
 
     backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeModal(); });
     modalClose.addEventListener("click", closeModal);
-    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+    window.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      closeModal();
+      closeImageViewer();
+    });
 
     if (btnTheme) {
       btnTheme.addEventListener("click", () => {
@@ -1311,25 +2157,12 @@
     setFinisherOpen(false);
 
     // Picture analysis: expand/collapse images (bind after render too)
-    function collapsePictureCards(except) {
-      document.querySelectorAll(".img-card.expanded").forEach(card => {
-        if (card !== except) card.classList.remove("expanded");
-      });
-    }
-
     function bindImageCardInteractions(root = document) {
       root.querySelectorAll(".img-card img").forEach(img => {
         if (img.dataset.zoomBound === "1") return;
         img.dataset.zoomBound = "1";
         img.addEventListener("click", () => {
-          const card = img.closest(".img-card");
-          if (!card) return;
-          if (card.classList.contains("expanded")) {
-            card.classList.remove("expanded");
-            return;
-          }
-          collapsePictureCards(card);
-          card.classList.add("expanded");
+          openImageViewer(img);
         });
       });
 
@@ -1338,10 +2171,19 @@
         btn.dataset.zoomBound = "1";
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
-          const card = btn.closest(".img-card");
-          if (card) card.classList.remove("expanded");
+          closeImageViewer();
         });
       });
+    }
+
+    if (imageViewer) {
+      imageViewer.addEventListener("click", (e) => {
+        if (e.target === imageViewer) closeImageViewer();
+      });
+    }
+
+    if (imageViewerClose) {
+      imageViewerClose.addEventListener("click", closeImageViewer);
     }
 
     document.querySelectorAll('[data-finisher-tab]').forEach(tab => {
