@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Early Americas Quick Quiz</title>
+  <link rel="stylesheet" href="ea-study.css" />
+  <script defer src="ea-study.js"></script>
+</head>
+<body data-page="timed">
+  <header>
+    <div>
+      <h1>Quick Quiz</h1>
+      <div class="sub">Answer the questions and use the timer if you want a speed round.</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn-secondary" data-theme-toggle type="button">Dark Mode</button>
+      <button class="btn-warn" data-reset-progress type="button">Start Over</button>
+    </div>
+  </header>
+
+  <nav class="page-nav" aria-label="Study pages">
+    <a class="nav-link" href="EA_Study.html">Home</a>
+    <a class="nav-link" href="study-targets.html">What to Know</a>
+    <a class="nav-link" href="flip-cards.html">Flash Cards</a>
+    <a class="nav-link" href="timed-practice.html">Quick Quiz</a>
+  </nav>
+
+  <main class="wrap">
+    <section class="card stack">
+      <div class="pillrow">
+        <span class="pill accent">Quick Quiz</span>
+        <span class="pill good">Step 3</span>
+        <span class="pill warn">12 Seconds</span>
+      </div>
+
+      <div class="box">
+        <strong>Quiz controls</strong>
+        <div class="muted section-copy">You get 12 seconds per question if the timer is on. If the timer is off, the quiz waits for you.</div>
+        <div class="quiz-controls">
+          <div class="timer" id="timerText">Time: 12</div>
+          <div class="control-buttons">
+            <button class="btn-secondary" id="btnPrevQ" type="button">← Back</button>
+            <button class="btn-primary" id="btnNextQ" type="button">Next →</button>
+            <button class="btn-good" id="btnStart" type="button">Start</button>
+            <button class="btn-warn" id="btnPause" type="button">Pause</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="qcard" id="qCard"></div>
+
+      <div class="quiz-meta">
+        <button id="btnKey" type="button">Show Answer Help (optional)</button>
+        <div class="muted">Score: <b id="scoreText">0</b> / <b id="scoreTotal">0</b></div>
+        <div class="muted">Done: <b id="answeredCount">0</b> / <b id="answeredTotal">0</b></div>
+      </div>
+
+      <div class="answerKey" id="answerKey"></div>
+    </section>
+
+    <aside class="card stack">
+      <div class="box">
+        <strong>Quick tips</strong>
+        <ul class="plain-list">
+          <li>Read the civilization name first.</li>
+          <li>Match geography to farming method before anything else.</li>
+          <li>Check Answer Help only after you try on your own.</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <strong>Big clues</strong>
+        <ul class="plain-list">
+          <li><b>Aztec:</b> island and lake, emperor, warfare.</li>
+          <li><b>Inca:</b> Andes, roads, terraces, priests and military.</li>
+          <li><b>Maya:</b> cenotes, priests, alliances, astronomy.</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <strong>Good to know</strong>
+        <div class="muted section-copy">If the timer is off, the quiz stays on the question until you choose an answer or move on.</div>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>

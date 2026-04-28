@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Early Americas Study</title>
+  <link rel="stylesheet" href="ea-study.css" />
+  <script defer src="ea-study.js"></script>
+</head>
+<body data-page="home">
+  <header>
+    <div>
+      <h1>Early Americas Study</h1>
+      <div class="sub">Pick a page and start studying.</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn-secondary" data-theme-toggle type="button">Dark Mode</button>
+      <button class="btn-warn" data-reset-progress type="button">Start Over</button>
+    </div>
+  </header>
+
+  <nav class="page-nav" aria-label="Study pages">
+    <a class="nav-link" href="EA_Study.html">Home</a>
+    <a class="nav-link" href="study-targets.html">What to Know</a>
+    <a class="nav-link" href="flip-cards.html">Flash Cards</a>
+    <a class="nav-link" href="timed-practice.html">Quick Quiz</a>
+  </nav>
+
+  <main class="wrap">
+    <section class="card stack">
+      <div class="pillrow">
+        <span class="pill accent">Start Here</span>
+        <span class="pill violet">Simple Pages</span>
+        <span class="pill good">Ready to Study</span>
+      </div>
+
+      <div class="box">
+        <strong>Pick a page</strong>
+        <div class="muted section-copy">Start with the practice questions, move to flash cards, and finish with the quiz.</div>
+      </div>
+
+      <div class="feature-grid">
+        <a class="feature-card" href="study-targets.html">
+          <span class="feature-kicker">Step 1</span>
+          <h2>What to Know</h2>
+          <p>Short questions, practice prompts, and one quick check.</p>
+          <div class="feature-meta">
+            <span class="pill accent">3 practice sets</span>
+            <span class="pill">1 quick check</span>
+          </div>
+        </a>
+
+        <a class="feature-card" href="flip-cards.html">
+          <span class="feature-kicker">Step 2</span>
+          <h2>Flash Cards</h2>
+          <p>Study by set: Aztec, Inca, Maya, farming, kings, and mixed review.</p>
+          <div class="feature-meta">
+            <span class="pill violet"><span id="deckCount">0</span> sets</span>
+            <span class="pill"><span id="cardCount">0</span> cards</span>
+          </div>
+        </a>
+
+        <a class="feature-card" href="timed-practice.html">
+          <span class="feature-kicker">Step 3</span>
+          <h2>Quick Quiz</h2>
+          <p>12 multiple-choice questions with an optional timer.</p>
+          <div class="feature-meta">
+            <span class="pill good"><span id="questionCount">0</span> questions</span>
+            <span class="pill warn">12 sec timer</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <aside class="card stack">
+      <div class="box">
+        <strong>Quick plan</strong>
+        <ul class="plain-list">
+          <li>Read through What to Know once.</li>
+          <li>Use Flash Cards until you can answer before tapping.</li>
+          <li>Finish with the Quick Quiz and aim for 10 out of 12 or better.</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <strong>Big clues</strong>
+        <ul class="plain-list">
+          <li><b>Aztec:</b> lake island capital, trade city, emperor.</li>
+          <li><b>Inca:</b> mountains, roads, terraces, state or military duty.</li>
+          <li><b>Maya:</b> cenotes, priests, calendars, astronomy, glyphs.</li>
+          <li>Farming questions are mostly about matching the place to the method.</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <strong>Sentence starter</strong>
+        <div class="muted section-copy">
+          One significant achievement of the Maya was <span class="inlineBlank"></span> because <span class="inlineBlank inlineBlank-wide"></span>.
+        </div>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Early Americas Flash Cards</title>
+  <link rel="stylesheet" href="ea-study.css" />
+  <script defer src="ea-study.js"></script>
+</head>
+<body data-page="cards">
+  <header>
+    <div>
+      <h1>Flash Cards</h1>
+      <div class="sub">Tap a card to check yourself.</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn-secondary" data-theme-toggle type="button">Dark Mode</button>
+      <button class="btn-warn" data-reset-progress type="button">Start Over</button>
+    </div>
+  </header>
+
+  <nav class="page-nav" aria-label="Study pages">
+    <a class="nav-link" href="EA_Study.html">Home</a>
+    <a class="nav-link" href="study-targets.html">What to Know</a>
+    <a class="nav-link" href="flip-cards.html">Flash Cards</a>
+    <a class="nav-link" href="timed-practice.html">Quick Quiz</a>
+  </nav>
+
+  <main class="wrap">
+    <section class="card stack">
+      <div class="pillrow">
+        <span class="pill accent">Flash Cards</span>
+        <span class="pill violet">By Topic</span>
+        <span class="pill good">Step 2</span>
+      </div>
+
+      <div class="box">
+        <strong>How to use it</strong>
+        <div class="muted section-copy">Work through one set at a time. Tap a card to see the answer, then tap again to hide it.</div>
+        <div class="mini">
+          <div class="muted">Seen: <b id="cardProgress">0 / 0 cards</b></div>
+          <div><span class="kbd">Tip</span> Say the answer before you tap.</div>
+        </div>
+        <div class="deck-nav" id="deckNav" aria-label="Card sets"></div>
+      </div>
+
+      <div class="stack" id="cardsRoot"></div>
+
+      <div class="box stack">
+        <div>
+          <strong>Answer View</strong>
+          <div class="muted section-copy">Use these if you want the answer showing the whole time.</div>
+        </div>
+        <div class="stack" id="answersRoot"></div>
+      </div>
+    </section>
+
+    <aside class="card stack">
+      <div class="box">
+        <strong>Try this order</strong>
+        <ul class="plain-list">
+          <li>Start with Aztec, Inca, and Maya.</li>
+          <li>Use Farming after the civilization sets.</li>
+          <li>Finish with Kings and Mixed Review to catch confusion.</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <strong>You are ready when...</strong>
+        <ul class="plain-list">
+          <li>You can name the civilization before the card flips.</li>
+          <li>You can explain why, not just what.</li>
+          <li>You miss fewer environment-matching questions.</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <strong>Next</strong>
+        <div class="muted section-copy">When the mixed review set feels easy, move to the quiz and see how much you remember under pressure.</div>
+        <div class="feature-meta">
+          <a class="nav-link nav-link--subtle" href="timed-practice.html">Open Quick Quiz</a>
+        </div>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>
