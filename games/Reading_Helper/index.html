@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1b5e7a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="RSVP Reader" />
+  <title>RSVP Reading Helper</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lexend:wght@400;600&family=Noto+Sans:wght@400;600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="dark-blue">
+  <main class="app-shell">
+    <header class="hero">
+      <p class="eyebrow">Reading Practice Tool</p>
+      <h1>RSVP Reading Helper</h1>
+      <p>Paste a passage, choose your settings, and read one word at a time at your selected pace.</p>
+    </header>
+
+    <section class="panel input-panel">
+      <label for="sourceText">Text to Read</label>
+      <label for="sampleSelect" class="sample-select-label">Sample Texts</label>
+      <select id="sampleSelect" class="sample-select">
+        <option value="">Select a sample text...</option>
+      </select>
+      <textarea id="sourceText" placeholder="Paste your text here..."></textarea>
+      <div class="input-actions">
+        <button id="prepareBtn" class="btn btn-primary" type="button">Prepare Text</button>
+        <p id="wordCount" class="meta">0 words loaded</p>
+      </div>
+    </section>
+
+    <section class="panel controls-panel">
+      <div class="controls-grid">
+        <label>
+          WPM
+          <select id="wpmSelect">
+            <option value="100">100</option>
+            <option value="150">150</option>
+            <option value="200" selected>200</option>
+            <option value="250">250</option>
+            <option value="300">300</option>
+            <option value="350">350</option>
+            <option value="400">400</option>
+            <option value="450">450</option>
+            <option value="500">500</option>
+            <option value="550">550</option>
+            <option value="600">600</option>
+            <option value="650">650</option>
+            <option value="700">700</option>
+            <option value="750">750</option>
+            <option value="800">800</option>
+            <option value="850">850</option>
+            <option value="900">900</option>
+          </select>
+        </label>
+
+        <label>
+          Font
+          <select id="fontSelect">
+            <option value="'Atkinson Hyperlegible', sans-serif" selected>Atkinson Hyperlegible</option>
+            <option value="'Lexend', sans-serif">Lexend</option>
+            <option value="'Noto Sans', sans-serif">Noto Sans</option>
+            <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
+          </select>
+        </label>
+
+        <label>
+          Text Size
+          <input id="sizeRange" type="range" min="28" max="96" step="2" value="56" />
+        </label>
+
+        <label>
+          Theme
+          <select id="themeSelect">
+            <option value="normal">Normal</option>
+            <option value="dark-blue" selected>Dark Blue</option>
+            <option value="black">Black</option>
+            <option value="inverted">Inverted</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="playback-actions">
+        <button id="playPauseBtn" class="btn btn-primary" type="button" disabled>Play</button>
+        <button id="restartBtn" class="btn" type="button" disabled>Restart</button>
+        <button id="pivotToggleBtn" class="btn" type="button" aria-pressed="false">Median Letter: Off</button>
+        <button id="focusToggleBtn" class="btn" type="button" aria-pressed="false">Focus Mode: Off</button>
+        <button id="tickerToggleBtn" class="btn" type="button" aria-pressed="false">Ticker Review: Off</button>
+      </div>
+
+      <div class="scrub-wrap">
+        <label for="scrubRange">Word Position</label>
+        <input id="scrubRange" type="range" min="0" max="0" step="1" value="0" disabled />
+        <p id="progressText" class="meta">Word 0 of 0</p>
+      </div>
+    </section>
+
+    <section class="panel viewer-panel">
+      <div id="viewerHome">
+        <div id="rsvpViewer" aria-live="polite">Paste text and click Prepare Text</div>
+      </div>
+    </section>
+
+    <section id="tickerPanel" class="panel ticker-panel" hidden>
+      <div class="ticker-header">
+        <p class="ticker-title">Ticker Review</p>
+        <button id="tickerCloseBtn" class="btn" type="button">Close Ticker</button>
+      </div>
+      <label for="tickerScrubRange">Scrub Through Passage</label>
+      <input id="tickerScrubRange" type="range" min="0" max="0" step="1" value="0" disabled />
+      <p id="tickerPositionText" class="meta">Word 0 of 0</p>
+      <div id="tickerTrackWrap" class="ticker-track-wrap">
+        <div id="tickerTrack" class="ticker-track" aria-live="off"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="focusOverlay" class="focus-overlay" aria-hidden="true">
+    <section class="focus-popover" role="dialog" aria-modal="true" aria-label="RSVP Focus Mode">
+      <div class="focus-header">
+        <p class="focus-title">Focus Mode</p>
+        <div class="focus-actions">
+          <button id="focusPlayPauseBtn" class="btn btn-primary" type="button" disabled>Start</button>
+          <button id="focusCloseBtn" class="btn" type="button">Exit Focus</button>
+        </div>
+      </div>
+      <div id="focusViewerHost" class="focus-viewer-host"></div>
+    </section>
+  </div>
+
+  <script src="sample-texts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
