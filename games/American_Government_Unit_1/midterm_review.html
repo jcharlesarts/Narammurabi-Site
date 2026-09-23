@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Midterm Review | American Government</title>
+  <link rel="stylesheet" href="study.css">
+  <link rel="stylesheet" href="interactions.css?v=20260922-3">
+  <script src="interactions.js?v=20260922-3" defer></script>
+  <script src="study-data.js" defer></script>
+  <script src="review-feedback.js" defer></script>
+  <script src="review.js?v=20260922-2" defer></script>
+</head>
+<body>
+  <main class="review-app">
+    <header class="study-tools-header">
+      <a href="index.html">← Home</a>
+      <span class="eyebrow">American Government / Unit 1</span>
+    </header>
+    <nav class="nav study-tools-nav" aria-label="Study tools">
+      <a id="midtermReviewNav" href="midterm_review.html" aria-current="page">Midterm Review</a>
+      <a href="curriculum.html">Lesson Guide</a>
+      <a href="declaration.html">Declaration Reader</a>
+      <a href="vocabulary.html">Vocabulary Vault</a>
+      <a href="vocab_race.html">Vocabulary Race</a>
+      <a href="who_rules.html">Who Rules?</a>
+      <a href="case_files.html">Case Files</a>
+    </nav>
+
+    <section class="intro review-intro">
+      <p class="eyebrow" id="reviewKind">Midterm question practice</p>
+      <h1 id="reviewTitle">Midterm Review</h1>
+      <p class="muted" id="reviewDescription">Practice every question for one midterm topic, then continue through the remaining topics.</p>
+    </section>
+
+    <section class="card review-setup" aria-label="Choose review questions">
+      <div class="review-control-row">
+        <div class="review-control-block">
+          <span class="eyebrow">Questions</span>
+          <div class="setup-buttons" id="lengthButtons" role="group" aria-label="Choose the number of questions">
+            <button type="button" data-length="10" aria-pressed="false">10</button>
+            <button type="button" data-length="15" aria-pressed="false">15</button>
+            <button type="button" data-length="all" aria-pressed="true">All</button>
+          </div>
+        </div>
+      </div>
+      <div class="topic-control">
+        <div class="topic-heading">
+          <span class="eyebrow">Choose a topic</span>
+          <span id="available" class="muted small" role="status"></span>
+        </div>
+        <div class="topic-buttons" id="moduleList" role="group" aria-label="Choose a review topic"></div>
+        <p class="setup-note" id="scopeNote">Review every topic through the Articles of Confederation.</p>
+      </div>
+    </section>
+
+    <section class="review-layout" aria-label="Review questions">
+      <article class="card" id="questionCard">
+        <div id="playArea">
+          <span class="tag" id="questionTag"></span>
+          <h2 id="question" tabindex="-1"></h2>
+          <div id="source"></div>
+          <div id="response"></div>
+          <div class="feedback" id="feedback" aria-live="polite">Choose an answer and look for the evidence.</div>
+          <div class="actions" id="followup"></div>
+        </div>
+        <div id="finish" hidden></div>
+      </article>
+      <aside class="card stats" aria-label="Review progress">
+        <div><span class="small">Question</span><strong id="progressText">—</strong></div>
+        <div><span class="small">Points</span><strong id="points">0</strong></div>
+        <div><span class="small">Streak</span><strong id="streak">0</strong></div>
+        <div><span class="small">Best</span><strong id="best">0</strong></div>
+        <div class="progress"><span id="meter"></span></div>
+        <div class="actions"><button id="hear" class="read-toggle">Hear question</button><button id="stop" class="read-toggle">Stop</button></div>
+        <p class="small">First try: 100 points.<br>After a retry: 50 points.<br>No points are taken away.</p>
+      </aside>
+    </section>
+
+    <noscript><p>This tool needs JavaScript. <a href="lesson_data_updated.md">Read the lesson outline.</a></p></noscript>
+  </main>
+</body>
+</html>

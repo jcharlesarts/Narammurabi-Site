@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Vocabulary Race | American Government</title>
+  <link rel="stylesheet" href="study.css">
+  <link rel="stylesheet" href="race.css">
+  <link rel="stylesheet" href="interactions.css?v=20260922-3">
+  <script defer src="interactions.js?v=20260922-3"></script>
+  <script defer src="study-data.js"></script>
+  <script defer src="race-core.js"></script>
+  <script defer src="race.js"></script>
+</head>
+<body>
+  <main class="race-app">
+    <header class="study-tools-header"><a href="index.html">← Home</a><span class="eyebrow">American Government / Unit 1</span></header>
+    <nav class="study-tools-nav" aria-label="Study tools"><a href="midterm_review.html">Midterm Review</a><a href="curriculum.html">Lesson Guide</a><a href="declaration.html">Declaration Reader</a><a href="vocabulary.html">Vocabulary Vault</a><a aria-current="page" href="vocab_race.html">Vocabulary Race</a><a href="who_rules.html">Who Rules?</a><a href="case_files.html">Case Files</a></nav>
+
+    <section class="race-heading">
+      <h1>Vocabulary Race</h1>
+      <div class="race-emblem" aria-hidden="true">V<span>VOCAB CIRCUIT</span></div>
+    </section>
+
+    <div class="race-workspace">
+      <section class="race-course card" aria-label="Race course and progress">
+        <div class="arena-top">
+          <p class="eyebrow" id="raceState">On the starting line</p>
+          <p class="ghost-label" id="ghostLabel">Finish a race to set your ghost.</p>
+        </div>
+
+        <div class="track" aria-hidden="true">
+          <div class="track-sky">
+            <span class="city-block b1"></span>
+            <span class="city-block b2"></span>
+            <svg class="capitol" viewBox="0 0 140 100">
+              <path d="M22 92V53h96v39M14 93h112M16 54h108M26 48h88L70 32zM46 30C46 5 94 5 94 30M70 9V0M40 31h60" fill="none" stroke="currentColor" stroke-width="5"/>
+              <path d="M35 60v27m18-27v27m18-27v27m18-27v27m18-27v27" stroke="currentColor" stroke-width="7"/>
+            </svg>
+          </div>
+          <div class="lane lane-ghost"><span>BEST RUN</span></div>
+          <div class="lane lane-you"><span>YOU</span></div>
+          <div class="finish-line"></div>
+          <div class="finish-flag">FINISH</div>
+          <div class="racer racer-ghost" id="ghost" hidden>
+            <svg class="runner-icon" viewBox="0 0 54 54" aria-hidden="true"><circle cx="34" cy="9" r="5" fill="currentColor" stroke="none"/><path d="M28 18l-9 11 11 8-9 12M28 18l8 10 10-2M28 18l-9-4-9 6M24 28l12 9 10 10" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 32h8M1 39h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg>
+          </div>
+          <div class="racer racer-you" id="runner">
+            <svg class="runner-icon" viewBox="0 0 54 54" aria-hidden="true"><circle cx="34" cy="9" r="5" fill="currentColor" stroke="none"/><path d="M28 18l-9 11 11 8-9 12M28 18l8 10 10-2M28 18l-9-4-9 6M24 28l12 9 10 10" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 32h8M1 39h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg>
+          </div>
+          <div id="finishBurst" class="finish-burst" hidden>FINISH!</div>
+        </div>
+
+        <div class="race-stats">
+          <div><span>Race clock</span><strong id="clock">0:00.0</strong></div>
+          <div><span>Words locked</span><strong id="lockedCount">0 / —</strong></div>
+          <div><span>Attempts</span><strong id="attempts">0</strong></div>
+          <div><span>Your best</span><strong id="bestTime">—</strong></div>
+        </div>
+        <div class="race-progress" role="progressbar" aria-label="Words locked in" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="raceProgress"><span></span></div>
+      </section>
+
+      <div class="race-side">
+        <section class="card setup" aria-label="Race setup">
+          <div class="race-controls">
+            <label>Lesson<select id="raceModule"></select></label>
+            <label>Clue type<select id="raceRoute"><option value="definition">Definition → term</option><option value="scenario">Scenario → term</option></select></label>
+            <label>Distance<select id="raceLength"><option value="all">All selected terms</option><option value="10">10-word sprint</option></select></label>
+          </div>
+          <div class="setup-footer">
+            <p id="courseNote" class="small muted"></p>
+            <button class="primary" id="startRace">Start race →</button>
+          </div>
+        </section>
+
+        <section class="race-action card" aria-label="Vocabulary race">
+          <div id="ready">
+            <p class="eyebrow">Ready</p>
+            <h2>Your next best starts here.</h2>
+            <p>Correct answers move you forward. Missed terms return to the deck. Cards reshuffle every race.</p>
+          </div>
+
+          <div id="racePlay" hidden>
+            <p class="tag" id="clueLabel"></p>
+            <h2 id="raceQuestion" tabindex="-1"></h2>
+            <div class="choices" id="raceOptions"></div>
+            <div class="feedback" id="raceFeedback" role="status"></div>
+            <div class="race-actions">
+              <button class="primary" id="nextWord" hidden>Next word →</button>
+              <button id="pauseRace">Pause</button>
+              <button id="hearRace">Hear clue</button>
+              <button id="resetRace">Setup</button>
+            </div>
+          </div>
+
+          <div id="paused" hidden>
+            <p class="eyebrow">Race paused</p>
+            <h2>Catch your breath.</h2>
+            <p>The clock and ghost are paused.</p>
+            <div class="race-actions"><button class="primary" id="resumeRace">Resume race →</button><button id="pauseReset">Back to setup</button></div>
+          </div>
+
+          <div id="raceResult" hidden aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+
+    <footer>
+      <details>
+        <summary>How the race works</summary>
+        <p>Choose a definition or scenario, then identify its term. The clock starts when you press Start race. A wrong answer stays in the deck until you answer it correctly.</p>
+        <p>Your best time becomes a ghost for the same words and clue type. Best times stay in this browser when storage is available.</p>
+        <p>Use Tab and Enter to choose answers. Return to <a href="vocabulary.html">Vocabulary Vault</a> for untimed study.</p>
+      </details>
+    </footer>
+    <noscript><p>JavaScript is needed to play. <a href="lesson_data_updated.md">Read the lesson outline.</a></p></noscript>
+  </main>
+</body>
+</html>

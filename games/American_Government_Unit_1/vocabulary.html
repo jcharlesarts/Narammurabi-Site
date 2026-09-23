@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vocabulary Vault | American Government Unit 1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{
+  --ink:#17222f;--muted:#657384;--paper:#f6f1e7;--panel:#fffdf8;--line:#d9d5cb;
+  --navy:#153a5b;--blue:#dbeaf2;--gold:#e9b44c;--coral:#d9674d;--mint:#d9eadf;
+  --shadow:0 16px 40px rgba(26,37,47,.1);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:var(--ink);
+  background:
+    radial-gradient(circle at 5% 90%,rgba(233,180,76,.20),transparent 30%),
+    radial-gradient(circle at 93% 8%,rgba(112,166,188,.18),transparent 26%),
+    linear-gradient(125deg,#eef0ea 0%,#f6f1e7 54%,#dce8eb 100%);
+  font-family:Manrope,sans-serif
+}
+button,select,input{font:inherit}
+button:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.app{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:24px 0 46px}
+.topbar{display:flex;justify-content:flex-start;align-items:center;gap:16px;padding-bottom:20px;border-bottom:1px solid rgba(21,58,91,.15)}
+.brand{display:flex;align-items:center;gap:13px}
+.seal{width:48px;height:48px;display:grid;place-items:center;border:4px solid var(--gold);border-radius:50%;color:white;background:var(--navy);box-shadow:3px 4px 0 rgba(21,58,91,.18);font:700 20px Fraunces,serif}
+.eyebrow,.label{margin:0;color:var(--coral);font:700 10px/1.2 DM Mono,monospace;letter-spacing:.12em;text-transform:uppercase}
+.label{font-size:10.5px}
+h1,h2,h3,p{margin-top:0}
+h1{margin:0;color:var(--navy);font:700 clamp(24px,4vw,34px)/1 Fraunces,serif;letter-spacing:-.04em}
+.home{padding:10px 13px;border:1px solid var(--line);border-radius:9px;color:var(--navy);background:rgba(255,253,248,.78);font-size:11px;font-weight:800;text-decoration:none}
+.activity-nav{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}.activity-nav a{display:inline-flex;align-items:center;min-height:36px;padding:8px 11px;border:1px solid var(--line);border-radius:999px;color:var(--navy);background:rgba(255,253,248,.7);font:700 11px DM Mono,monospace;letter-spacing:.04em;text-decoration:none;text-transform:uppercase}.activity-nav a[aria-current="page"]{color:white;border-color:var(--navy);background:var(--navy)}
+.vault-intro{display:flex;justify-content:space-between;gap:18px;align-items:center;margin:16px 0 12px;padding:13px 15px;border:1px dashed rgba(21,58,91,.28);border-radius:13px;background:rgba(219,234,242,.48)}.vault-intro strong{display:block;margin-top:3px;color:var(--navy);font:700 21px Fraunces,serif}.vault-intro p:not(.label){max-width:620px;margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.5}.intro-help{min-width:220px}.intro-help summary{color:var(--navy);font-size:12px;font-weight:800;cursor:pointer}.intro-help div{margin-top:7px;color:var(--muted);font-size:12px;line-height:1.5}
+.study-controls{display:grid;grid-template-columns:1.35fr 1fr;gap:10px;margin:0 0 16px}.control-group{padding:12px;border:1px solid rgba(21,58,91,.14);border-radius:12px;background:rgba(255,253,248,.73)}.control-group>.label{margin-bottom:3px;font-size:11px;line-height:1.35}.control-help{margin:0 0 10px;color:var(--muted);font-size:11px;line-height:1.45}.field-label{display:block;margin-top:7px;color:var(--navy);font-size:11px;font-weight:800}.button-row{display:flex;flex-wrap:wrap;gap:7px}.mode-btn,.filter-btn{min-height:36px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fffdf8;color:var(--navy);font-size:12px;font-weight:800;cursor:pointer}
+.mode-btn{position:relative;isolation:isolate;display:inline-grid;align-content:center;gap:2px;min-height:52px;overflow:hidden;text-align:left;line-height:1.15;text-decoration:none;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
+.mode-btn::after{position:absolute;z-index:-1;inset:-30% auto -30% -45%;width:34%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.92),rgba(233,180,76,.44),transparent);content:"";opacity:0;transform:skewX(-18deg)}
+.mode-btn:hover,.mode-btn:focus-visible{z-index:2;border-color:var(--gold);box-shadow:0 6px 16px rgba(21,58,91,.16);transform:translateY(-2px) scale(1.04)}
+.mode-btn:hover::after,.mode-btn:focus-visible::after{animation:option-flash .42s ease-out}
+.mode-btn.active{animation:option-pop .24s ease-out;background:var(--navy);color:#fff;border-color:var(--navy)}
+.mode-title{font-size:12px;font-weight:800}.mode-description{color:var(--muted);font:600 9.5px/1.3 DM Mono,monospace;letter-spacing:.015em}.mode-btn.active .mode-description{color:#dbeaf2}.race-launch{max-width:190px;border-style:dashed;background:#f8edcf}.race-launch .mode-title{color:#7a4c00}.race-launch .mode-description{color:#6d5a2d}
+.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+@keyframes option-flash{0%{left:-45%;opacity:0}20%{opacity:1}100%{left:115%;opacity:0}}@keyframes option-pop{0%{transform:scale(1)}55%{transform:scale(1.055)}100%{transform:scale(1)}}
+.shell{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);gap:16px;align-items:start}
+.study-card,.side-card{border:1px solid rgba(21,58,91,.14);border-radius:18px;background:rgba(255,253,248,.92);box-shadow:var(--shadow)}
+.study-card{position:relative;padding:24px;min-height:450px}.study-card::before{position:absolute;top:0;right:22px;width:68px;border-top:4px solid var(--gold);content:""}
+.side{display:grid;gap:14px}
+.side-card{padding:18px}
+.side-card h3{margin:8px 0 10px;color:var(--navy);font:700 21px Fraunces,serif}
+.stat{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:11px}
+.stat:last-child{border-bottom:0}
+.stat span{color:var(--muted)}
+.stat b{color:var(--navy)}
+.progress-card h3{margin-bottom:5px}.progress-copy{margin:0 0 12px;color:var(--muted);font-size:11px;line-height:1.5}.progress-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 11px;border:1px solid var(--line);border-radius:11px;color:var(--navy);background:#fffdf8;text-align:left;cursor:pointer}.progress-toggle-copy{display:grid;gap:2px}.progress-toggle-copy strong{font-size:12px}.progress-toggle-copy small{color:var(--muted);font:600 9px/1.3 DM Mono,monospace}.progress-toggle-control{display:flex;align-items:center;gap:7px;flex:0 0 auto}.toggle-track{width:32px;height:18px;padding:2px;border-radius:99px;background:#bbc3c7;transition:background-color .18s ease}.toggle-knob{display:block;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(23,34,47,.25);transition:transform .18s ease}.progress-toggle-state{min-width:20px;color:var(--muted);font:800 9px DM Mono,monospace;text-transform:uppercase}.progress-toggle[aria-pressed="true"]{border-color:var(--navy);background:var(--blue)}.progress-toggle[aria-pressed="true"] .toggle-track{background:var(--navy)}.progress-toggle[aria-pressed="true"] .toggle-knob{transform:translateX(14px)}.progress-toggle[aria-pressed="true"] .progress-toggle-state{color:var(--navy)}.progress-details{margin-top:12px;padding-top:4px;border-top:1px solid var(--line);animation:progress-reveal .22s ease-out}@keyframes progress-reveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.term-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}
+.lesson-tag{display:inline-block;padding:6px 8px;border-radius:99px;color:#6b4b08;background:#f7e7c3;font:700 9px DM Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
+.progress{color:var(--muted);font:700 10px DM Mono,monospace}
+.term{width:fit-content;max-width:100%;margin:14px 0 8px;color:var(--navy);font:700 clamp(34px,5vw,56px)/1 Fraunces,serif;letter-spacing:-.055em}
+.term,.match-term,.word-row b,.choice-term{position:relative}
+.term::before,.term::after,.match-term::before,.match-term::after,.word-row b::before,.word-row b::after,.choice-term::before,.choice-term::after{position:absolute;z-index:1;color:var(--gold);content:"✦";font-family:Georgia,serif;line-height:1;opacity:0;pointer-events:none;text-shadow:0 0 7px rgba(233,180,76,.58)}
+.term::before,.match-term::before{top:-.12em;left:-.42em;font-size:.34em}.term::after,.match-term::after{right:-.48em;bottom:.02em;font-size:.24em;content:"✧"}
+.word-row b::before,.choice-term::before{top:-.6em;left:-.9em;font-size:10px}.word-row b::after,.choice-term::after{right:-1em;bottom:-.4em;font-size:8px;content:"✧"}
+.term:hover::before,.match-term:hover::before,.word-row:hover b::before,.word-row:focus-visible b::before,.choice:hover .choice-term::before,.choice:focus-visible .choice-term::before{animation:vocab-sparkle-a .72s ease-out}
+.term:hover::after,.match-term:hover::after,.word-row:hover b::after,.word-row:focus-visible b::after,.choice:hover .choice-term::after,.choice:focus-visible .choice-term::after{animation:vocab-sparkle-b .72s .09s ease-out}
+@keyframes vocab-sparkle-a{0%{opacity:0;transform:translate(4px,5px) scale(.15) rotate(-30deg)}38%{opacity:1;transform:translate(0,0) scale(1.12) rotate(9deg)}100%{opacity:0;transform:translate(-4px,-5px) scale(.35) rotate(28deg)}}
+@keyframes vocab-sparkle-b{0%{opacity:0;transform:translate(-4px,-4px) scale(.15) rotate(25deg)}42%{opacity:1;transform:translate(0,0) scale(1.08) rotate(-8deg)}100%{opacity:0;transform:translate(5px,4px) scale(.3) rotate(-24deg)}}
+.definition{margin:0 0 14px;color:var(--ink);font-size:17px;line-height:1.55}
+.definition:focus-visible{outline:3px solid var(--coral);outline-offset:4px;border-radius:4px}
+.definition-word{display:inline-block;white-space:nowrap}
+.definition-char{display:inline-block;font-weight:400;transition:color .12s ease,font-weight .12s linear,transform .12s ease;transition-delay:0ms}
+.definition:hover .definition-char,.definition:focus-visible .definition-char{color:var(--navy);font-weight:700;transform:translateY(-.045em);transition-delay:var(--delay)}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.translation{display:none;margin:12px 0;padding:12px 14px;border-left:4px solid var(--gold);background:#f7e7c3;color:#4e4937;font-size:12px;line-height:1.55}
+.translation.visible{display:block}
+.example{margin:14px 0 0;padding:13px 14px;border-radius:10px;background:var(--blue);color:#29485f;font-size:12px;line-height:1.55}
+.controls{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+.primary,.secondary{padding:10px 13px;border-radius:9px;font-weight:800;cursor:pointer}
+.primary{border:0;color:#fff;background:var(--coral)}
+.secondary{border:1px solid var(--line);color:var(--navy);background:#fffdf8}
+.quiz-prompt{margin:8px 0 18px;color:var(--ink);font:600 clamp(18px,2.7vw,24px)/1.45 Fraunces,serif}
+.match-term{width:fit-content;max-width:100%;margin:13px 0 8px;color:var(--navy);font:700 clamp(32px,4.8vw,50px)/1 Fraunces,serif;letter-spacing:-.05em}.match-instruction{margin:0 0 18px;color:var(--muted);font-size:12px;line-height:1.5}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice{min-height:62px;padding:12px 14px;text-align:left;border:1px solid var(--line);border-radius:11px;background:#fffdf8;color:var(--ink);cursor:pointer}
+.choice:hover{border-color:#9bb0ba}
+.choice.correct{background:#e5f1e8;border-color:#77a989}
+.choice.wrong{background:#fae4de;border-color:#d88b79}
+.feedback{min-height:66px;margin-top:14px;padding:12px 14px;border-left:4px solid var(--gold);background:#f8edcf;color:#514a37;font-size:14px;line-height:1.55}
+.input-wrap{display:flex;gap:9px;margin-top:16px}
+.input-wrap input{flex:1;padding:12px 13px;border:1px solid var(--line);border-radius:9px;background:#fffdf8}
+.word-list{display:grid;gap:7px;max-height:370px;overflow:auto;padding-right:3px}
+.word-row{display:flex;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#fffdf8;cursor:pointer}
+.word-row:hover{background:#f8f4ec}
+.word-row b{display:inline-block;color:var(--navy);font-size:11px}
+.choice-term{display:inline-block;color:inherit;font-size:inherit}
+.word-row span{color:var(--muted);font:600 9px DM Mono,monospace}
+.note{margin-top:16px;padding:12px 14px;border-left:4px solid var(--gold);background:#f7e7c3;color:#5a573f;font-size:11px;line-height:1.55}
+@media(max-width:780px){
+  .shell,.study-controls{grid-template-columns:1fr}
+  .vault-intro{align-items:flex-start;flex-direction:column}
+  .choices{grid-template-columns:1fr}
+  .study-card{min-height:auto}
+  .home{display:none}
+}
+@media(prefers-reduced-motion:reduce){.mode-btn,.toggle-track,.toggle-knob{transition:none}.mode-btn:hover,.mode-btn:focus-visible{transform:none}.mode-btn::after,.mode-btn:hover::after,.mode-btn:focus-visible::after,.mode-btn.active,.term::before,.term::after,.match-term::before,.match-term::after,.word-row b::before,.word-row b::after,.choice-term::before,.choice-term::after,.progress-details{animation:none!important}.definition-char{transition:none}.definition:hover .definition-char,.definition:focus-visible .definition-char{transform:none;transition-delay:0ms}}
+select{max-width:100%;padding:8px;margin:4px 0;border:1px solid var(--line);border-radius:7px;background:#fffdf8;color:var(--navy)}.word-row{width:100%;text-align:left;font:inherit;background:transparent;cursor:pointer;border:0;border-bottom:1px solid var(--line)}
+</style>
+<link rel="stylesheet" href="interactions.css?v=20260922-3">
+<script src="interactions.js?v=20260922-3" defer></script>
+</head>
+<body>
+<main class="app">
+  <header class="study-tools-header">
+    <a href="index.html">← Home</a>
+    <span class="eyebrow">American Government / Unit 1</span>
+  </header>
+
+  <nav class="study-tools-nav" aria-label="Study tools"><a href="midterm_review.html">Midterm Review</a><a href="curriculum.html">Lesson Guide</a><a href="declaration.html">Declaration Reader</a><a aria-current="page" href="vocabulary.html">Vocabulary Vault</a><a href="vocab_race.html">Vocabulary Race</a><a href="who_rules.html">Who Rules?</a><a href="case_files.html">Case Files</a></nav>
+
+  <section class="vault-intro">
+    <div><p class="label">Academic language • Unit 1</p><h1 class="page-title">Vocabulary Vault</h1><strong>Know the word. Use the idea.</strong><p>Choose an activity and the lessons you want to study. Turn on a translation when it helps.</p></div>
+    <details class="intro-help"><summary>How to use the vault</summary><div>English stays on screen. Start with study cards if a word is new. Try a quiz when you are ready.</div></details>
+  </section>
+
+  <section class="study-controls" aria-label="Vocabulary study choices">
+    <div class="control-group"><p class="label">1 / Choose how to practice</p><p class="control-help">Pick an activity. You can switch at any time.</p><div class="button-row">
+      <button class="mode-btn active" data-mode="study"><span class="mode-title">Study cards</span><span class="mode-description">Learn at your pace</span></button>
+      <button class="mode-btn" data-mode="meaning"><span class="mode-title">Meaning → term</span><span class="mode-description">Find the word</span></button>
+      <button class="mode-btn" data-mode="scenario"><span class="mode-title">Scenario → term</span><span class="mode-description">Use context clues</span></button>
+      <button class="mode-btn" data-mode="match"><span class="mode-title">Term → meaning</span><span class="mode-description">Match its meaning</span></button>
+      <a class="mode-btn race-launch" id="launchRace" href="vocab_race.html"><span class="mode-title">Ready for a harder challenge?</span><span class="mode-description">Test your speed →</span></a>
+    </div></div>
+    <div class="control-group"><p class="label">2 / Tell us your goal</p><p class="control-help">Choose regular class practice or get ready for the midterm.</p><label class="field-label" for="vocabScope">What are you preparing for?</label><select id="vocabScope"><option value="current">Class practice · Lessons 1–5</option><option value="midterm" selected>Midterm review · All terms</option></select><p id="vocabScopeNote" class="label" style="margin-top:12px"></p></div>
+  </section>
+
+  <section class="shell">
+    <article class="study-card">
+      <div id="studyMode">
+        <div class="term-top"><span class="lesson-tag" id="lessonTag"></span><span class="progress" id="progressText"></span></div>
+        <h2 class="term" id="termText"></h2>
+        <p class="definition" id="definitionText" tabindex="0"></p>
+        <div class="translation" id="translationBox"></div>
+        <div class="example" id="exampleText"></div>
+        <div class="controls">
+          <button class="primary" id="nextCard">Next word →</button>
+          <button class="secondary" id="shuffleCard">Shuffle</button>
+          <button class="secondary" id="readCard" type="button">Hear this word</button>
+        </div>
+      </div>
+
+      <div id="quizMode" style="display:none">
+        <div class="term-top"><span class="lesson-tag" id="quizLesson"></span><span class="progress" id="quizProgress"></span></div>
+        <p class="label" id="quizLabel">Which term matches this meaning?</p>
+        <p class="quiz-prompt" id="quizPrompt"></p>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback" aria-live="polite">Choose the best term. The explanation will appear here.</div>
+        <div class="controls"><button class="primary" id="nextQuiz" style="display:none">Next →</button></div>
+      </div>
+
+      <div id="matchMode" style="display:none">
+        <div class="term-top"><span class="lesson-tag" id="matchLesson"></span><span class="progress" id="matchProgress"></span></div>
+        <p class="label">Mix and match</p>
+        <h2 class="match-term" id="matchTerm"></h2>
+        <p class="match-instruction">Choose the definition that belongs with this academic term.</p>
+        <div class="choices" id="matchChoices"></div>
+        <div class="feedback" id="matchFeedback" aria-live="polite">Match the term to its strongest definition.</div>
+        <div class="controls"><button class="primary" id="nextMatch" style="display:none">Next match →</button></div>
+      </div>
+    </article>
+
+    <aside class="side">
+      <div class="side-card" id="wordBankCard">
+        <p class="label">Study card tool</p>
+        <h3>Glossary</h3>
+        <div class="word-list" id="wordList"></div>
+      </div>
+      <div class="side-card progress-card">
+        <p class="label">Optional study tool</p>
+        <h3>Track your progress</h3>
+        <p class="progress-copy">Turn this on when you want to count your quiz and matching answers.</p>
+        <button class="progress-toggle" id="progressToggle" type="button" aria-pressed="false" aria-controls="progressDetails">
+          <span class="progress-toggle-copy"><strong>Progress tracking</strong><small>Count practice answers</small></span>
+          <span class="progress-toggle-control"><span class="toggle-track" aria-hidden="true"><span class="toggle-knob"></span></span><span class="progress-toggle-state" id="progressToggleState">Off</span></span>
+        </button>
+        <div class="progress-details" id="progressDetails" aria-live="polite" hidden>
+          <div class="stat"><span>Words in your goal</span><b id="wordCount">0</b></div>
+          <div class="stat"><span>Answers correct</span><b id="scoreText">0 / 0</b></div>
+          <div class="stat"><span>Language help</span><b id="bridgeStatus">Off</b></div>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <aside class="note">Choose <b>Lessons 1–5</b> or <b>Midterm Review</b>. The midterm word set ends after the Articles of Confederation. English always stays visible.</aside>
+</main>
+
+<script src="study-data.js"></script>
+<script>
+const WORDS = window.STUDY.vocabulary;
+const RTL_BRIDGES = new Set(["ar","ps"]);
+const LANGUAGE_KEY = "american-government-language-help";
+const LANGUAGE_LABELS = {none:"English only",es:"Español / Spanish",ar:"العربية / Arabic",ps:"پښتو / Pashto",so:"Soomaali / Somali",sw:"Kiswahili / Swahili"};
+function storedBridgeLanguage(){try{const value=localStorage.getItem(LANGUAGE_KEY);return LANGUAGE_LABELS[value]?value:"none";}catch{return "none";}}
+
+let mode="study", cardIndex=0, quizIndex=0, matchIndex=0, score=0, attempts=0, locked=false, trackingEnabled=false;
+let currentSet=[],studySet=[],quizSet=[],matchSet=[];
+let bridgeLanguage=storedBridgeLanguage();
+
+const $=id=>document.getElementById(id);
+function renderDefinition(text){
+  const el=$("definitionText");
+  const readable=document.createElement("span");
+  readable.className="sr-only";
+  readable.textContent=text;
+  const visual=document.createElement("span");
+  visual.setAttribute("aria-hidden","true");
+  let charIndex=0;
+  text.split(/(\s+)/).forEach(part=>{
+    if(/^\s+$/.test(part)){
+      visual.append(part);
+      charIndex+=part.length;
+      return;
+    }
+    const word=document.createElement("span");
+    word.className="definition-word";
+    Array.from(part).forEach(char=>{
+      const letter=document.createElement("span");
+      letter.className="definition-char";
+      letter.style.setProperty("--delay",`${charIndex++ * 19.5}ms`);
+      letter.textContent=char;
+      word.appendChild(letter);
+    });
+    visual.appendChild(word);
+  });
+  el.replaceChildren(readable,visual);
+}
+function moduleTitle(w){const m=STUDY.modules.find(m=>m.id===w.module);return m.title+' · '+STUDY.statusLabels[m.status];}
+function syncProgressTracking(){
+  $("progressToggle").setAttribute("aria-pressed",String(trackingEnabled));
+  $("progressToggleState").textContent=trackingEnabled?"On":"Off";
+  $("progressDetails").hidden=!trackingEnabled;
+}
+function recordAnswer(correct){
+  if(!trackingEnabled)return;
+  attempts++;
+  if(correct)score++;
+  $("scoreText").textContent=`${score} / ${attempts}`;
+}
+function scopeModules(){
+ return STUDY.assessments[$("vocabScope").value==="midterm"?"planned":"current"].modules;
+}
+function usesRandomActivityOrder(){return $("vocabScope").value==="midterm";}
+function activityOrder(){return usesRandomActivityOrder()?shuffle(currentSet):[...currentSet];}
+function resetActivityOrders(){studySet=activityOrder();quizSet=activityOrder();matchSet=activityOrder();}
+function resetOrderForMode(nextMode){
+  if(nextMode==="study")studySet=activityOrder();
+  else if(nextMode==="match")matchSet=activityOrder();
+  else quizSet=activityOrder();
+}
+function configureScope(){
+ $("vocabScopeNote").textContent=$("vocabScope").value==='midterm'?'Every term through the Articles of Confederation, shown in random order.':'Words from Lessons 1–5.';
+ applyFilter();
+}
+function applyFilter(){
+ const modules=scopeModules();
+ $("launchRace").href="vocab_race.html";
+ currentSet=WORDS.filter(w=>modules.includes(w.module));
+  resetActivityOrders();
+  cardIndex=0; quizIndex=0; matchIndex=0; score=0; attempts=0;
+  $("wordCount").textContent=currentSet.length;
+  $("scoreText").textContent="0 / 0";
+  renderWordList();
+  render();
+}
+function renderWordList(){
+  $("wordList").innerHTML="";
+  currentSet.forEach(w=>{
+    const row=document.createElement("button");
+    row.type="button";
+    row.className="word-row";
+    row.innerHTML=`<b>${w.term}</b><span>${w.module}</span>`;
+    row.onclick=()=>{mode="study"; syncModeButtons(); cardIndex=studySet.indexOf(w); render();};
+    $("wordList").appendChild(row);
+  });
+}
+function bridge(){
+  const l=bridgeLanguage;
+  $("bridgeStatus").textContent=l==="none"?"Off":LANGUAGE_LABELS[l];
+  if(l==="none") return "";
+  const w=studySet[cardIndex];
+  const translation=w.tr[l];
+  return `<span class="translation-text"><b>${LANGUAGE_LABELS[l]} bridge:</b> ${translation?`<span lang="${l}" dir="${RTL_BRIDGES.has(l)?"rtl":"ltr"}">${translation}</span>`:"Translation not yet available for this term."}</span>`;
+}
+function renderStudy(){
+  const w=studySet[cardIndex];
+  $("lessonTag").textContent=moduleTitle(w);
+  $("progressText").textContent=`${cardIndex+1} / ${studySet.length}`;
+  $("termText").textContent=w.term+(w.aliases?.length?` (${w.aliases.join(" / ")})`:"");
+  renderDefinition(w.def);
+  $("exampleText").innerHTML=`<b>Example:</b> ${w.example}<br><br><b>Related:</b> ${w.relatedTerms.join(", ")}`;
+  const t=bridge();
+  $("translationBox").innerHTML=t;
+  $("translationBox").dir="ltr";
+  $("translationBox").classList.toggle("visible",!!t);
+}
+function shuffle(arr){const copy=[...arr];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;}
+function renderQuiz(){
+  locked=false;
+  const w=quizSet[quizIndex % quizSet.length];
+  $("quizLesson").textContent=moduleTitle(w);
+  $("quizProgress").textContent=`${(quizIndex%quizSet.length)+1} / ${quizSet.length}`;
+  $("quizLabel").textContent=mode==="meaning"?"Which term matches this meaning?":"Which term best fits this scenario?";
+  $("quizPrompt").textContent=mode==="meaning"?w.def:w.scenario;
+  $("feedback").textContent="Choose the best term. The explanation will appear here.";
+  $("nextQuiz").style.display="none";
+  const distractors=shuffle(WORDS.filter(x=>x.status===w.status && x.term!==w.term && !w.excludeDistractors.includes(x.term))).slice(0,3);
+  const opts=shuffle([w,...distractors]);
+  $("choices").innerHTML="";
+  opts.forEach(opt=>{
+    const b=document.createElement("button");
+    b.className="choice";
+    const term=document.createElement("span");
+    term.className="choice-term";
+    term.textContent=opt.term;
+    b.appendChild(term);
+    b.onclick=()=>answerQuiz(opt,w,b);
+    $("choices").appendChild(b);
+  });
+}
+function renderMatch(){
+  locked=false;
+  const w=matchSet[matchIndex % matchSet.length];
+  $("matchLesson").textContent=moduleTitle(w);
+  $("matchProgress").textContent=`${(matchIndex%matchSet.length)+1} / ${matchSet.length}`;
+  $("matchTerm").textContent=w.term;
+  $("matchFeedback").textContent="Match the term to its strongest definition.";
+  $("nextMatch").style.display="none";
+  const distractors=shuffle(WORDS.filter(x=>x.status===w.status && x.term!==w.term && !w.excludeDistractors.includes(x.term))).slice(0,3);
+  const opts=shuffle([w,...distractors]);
+  $("matchChoices").innerHTML="";
+  opts.forEach(opt=>{
+    const b=document.createElement("button");
+    b.className="choice"; b.textContent=opt.def;
+    b.onclick=()=>answerMatch(opt,w,b);
+    $("matchChoices").appendChild(b);
+  });
+}
+function answerQuiz(opt,target,btn){
+  if(locked)return;
+  locked=true;
+  [...document.querySelectorAll(".choice")].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===target.term)b.classList.add("correct");
+  });
+  if(opt.term===target.term){
+    recordAnswer(true);
+    $("feedback").innerHTML=`<b>Correct.</b> ${target.def}`;
+  }else{
+    recordAnswer(false);
+    btn.classList.add("wrong");
+    $("feedback").innerHTML=`<b>Not quite.</b> The best term is <b>${target.term}</b>. ${target.def}`;
+  }
+  $("nextQuiz").style.display="inline-block";
+}
+function answerMatch(opt,target,btn){
+  if(locked)return;
+  locked=true;
+  [...$("matchChoices").querySelectorAll(".choice")].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===target.def)b.classList.add("correct");
+  });
+  if(opt.term===target.term){
+    recordAnswer(true);
+    $("matchFeedback").innerHTML=`<b>Correct.</b> ${target.example}`;
+  }else{
+    recordAnswer(false);
+    btn.classList.add("wrong");
+    $("matchFeedback").innerHTML=`<b>Not quite.</b> <b>${target.term}</b> means: ${target.def}`;
+  }
+  $("nextMatch").style.display="inline-block";
+}
+function render(){
+  const studying=mode==="study";
+  const matching=mode==="match";
+  $("wordBankCard").hidden=!studying;
+  $("studyMode").style.display=studying?"block":"none";
+  $("quizMode").style.display=!studying&&!matching?"block":"none";
+  $("matchMode").style.display=matching?"block":"none";
+  if(studying)renderStudy(); else if(matching)renderMatch(); else renderQuiz();
+}
+function syncModeButtons(){
+  document.querySelectorAll(".mode-btn[data-mode]").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode));
+}
+document.querySelectorAll(".mode-btn[data-mode]").forEach(b=>b.onclick=()=>{
+  mode=b.dataset.mode; cardIndex=0; quizIndex=0; matchIndex=0; locked=false; resetOrderForMode(mode); syncModeButtons(); render();
+});
+$("vocabScope").onchange=configureScope;
+$("progressToggle").onclick=()=>{trackingEnabled=!trackingEnabled;syncProgressTracking();};
+window.addEventListener("site-language-change",event=>{bridgeLanguage=event.detail.language;$("bridgeStatus").textContent=bridgeLanguage==="none"?"Off":LANGUAGE_LABELS[bridgeLanguage];if(mode==="study")renderStudy();});
+$("nextCard").onclick=()=>{cardIndex++;if(cardIndex>=studySet.length){cardIndex=0;if(usesRandomActivityOrder())studySet=shuffle(currentSet);}renderStudy();};
+$("shuffleCard").onclick=()=>{studySet=shuffle(currentSet);cardIndex=0;renderStudy();};
+$("readCard").onclick=()=>{
+  if(!("speechSynthesis" in window)) return;
+  const word=studySet[cardIndex];
+  window.speechSynthesis.cancel();
+  const utterance=new SpeechSynthesisUtterance(`${word.term}. ${word.def}`);
+  utterance.rate=.9;
+  window.speechSynthesis.speak(utterance);
+};
+$("nextQuiz").onclick=()=>{quizIndex++;if(quizIndex>=quizSet.length){quizIndex=0;if(usesRandomActivityOrder())quizSet=shuffle(currentSet);}renderQuiz();};
+$("nextMatch").onclick=()=>{matchIndex++;if(matchIndex>=matchSet.length){matchIndex=0;if(usesRandomActivityOrder())matchSet=shuffle(currentSet);}renderMatch();};
+
+syncProgressTracking();
+configureScope();
+</script>
+</body>
+</html>

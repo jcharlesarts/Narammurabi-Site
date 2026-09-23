@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Opening Midterm Review…</title>
+  <meta http-equiv="refresh" content="0; url=midterm_review.html">
+  <script>
+    const params = new URLSearchParams(location.search);
+    const moduleId = params.get('module');
+    location.replace(`midterm_review.html${moduleId ? `?module=${encodeURIComponent(moduleId)}` : ''}`);
+  </script>
+</head>
+<body>
+  <p>This review has moved to <a href="midterm_review.html">Midterm Review</a>.</p>
+</body>
+</html>

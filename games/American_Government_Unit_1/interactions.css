@@ -1,0 +1,170 @@
+/* Shared button motion: a quick lift, gentle growth, and passing highlight. */
+.study-tools-header{display:flex;align-items:center;gap:20px;margin:0 0 24px}.study-tools-header>a{flex:0 0 auto;color:#153a5b;font-size:13px;font-weight:800;text-decoration:underline;text-underline-offset:3px}.study-tools-header>.eyebrow{margin:0}.study-tools-nav{display:flex;flex-wrap:wrap;gap:8px}.study-tools-nav a{display:inline-flex;align-items:center;min-height:43px;padding:9px 13px;border:1px solid #d9d5cb;border-radius:9px;color:#153a5b;background:#fffdf8;font:700 13px/1.3 Manrope,system-ui,sans-serif;text-decoration:none;text-transform:none;letter-spacing:0}.study-tools-nav a[aria-current="page"],.study-tools-nav a[aria-current="true"]{color:#fff;border-color:#153a5b;background:#153a5b}.page-title{margin:3px 0 7px;color:#153a5b;font:700 clamp(30px,4vw,44px)/1 Fraunces,Georgia,serif;letter-spacing:-.045em}
+
+:is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a){
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  transform-origin:center;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+
+:is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a)::after{
+  position:absolute;
+  z-index:3;
+  top:-35%;
+  bottom:-35%;
+  left:-45%;
+  width:32%;
+  pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.82),rgba(233,180,76,.42),transparent);
+  content:"";
+  opacity:0;
+  transform:skewX(-18deg);
+}
+
+:is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a):hover:not(:disabled),
+:is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a):focus-visible{
+  z-index:2;
+  border-color:#e9b44c;
+  box-shadow:0 6px 16px rgba(21,58,91,.16);
+  transform:translateY(-2px) scale(1.035);
+}
+
+:is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a):hover:not(:disabled)::after,
+:is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a):focus-visible::after{
+  animation:site-button-flash .42s ease-out;
+}
+
+button:active:not(:disabled),
+:is(a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a):active{
+  transform:translateY(0) scale(.985);
+}
+
+button[aria-pressed="true"]{animation:site-button-pop .24s ease-out}
+
+@keyframes site-button-flash{
+  0%{left:-45%;opacity:0}
+  20%{opacity:1}
+  100%{left:115%;opacity:0}
+}
+
+@keyframes site-button-pop{
+  0%{transform:scale(1)}
+  55%{transform:scale(1.055)}
+  100%{transform:scale(1)}
+}
+
+/* Supporting text grows inside a fixed layout box. Scale values equal +1pt. */
+.example{--aux-scale:1.111}
+:is(.control-help,.note,.ghost-label,.storage-note,.meter-note,.status,.evidence-button small){--aux-scale:1.121}
+:is(#quizMode .feedback,#matchMode .feedback,.game-shell .feedback){--aux-scale:1.095}
+:is(#activity .summary,#activity .feedback,#ready p:last-child,#paused p){--aux-scale:1.103}
+:is(.review-app .feedback,.review-app .callout,main:not(.review-app) .callout,main:not(.app):not(.review-app):not(.race-app) .scope-note){--aux-scale:1.089}
+:is(.review-app .setup-note,#raceFeedback,.intro-help div,.mission-strip p:not(.label),.concept-card p:not(.label),.power-step span,.game-shell .choice span,.clue-list){--aux-scale:1.111}
+.app>.scope-note{--aux-scale:1.121}
+
+.aux-text,.translation-text{
+  display:inline-block;
+  transform-origin:left center;
+  transition:font-weight .16s ease,text-shadow .16s ease,transform .16s ease;
+}
+
+.aux-zoom:is(:hover,:focus-within,:active)>.aux-text{
+  font-weight:700;
+  text-shadow:0 1px 8px rgba(233,180,76,.28);
+  transform:scale(var(--aux-scale,1.111));
+}
+
+.translation:is(:hover,:focus-within,:active) .translation-text{
+  font-weight:700;
+  transform:scale(1.111);
+}
+
+/* Site-wide language access stays visible without consuming activity setup space. */
+.language-access{
+  position:relative;
+  z-index:1000;
+  flex:0 0 auto;
+  margin-left:auto;
+  color:#17222f;
+  font-family:Manrope,system-ui,sans-serif;
+}
+
+.language-access summary{
+  display:flex;
+  min-width:190px;
+  min-height:52px;
+  align-items:center;
+  gap:10px;
+  padding:9px 12px;
+  border:2px solid #153a5b;
+  border-radius:14px;
+  color:#fff;
+  background:#153a5b;
+  box-shadow:0 9px 24px rgba(21,58,91,.24);
+  cursor:pointer;
+  list-style:none;
+  transition:transform .16s ease,box-shadow .16s ease,background-color .16s ease;
+}
+
+.language-access summary::-webkit-details-marker{display:none}
+.language-access summary:hover,.language-access summary:focus-visible{background:#1d4b70;box-shadow:0 12px 28px rgba(21,58,91,.3);transform:translateY(-2px) scale(1.025)}
+.language-access[open] summary{background:#1d4b70}
+.language-access-icon{display:grid;width:34px;height:34px;flex:0 0 auto;place-items:center;border-radius:10px;color:#153a5b;background:#e9b44c;font:800 11px/1 'DM Mono',monospace}
+.language-access-label{display:grid;gap:2px;text-align:left}
+.language-access-label strong{font-size:13px;line-height:1.15}
+.language-access-label small{color:#dbeaf2;font:600 9px/1.3 'DM Mono',monospace}
+.language-access-panel{position:absolute;top:calc(100% + 9px);right:0;width:min(330px,calc(100vw - 24px));padding:16px;border:1px solid #d9d5cb;border-radius:15px;background:#fffdf8;box-shadow:0 18px 42px rgba(21,58,91,.2);animation:language-panel-in .18s ease-out}
+.language-access-panel label{display:block;margin-bottom:6px;color:#153a5b;font-size:13px;font-weight:800}
+.language-access-panel select{width:100%;min-height:46px;padding:10px 11px;border:1px solid #9fadb4;border-radius:10px;color:#153a5b;background:#fff;font:700 14px Manrope,system-ui,sans-serif;cursor:pointer}
+.language-access-panel p{margin:10px 0 0;color:#586979;font-size:11px;line-height:1.5}
+.language-access-panel a{display:inline-block;margin-top:10px;color:#153a5b;font-size:11px;font-weight:800;text-underline-offset:3px}
+.vocab-help-tip{display:flex;flex-wrap:wrap;align-items:center;gap:5px}.vocab-key{padding:3px 6px;border-radius:5px;color:#153a5b;background:rgba(112,166,188,.28);font:700 8px/1.2 'DM Mono',monospace;text-transform:uppercase}
+@keyframes language-panel-in{from{opacity:0;transform:translateY(5px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Click-to-define Tier 2 and Tier 3 vocabulary support. */
+.vocab-highlight{
+  padding:0 .06em;
+  border-radius:3px;
+  cursor:help;
+  font-weight:650;
+  text-decoration:none;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+  transition:color .14s ease,background-color .14s ease,box-shadow .14s ease;
+}
+.vocab-highlight{background:rgba(112,166,188,.19)}
+.vocab-highlight:hover,.vocab-highlight:focus-visible{color:#153a5b;background:#f8edcf;box-shadow:0 0 0 3px rgba(233,180,76,.24);outline:none}
+.vocab-definition-dialog{position:fixed;z-index:1000;inset:clamp(88px,12vh,126px) 18px auto auto;width:min(350px,calc(100vw - 32px));max-height:min(72vh,570px);margin:0;overflow:auto;padding:17px 18px 18px;border:1px solid #b7cbd5;border-top:4px solid #e9b44c;border-radius:15px;color:#17222f;background:#fffdf8;box-shadow:0 14px 36px rgba(21,58,91,.2);font-family:Manrope,system-ui,sans-serif}
+.vocab-definition-dialog::backdrop{background:transparent;backdrop-filter:none}
+.vocab-definition-dialog[open]{animation:vocab-dialog-in .2s ease-out}
+.vocab-dialog-heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}.vocab-dialog-heading>div{min-width:0;flex:1}.vocab-dialog-kicker{margin:0 0 3px;color:#b74b34;font:700 9px/1.3 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase}.vocab-definition-dialog h2{margin:0;color:#153a5b;font:700 clamp(23px,3vw,29px)/1.08 Fraunces,Georgia,serif;letter-spacing:-.025em}
+.vocab-definition{margin:0;color:#17222f;font-size:14px;line-height:1.55}
+.vocab-translation,.vocab-example{margin:11px 0 0;padding:9px 11px;border-radius:8px;font-size:11px;line-height:1.5}
+.vocab-translation{border-left:4px solid #e9b44c;background:#f7e7c3}
+.vocab-example{background:#dbeaf2;color:#29485f}
+.vocab-dialog-close{display:grid;width:31px;height:31px;min-height:31px;flex:0 0 31px;padding:0;place-items:center;border:1px solid #d9d5cb;border-radius:50%;color:#153a5b;background:#fff;font:700 18px/1 Manrope,system-ui,sans-serif;cursor:pointer}
+@keyframes vocab-dialog-in{from{opacity:0;transform:translateX(14px) scale(.985)}to{opacity:1;transform:translateX(0) scale(1)}}
+
+header.has-language-access{position:relative}.race-topbar.has-language-access .eyebrow{margin-left:0}
+@media(max-width:620px){header.has-language-access{flex-wrap:wrap}.study-tools-header{gap:10px 14px;margin-bottom:16px}.study-tools-header>a{font-size:12px}.study-tools-nav{gap:6px}.study-tools-nav a{min-height:38px;padding:7px 10px;font-size:11px}.app>.scope-note{--aux-scale:1.133}.language-access summary{min-width:164px;min-height:48px;padding:7px 10px}.language-access-icon{width:31px;height:31px}.language-access-panel{width:min(310px,calc(100vw - 18px));padding:14px}.vocab-definition-dialog{inset:auto 10px 10px 10px;width:auto;max-height:46vh;padding:15px 16px 16px}}
+
+@media(prefers-reduced-motion:reduce){
+  :is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a){transition:none}
+  :is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a):hover:not(:disabled),
+  :is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a):focus-visible,
+  :is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a):active{
+    transform:none;
+  }
+  :is(button,a.button,a.home,a.back,a.back-link,a.guide-button,a.utility-link,.nav a,.activity-nav a,.race-nav a,.study-tools-nav a)::after,
+  button[aria-pressed="true"]{animation:none}
+  .aux-text,.translation-text{transition:none}
+  .aux-zoom:is(:hover,:focus-within,:active)>.aux-text{transform:none}
+  .translation:is(:hover,:focus-within,:active) .translation-text{transform:none}
+  .language-access summary{transition:none}
+  .language-access summary:hover,.language-access summary:focus-visible{transform:none}
+  .language-access-panel{animation:none}
+  .vocab-highlight{transition:none}
+  .vocab-definition-dialog[open]{animation:none}
+}
